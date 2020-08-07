@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from src.domain.value_objects import DateFrameDuration, FrameType, TaskId
+from pomodoros.domain.value_objects import DateFrameDuration, FrameType, TaskId
 
 
 @dataclass

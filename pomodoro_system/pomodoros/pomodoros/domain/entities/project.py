@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
 
-from src.domain.entities.task import Task
-from src.domain.value_objects import PriorityId, OwnerId, Ordering
+from pomodoros.domain.entities.task import Task
+from pomodoros.domain.value_objects import PriorityId, OwnerId, Ordering
 
 
 @dataclass

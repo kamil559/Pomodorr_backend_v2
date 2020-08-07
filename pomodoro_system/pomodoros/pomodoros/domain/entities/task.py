@@ -3,8 +3,14 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from src.domain.value_objects import (TaskStatus, PriorityId, ProjectId, PomodoroDuration, PomodoroRenewalInterval,
-                                      Ordering)
+from pomodoros.pomodoros.domain import (
+    TaskStatus,
+    PomodoroDuration,
+    PomodoroRenewalInterval,
+    Ordering,
+    ProjectId,
+    PriorityId
+)
 
 
 @dataclass
@@ -14,7 +20,7 @@ class Task:
     status: TaskStatus
     priority_id: PriorityId
     ordering: Ordering
-    remaining_pomodoros: int
+    pomodoros_to_do: int
     pomodoro_length: PomodoroDuration
     due_date: datetime
     reminder_date: datetime
