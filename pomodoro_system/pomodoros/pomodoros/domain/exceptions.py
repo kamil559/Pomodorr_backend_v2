@@ -4,3 +4,7 @@ class InvalidProjectOwner(Exception):
 
 class TaskNameNotAvailableInNewProject(Exception):
     pass
+
+
+class TaskAlreadyCompleted(Exception):
+    pass

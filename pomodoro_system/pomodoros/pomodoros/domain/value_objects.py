@@ -1,10 +1,11 @@
+import uuid
 from datetime import timedelta
 from enum import Enum
 
-PriorityId = int
-OwnerId = int
-ProjectId: int
-TaskId: int
+PriorityId = uuid.UUID
+OwnerId = uuid.UUID
+ProjectId: uuid.UUID
+TaskId: uuid.UUID
 PriorityLevel: int
 Color: str
 Ordering: int
@@ -15,7 +16,7 @@ DateFrameDuration: timedelta
 
 class TaskStatus(Enum):
     ACTIVE = 0
-    FINISHED = 1
+    COMPLETED = 1
 
 
 class FrameType(Enum):

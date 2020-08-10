@@ -3,13 +3,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from pomodoros.pomodoros.domain import (
+from pomodoros.domain.value_objects import (
     TaskStatus,
+    PriorityId,
+    Ordering,
     PomodoroDuration,
     PomodoroRenewalInterval,
-    Ordering,
-    ProjectId,
-    PriorityId
+    ProjectId
 )
 
 
@@ -28,3 +28,4 @@ class Task:
     project_id: ProjectId
     note: str
     created_at: datetime
+    completed_at: datetime
