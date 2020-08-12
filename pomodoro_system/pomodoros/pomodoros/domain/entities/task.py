@@ -29,3 +29,6 @@ class Task:
     note: str
     created_at: datetime
     completed_at: datetime
+
+    def next_due_date(self) -> datetime:
+        return self.due_date + self.renewal_interval
