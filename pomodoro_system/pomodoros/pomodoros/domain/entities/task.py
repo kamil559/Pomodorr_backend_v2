@@ -30,5 +30,6 @@ class Task:
     created_at: datetime
     completed_at: datetime
 
+    @property
     def next_due_date(self) -> datetime:
         return self.due_date + self.renewal_interval
