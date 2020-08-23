@@ -7,7 +7,7 @@ from typing import Optional
 
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.domain.entities import Task
-from pomodoros.domain.validations import check_is_task_already_completed
+from pomodoros.domain.validations.task_validations import check_is_task_already_completed
 from pomodoros.domain.value_objects import TaskId, TaskStatus
 
 

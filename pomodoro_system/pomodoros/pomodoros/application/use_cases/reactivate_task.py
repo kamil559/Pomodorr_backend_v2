@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from pomodoros.domain.validations import check_task_already_active, check_task_name_available_in_project
+from pomodoros.domain.validations.task_validations import check_task_already_active, \
+    check_task_name_available_in_project
 from pomodoros.domain.value_objects import TaskStatus, TaskId
 
 
