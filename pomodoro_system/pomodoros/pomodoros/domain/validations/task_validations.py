@@ -5,7 +5,7 @@ from pomodoros.domain.value_objects import TaskStatus
 
 def check_task_name_available_in_project(task_name: str, project: Project) -> None:
     task_in_new_project = list(
-        filter(lambda task: task.status == TaskStatus.ACTIVE and task.name.lower() == task_name, project.tasks))
+        filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == task_name, project.tasks))
 
     if len(task_in_new_project):
         raise TaskNameNotAvailableInNewProject

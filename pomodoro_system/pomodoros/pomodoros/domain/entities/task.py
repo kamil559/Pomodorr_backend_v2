@@ -1,8 +1,9 @@
 import uuid
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
+from pomodoros.domain.entities import SubTask
 from pomodoros.domain.value_objects import (
     TaskStatus,
     PriorityId,
@@ -29,6 +30,7 @@ class Task:
     note: str
     created_at: datetime
     completed_at: datetime
+    sub_tasks: Optional[List[SubTask]]
 
     @property
     def next_due_date(self) -> datetime:
