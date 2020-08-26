@@ -12,3 +12,11 @@ class TaskAlreadyActive(Exception):
 
 class TaskAlreadyCompleted(Exception):
     pass
+
+
+class SubTaskNotAvailableInTask(Exception):
+    pass
+
+
+class ProjectNameNotAvailableForUser(Exception):
+    pass
