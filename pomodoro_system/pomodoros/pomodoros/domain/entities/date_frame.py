@@ -10,7 +10,12 @@ from pomodoros.domain.value_objects import DateFrameDuration, FrameType, TaskId
 class DateFrame:
     id: Optional[uuid.UUID]
     start: datetime
-    end: datetime
-    duration: DateFrameDuration
+    end: Optional[datetime]
     frame_type: FrameType
     task_id: TaskId
+
+    @property
+    def duration(self) -> DateFrameDuration:
+        if self.start and self.end:
+            return self.end - self.start
+        return None

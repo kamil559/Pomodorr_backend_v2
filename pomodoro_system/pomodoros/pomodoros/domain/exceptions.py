@@ -1,22 +1,30 @@
-class InvalidProjectOwner(Exception):
+class ValidationError(Exception):
     pass
 
 
-class TaskNameNotAvailableInNewProject(Exception):
+class InvalidProjectOwner(ValidationError):
     pass
 
 
-class TaskAlreadyActive(Exception):
+class TaskNameNotAvailableInNewProject(ValidationError):
     pass
 
 
-class TaskAlreadyCompleted(Exception):
+class TaskAlreadyActive(ValidationError):
     pass
 
 
-class SubTaskNotAvailableInTask(Exception):
+class TaskAlreadyCompleted(ValidationError):
     pass
 
 
-class ProjectNameNotAvailableForUser(Exception):
+class SubTaskNotAvailableInTask(ValidationError):
+    pass
+
+
+class ProjectNameNotAvailableForUser(ValidationError):
+    pass
+
+
+class CollidingDateFramesFound(ValidationError):
     pass
