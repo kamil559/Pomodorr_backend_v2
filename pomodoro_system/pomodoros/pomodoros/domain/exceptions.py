@@ -28,3 +28,11 @@ class ProjectNameNotAvailableForUser(ValidationError):
 
 class CollidingDateFramesFound(ValidationError):
     pass
+
+
+class FutureDateProvided(ValidationError):
+    pass
+
+
+class NaiveDateProvided(ValidationError):
+    pass

@@ -39,7 +39,7 @@ class FinishDateFrame:
         check_for_colliding_date_frames(task=task, start_date=date_frame.start, end_date=input_dto.end_date,
                                         excluded_date_frame_ids=[date_frame.id])
 
-        date_frame.end = input_dto.end_date
+        date_frame.finish_date_frame(end_date=input_dto.end_date)
         self.date_frames_repository.save(date_frame)
 
         output_dto = FinishDateFrameOutputDto(id=date_frame.id, start_date=date_frame.start, end_date=date_frame.end,

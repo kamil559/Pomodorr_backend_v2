@@ -43,11 +43,11 @@ class StartDateFrame:
 
         new_date_frame = DateFrame(
             id=None,
-            start=input_dto.start_date,
-            end=None,
             frame_type=input_dto.frame_type,
             task=task
         )
+
+        new_date_frame.start_date_frame(start_date=input_dto.start_date)
         self.date_frames_repository.save(new_date_frame)
 
         output_dto = StartDateFrameOutputDto(
