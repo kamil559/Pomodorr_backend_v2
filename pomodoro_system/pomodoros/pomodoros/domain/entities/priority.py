@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from pomodoros.domain.value_objects import PriorityLevel, Color, OwnerId
+from pomodoros.domain.value_objects import PriorityLevel, Color
+from users.domain.entities import AbstractUser
 
 
 @dataclass
@@ -12,5 +13,5 @@ class Priority:
     name: str
     priority_level: PriorityLevel
     color: Color
-    owner_id: OwnerId
+    owner: AbstractUser
     created_at: datetime
