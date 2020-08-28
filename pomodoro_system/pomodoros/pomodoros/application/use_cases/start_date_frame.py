@@ -10,34 +10,34 @@ from pomodoros.domain.value_objects import FrameType, DateFrameId, TaskId
 
 
 @dataclass
-class StartPomodoroInputDto:
+class StartDateFrameInputDto:
     start_date: datetime
     frame_type: FrameType
     task_id: TaskId
 
 
 @dataclass
-class StartPomodoroOutputDto:
+class StartDateFrameOutputDto:
     id: DateFrameId
     start_date: datetime
     frame_type: FrameType
 
 
 @dataclass
-class StartPomodoroOutputBoundary(ABC):
+class StartDateFrameOutputBoundary(ABC):
     @abstractmethod
-    def present(self, output_dto: StartPomodoroOutputDto):
+    def present(self, output_dto: StartDateFrameOutputDto):
         pass
 
 
-class StartPomodoro:
-    def __init__(self, output_boundary: StartPomodoroOutputBoundary, date_frames_repository: DateFramesRepository,
+class StartDateFrame:
+    def __init__(self, output_boundary: StartDateFrameOutputBoundary, date_frames_repository: DateFramesRepository,
                  tasks_repository: TasksRepository):
         self.output_boundary = output_boundary
         self.date_frames_repository = date_frames_repository
         self.tasks_repository = tasks_repository
 
-    def execute(self, input_dto: StartPomodoroInputDto) -> None:
+    def execute(self, input_dto: StartDateFrameInputDto) -> None:
         task = self.tasks_repository.get(task_id=input_dto.task_id)
         check_for_colliding_date_frames(task=task, start_date=input_dto.start_date, end_date=None)
 
@@ -46,11 +46,11 @@ class StartPomodoro:
             start=input_dto.start_date,
             end=None,
             frame_type=input_dto.frame_type,
-            task_id=input_dto.task_id
+            task=task
         )
         self.date_frames_repository.save(new_date_frame)
 
-        output_dto = StartPomodoroOutputDto(
+        output_dto = StartDateFrameOutputDto(
             id=new_date_frame.id,
             start_date=new_date_frame.start,
             frame_type=new_date_frame.frame_type

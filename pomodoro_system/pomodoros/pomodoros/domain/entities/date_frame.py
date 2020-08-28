@@ -3,7 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from pomodoros.domain.value_objects import DateFrameDuration, FrameType, TaskId
+from pomodoros.domain.entities import Task
+from pomodoros.domain.value_objects import DateFrameDuration, FrameType
 
 
 @dataclass
@@ -12,7 +13,7 @@ class DateFrame:
     start: datetime
     end: Optional[datetime]
     frame_type: FrameType
-    task_id: TaskId
+    task: Task
 
     @property
     def duration(self) -> DateFrameDuration:
