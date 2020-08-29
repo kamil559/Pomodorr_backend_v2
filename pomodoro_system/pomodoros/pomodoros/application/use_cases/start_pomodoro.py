@@ -2,9 +2,9 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 
-from pomodoros.application.repositories.date_frames import DateFramesRepository
+from pomodoros.application.repositories.pomodoros import PomodorosRepository
 from pomodoros.application.repositories.tasks import TasksRepository
-from pomodoros.domain.entities import DateFrame, Task
+from pomodoros.domain.entities import Task
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.validations.pomodoro_validations import check_for_colliding_pomodoros
 from pomodoros.domain.value_objects import FrameType, DateFrameId, TaskId
@@ -32,17 +32,16 @@ class StartPomodoroOutputBoundary(ABC):
 
 
 class StartPomodoro:
-    def __init__(self, output_boundary: StartPomodoroOutputBoundary, date_frames_repository: DateFramesRepository,
+    def __init__(self, output_boundary: StartPomodoroOutputBoundary, pomodoros_repository: PomodorosRepository,
                  tasks_repository: TasksRepository):
         self.output_boundary = output_boundary
-        self.date_frames_repository = date_frames_repository
+        self.pomodoros_repository = pomodoros_repository
         self.tasks_repository = tasks_repository
 
     @staticmethod
-    def _produce_pomodoro(frame_type: FrameType, task: Task) -> DateFrame:
-        if frame_type == FrameType.TYPE_POMODORO:
-            return Pomodoro(id=None, frame_type=FrameType.TYPE_POMODORO, start_date=None, end_date=None, task=task,
-                            contained_pauses=None)
+    def _produce_pomodoro(frame_type: FrameType, task: Task) -> Pomodoro:
+        return Pomodoro(id=None, frame_type=frame_type, start_date=None, end_date=None, task=task,
+                        contained_pauses=None)
 
     def execute(self, input_dto: StartPomodoroInputDto) -> None:
         task = self.tasks_repository.get(task_id=input_dto.task_id)
@@ -51,7 +50,7 @@ class StartPomodoro:
         new_pomodoro = self._produce_pomodoro(frame_type=input_dto.frame_type, task=task)
 
         new_pomodoro.start(start_date=input_dto.start_date)
-        self.date_frames_repository.save(new_pomodoro)
+        self.pomodoros_repository.save(new_pomodoro)
 
         output_dto = StartPomodoroOutputDto(
             id=new_pomodoro.id,

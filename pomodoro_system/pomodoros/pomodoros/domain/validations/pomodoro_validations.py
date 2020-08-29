@@ -1,10 +1,12 @@
-from datetime import datetime
+import operator
+from datetime import datetime, timedelta
+from functools import reduce
 from typing import Optional, Set
 
 from pomodoros.domain.entities import Task, DateFrame
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded
-from pomodoros.domain.value_objects import DateFrameId, FrameType, PomodoroErrorMargin
+from pomodoros.domain.value_objects import DateFrameId, PomodoroErrorMargin
 
 
 def _date_is_lower_than_start(date_frame: DateFrame, start_date: datetime) -> bool:
@@ -45,10 +47,14 @@ def check_for_colliding_pomodoros(task: Task, start_date: datetime,
         raise CollidingDateFrameFound
 
 
-def check_pomodoro_length(date_frame: Pomodoro, end_date: datetime) -> None:
-    if date_frame.frame_type in {FrameType.TYPE_POMODORO, FrameType.TYPE_BREAK}:
-        date_frame_duration = end_date - date_frame.start_date
-        duration_difference = date_frame_duration - date_frame.maximal_duration
+def check_pomodoro_length(pomodoro: Pomodoro, end_date: datetime) -> None:
+    pomodoro_duration = end_date - pomodoro.start_date
+    pauses_duration = reduce(operator.add,
+                             (pause.end_date - pause.end_date for pause in pomodoro.contained_pauses),
+                             timedelta(0))
 
-        if duration_difference > PomodoroErrorMargin:
-            raise PomodoroErrorMarginExceeded
+    total_duration = pomodoro_duration - pauses_duration
+    duration_difference = total_duration - pomodoro.maximal_duration
+
+    if duration_difference > PomodoroErrorMargin:
+        raise PomodoroErrorMarginExceeded
