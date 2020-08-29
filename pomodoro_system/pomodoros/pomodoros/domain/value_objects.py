@@ -10,9 +10,11 @@ DateFrameId: uuid.UUID
 PriorityLevel: int
 Color: str
 Ordering: int
-PomodoroDuration: timedelta
+PomodoroLength: timedelta
+BreakLength: timedelta
 PomodoroRenewalInterval: timedelta
 DateFrameDuration: timedelta
+PomodoroErrorMargin: timedelta = timedelta(minutes=1)
 
 
 class TaskStatus(Enum):
@@ -22,5 +24,4 @@ class TaskStatus(Enum):
 
 class FrameType(Enum):
     TYPE_POMODORO = 0
-    TYPE_BREAK = 1
-    TYPE_PAUSE = 2
+    TYPE_PAUSE = 1

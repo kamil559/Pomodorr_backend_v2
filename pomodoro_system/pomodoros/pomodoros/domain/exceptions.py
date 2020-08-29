@@ -1,5 +1,6 @@
 class ValidationError(Exception):
-    pass
+    def __init__(self, message: str):
+        self.message = message
 
 
 class InvalidProjectOwner(ValidationError):
@@ -26,7 +27,7 @@ class ProjectNameNotAvailableForUser(ValidationError):
     pass
 
 
-class CollidingDateFramesFound(ValidationError):
+class CollidingDateFrameFound(ValidationError):
     pass
 
 
@@ -35,4 +36,16 @@ class FutureDateProvided(ValidationError):
 
 
 class NaiveDateProvided(ValidationError):
+    pass
+
+
+class StartDateGreaterThanEndDate(ValidationError):
+    pass
+
+
+class DateFrameAlreadyFinished(ValidationError):
+    pass
+
+
+class PomodoroErrorMarginExceeded(ValidationError):
     pass

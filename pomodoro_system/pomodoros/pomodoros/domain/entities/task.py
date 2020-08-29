@@ -3,12 +3,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 
-from pomodoros.domain.entities import SubTask, DateFrame, Project, Priority
+from pomodoros.domain.entities import SubTask, Project, Priority
+from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import (
     TaskStatus,
     Ordering,
-    PomodoroDuration,
-    PomodoroRenewalInterval
+    PomodoroLength,
+    PomodoroRenewalInterval, BreakLength
 )
 
 
@@ -20,7 +21,8 @@ class Task:
     priority: Priority
     ordering: Ordering
     pomodoros_to_do: int
-    pomodoro_length: PomodoroDuration
+    pomodoro_length: Optional[PomodoroLength]
+    break_length: Optional[BreakLength]
     due_date: datetime
     reminder_date: datetime
     renewal_interval: PomodoroRenewalInterval
@@ -29,7 +31,7 @@ class Task:
     created_at: datetime
     completed_at: datetime
     sub_tasks: Optional[List[SubTask]]
-    date_frames: Optional[List[DateFrame]]
+    pomodoros: Optional[List[Pomodoro]]
 
     @property
     def next_due_date(self) -> datetime:
