@@ -6,6 +6,7 @@ PriorityId = uuid.UUID
 OwnerId = uuid.UUID
 ProjectId: uuid.UUID
 TaskId: uuid.UUID
+SubTaskId: uuid.UUID
 DateFrameId: uuid.UUID
 PriorityLevel: int
 Color: str

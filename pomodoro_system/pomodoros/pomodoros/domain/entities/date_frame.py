@@ -1,16 +1,15 @@
-import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Optional
 
 from pomodoros.domain.exceptions import FutureDateProvided, NaiveDateProvided, StartDateGreaterThanEndDate, \
     DateFrameAlreadyFinished
-from pomodoros.domain.value_objects import DateFrameDuration, FrameType
+from pomodoros.domain.value_objects import DateFrameDuration, FrameType, DateFrameId
 
 
 @dataclass
 class DateFrame:
-    id: Optional[uuid.UUID]
+    id: Optional[DateFrameId]
     frame_type: FrameType
     start_date: Optional[datetime]
     end_date: Optional[datetime]

@@ -1,4 +1,3 @@
-import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
@@ -9,13 +8,13 @@ from pomodoros.domain.value_objects import (
     TaskStatus,
     Ordering,
     PomodoroLength,
-    PomodoroRenewalInterval, BreakLength
+    PomodoroRenewalInterval, BreakLength, TaskId
 )
 
 
 @dataclass
 class Task:
-    id: Optional[uuid.UUID]
+    id: Optional[TaskId]
     name: str
     status: TaskStatus
     priority: Priority
