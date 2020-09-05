@@ -14,7 +14,7 @@ class DateFrame:
     start_date: Optional[datetime]
     end_date: Optional[datetime]
 
-    def start(self, start_date: datetime) -> None:
+    def begin(self, start_date: datetime) -> None:
         self._check_is_datetime_tz_aware(date=start_date)
         self._check_valid_date(date=start_date)
 
