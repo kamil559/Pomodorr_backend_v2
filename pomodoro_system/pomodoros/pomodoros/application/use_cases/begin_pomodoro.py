@@ -6,7 +6,6 @@ from pomodoros.application.repositories.pomodoros import PomodorosRepository
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.domain.entities import Task
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.validations.pomodoro_validations import check_for_colliding_pomodoros
 from pomodoros.domain.value_objects import FrameType, DateFrameId, TaskId
 
 
@@ -27,7 +26,7 @@ class BeginPomodoroOutputDto:
 @dataclass
 class BeginPomodoroOutputBoundary(ABC):
     @abstractmethod
-    def present(self, output_dto: BeginPomodoroOutputDto):
+    def present(self, output_dto: BeginPomodoroOutputDto) -> None:
         pass
 
 
@@ -45,10 +44,9 @@ class BeginPomodoro:
 
     def execute(self, input_dto: BeginPomodoroInputDto) -> None:
         task = self.tasks_repository.get(task_id=input_dto.task_id)
-        check_for_colliding_pomodoros(task=task, start_date=input_dto.start_date, end_date=None)
+        Pomodoro.check_for_colliding_pomodoros(task=task, start_date=input_dto.start_date, end_date=None)
 
         new_pomodoro = self._produce_pomodoro(frame_type=input_dto.frame_type, task=task)
-
         new_pomodoro.begin(start_date=input_dto.start_date)
         self.pomodoros_repository.save(new_pomodoro)
 
@@ -57,4 +55,5 @@ class BeginPomodoro:
             start_date=new_pomodoro.start_date,
             frame_type=new_pomodoro.frame_type
         )
+
         self.output_boundary.present(output_dto=output_dto)
