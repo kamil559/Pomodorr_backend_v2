@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from pomodoros.application.repositories.pomodoros import PomodorosRepository
-from pomodoros.domain.validations.pomodoro_validations import check_for_colliding_pomodoros, check_pomodoro_length
 from pomodoros.domain.value_objects import DateFrameId, FrameType
 
 
@@ -21,10 +20,9 @@ class FinishPomodoroOutputDto:
     frame_type: FrameType
 
 
-@dataclass
 class FinishPomodoroOutputBoundary(ABC):
     @abstractmethod
-    def present(self, output_dto: FinishPomodoroOutputDto):
+    def present(self, output_dto: FinishPomodoroOutputDto) -> None:
         pass
 
 
@@ -35,12 +33,6 @@ class FinishPomodoro:
 
     def execute(self, input_dto: FinishPomodoroInputDto) -> None:
         pomodoro = self.date_frames_repository.get(pomodoro_id=input_dto.id)
-        task = pomodoro.task
-
-        check_pomodoro_length(pomodoro=pomodoro, end_date=input_dto.end_date)
-        check_for_colliding_pomodoros(task=task, start_date=pomodoro.start_date, end_date=input_dto.end_date,
-                                      excluded_date_frame_ids={pomodoro.id})
-
         pomodoro.finish(end_date=input_dto.end_date)
         self.date_frames_repository.save(pomodoro)
 

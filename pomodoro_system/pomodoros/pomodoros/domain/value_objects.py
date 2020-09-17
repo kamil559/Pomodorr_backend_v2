@@ -15,7 +15,7 @@ PomodoroLength: timedelta
 BreakLength: timedelta
 PomodoroRenewalInterval: timedelta
 DateFrameDuration: timedelta
-PomodoroErrorMargin: timedelta = timedelta(minutes=1)
+AcceptablePomodoroErrorMargin: timedelta = timedelta(minutes=1)
 
 
 class TaskStatus(Enum):

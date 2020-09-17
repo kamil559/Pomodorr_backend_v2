@@ -23,7 +23,6 @@ class BeginPomodoroOutputDto:
     frame_type: FrameType
 
 
-@dataclass
 class BeginPomodoroOutputBoundary(ABC):
     @abstractmethod
     def present(self, output_dto: BeginPomodoroOutputDto) -> None:
@@ -44,7 +43,6 @@ class BeginPomodoro:
 
     def execute(self, input_dto: BeginPomodoroInputDto) -> None:
         task = self.tasks_repository.get(task_id=input_dto.task_id)
-        Pomodoro.check_for_colliding_pomodoros(task=task, start_date=input_dto.start_date, end_date=None)
 
         new_pomodoro = self._produce_pomodoro(frame_type=input_dto.frame_type, task=task)
         new_pomodoro.begin(start_date=input_dto.start_date)
