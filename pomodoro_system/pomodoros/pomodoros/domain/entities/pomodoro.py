@@ -6,7 +6,8 @@ from typing import Optional, List, Set
 
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
-from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded
+from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded, \
+    NoActionAllowedOnCompletedTask
 from pomodoros.domain.value_objects import FrameType, DateFrameId, AcceptablePomodoroErrorMargin
 from user_config.domain.entities.user_config import UserConfig
 
@@ -29,12 +30,14 @@ class Pomodoro(DateFrame):
         return user_config.pomodoro_length
 
     def begin(self, start_date: datetime) -> None:
+        self.check_related_task_is_already_finished()
         super(Pomodoro, self).run_begin_date_frame_validations(start_date=start_date)
         self._check_for_colliding_pomodoros(start_date=start_date, end_date=None)
 
         self.start_date = start_date
 
     def finish(self, end_date: datetime) -> None:
+        self.check_related_task_is_already_finished()
         super(Pomodoro, self).run_finish_date_frame_validations(end_date=end_date)
         self._check_pomodoro_length(checked_end_date=end_date)
         self._check_for_colliding_pomodoros(start_date=self.start_date, end_date=end_date,
@@ -49,6 +52,22 @@ class Pomodoro(DateFrame):
     @staticmethod
     def _date_is_lower_than_end(date_frame: DateFrame, end_date: datetime) -> bool:
         return date_frame.end_date > end_date
+
+    def check_related_task_is_already_finished(self) -> None:
+        if self.task.is_completed:
+            raise NoActionAllowedOnCompletedTask
+
+    def _check_pomodoro_length(self, checked_end_date: datetime) -> None:
+        pomodoro_duration = checked_end_date - self.start_date
+        pauses_duration = reduce(operator.add,
+                                 (pause.end_date - pause.end_date for pause in self.contained_pauses),
+                                 timedelta(0))
+
+        total_duration = pomodoro_duration - pauses_duration
+        duration_difference = total_duration - self.maximal_duration
+
+        if duration_difference > AcceptablePomodoroErrorMargin:
+            raise PomodoroErrorMarginExceeded
 
     def _check_for_colliding_pomodoros(self, start_date: datetime,
                                        end_date: Optional[datetime] = None,
@@ -87,15 +106,3 @@ class Pomodoro(DateFrame):
 
         if len(colliding_date_frames):
             raise CollidingDateFrameFound
-
-    def _check_pomodoro_length(self, checked_end_date: datetime) -> None:
-        pomodoro_duration = checked_end_date - self.start_date
-        pauses_duration = reduce(operator.add,
-                                 (pause.end_date - pause.end_date for pause in self.contained_pauses),
-                                 timedelta(0))
-
-        total_duration = pomodoro_duration - pauses_duration
-        duration_difference = total_duration - self.maximal_duration
-
-        if duration_difference > AcceptablePomodoroErrorMargin:
-            raise PomodoroErrorMarginExceeded

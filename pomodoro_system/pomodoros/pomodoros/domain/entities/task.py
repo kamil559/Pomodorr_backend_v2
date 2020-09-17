@@ -35,3 +35,7 @@ class Task:
     @property
     def next_due_date(self) -> datetime:
         return self.due_date + self.renewal_interval
+
+    @property
+    def is_completed(self) -> bool:
+        return self.status == TaskStatus.COMPLETED

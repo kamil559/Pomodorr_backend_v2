@@ -18,7 +18,6 @@ class DateFrame(ABC):
     def run_begin_date_frame_validations(self, start_date: datetime) -> None:
         self._check_is_datetime_tz_aware(date=start_date)
         self._check_valid_date(date=start_date)
-        self._check_date_frame_is_already_finished()
 
     def run_finish_date_frame_validations(self, end_date: datetime) -> None:
         self._check_is_datetime_tz_aware(date=end_date)
@@ -56,7 +55,7 @@ class DateFrame(ABC):
         if date > now:
             raise FutureDateProvided
 
-    def _check_date_frame_is_already_finished(self):
+    def _check_date_frame_is_already_finished(self) -> None:
         if all([self.start_date, self.start_date is not None, self.end_date, self.end_date is not None]):
             raise DateFrameIsAlreadyFinished
 

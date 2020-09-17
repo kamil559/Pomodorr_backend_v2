@@ -13,12 +13,14 @@ class Pause(DateFrame):
     pomodoro: Pomodoro
 
     def begin(self, start_date: datetime) -> None:
+        self.pomodoro.check_related_task_is_already_finished()
         super(Pause, self).run_begin_date_frame_validations(start_date=start_date)
         self._check_related_pomodoro_is_already_finished()
 
         self.start_date = start_date
 
     def finish(self, end_date: datetime) -> None:
+        self.pomodoro.check_related_task_is_already_finished()
         super(Pause, self).run_finish_date_frame_validations(end_date=end_date)
         self._check_related_pomodoro_is_already_finished()
 

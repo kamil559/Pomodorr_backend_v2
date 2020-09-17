@@ -53,3 +53,7 @@ class RelatedPomodoroIsAlreadyFinished(ValidationError):
 
 class PomodoroErrorMarginExceeded(ValidationError):
     pass
+
+
+class NoActionAllowedOnCompletedTask(ValidationError):
+    pass
