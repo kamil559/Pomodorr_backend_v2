@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 from pomodoros.application.repositories.projects import ProjectsRepository
 from pomodoros.application.repositories.tasks import TasksRepository
-from pomodoros.domain.validations.task_validations import check_task_name_available_in_project
 from pomodoros.domain.value_objects import TaskId, ProjectId
 
 
@@ -36,9 +35,8 @@ class PinningTaskToProject:
     def execute(self, input_dto: PinningTaskToProjectInputDto) -> None:
         new_project = self.projects_repository.get(project_id=input_dto.new_project_id)
         task = self.tasks_repository.get(task_id=input_dto.id)
-        check_task_name_available_in_project(task_name=task.name, project=new_project)
 
-        task.project_id = input_dto.new_project_id
+        task.pin_to_new_project(new_project=new_project)
         self.tasks_repository.save(task)
 
         output_dto = PinningTaskToProjectOutputDto(id=input_dto.id, new_project_id=input_dto.new_project_id)

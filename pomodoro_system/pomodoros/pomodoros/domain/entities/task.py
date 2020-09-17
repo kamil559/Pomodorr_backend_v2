@@ -4,7 +4,7 @@ from typing import Optional, List
 
 from pomodoros.domain.entities import SubTask, Project, Priority
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.exceptions import TaskAlreadyCompleted
+from pomodoros.domain.exceptions import TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask
 from pomodoros.domain.value_objects import (
     TaskStatus,
     Ordering,
@@ -43,4 +43,17 @@ class Task:
 
     def check_already_completed(self) -> None:
         if self.is_completed:
-            raise TaskAlreadyCompleted
+            raise NoActionAllowedOnCompletedTask
+
+    def _check_task_name_available_in_project(self, new_project: Project) -> None:
+        task_in_new_project = list(
+            filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == self.name, new_project.tasks))
+
+        if len(task_in_new_project):
+            raise TaskNameNotAvailableInNewProject
+
+    def pin_to_new_project(self, new_project: Project) -> None:
+        self.check_already_completed()
+        self._check_task_name_available_in_project(new_project=new_project)
+
+        self.project = new_project
