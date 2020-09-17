@@ -17,7 +17,6 @@ class ReactivateTaskOutputDto:
     status: TaskStatus
 
 
-@dataclass
 class ReactivateTaskOutputBoundary(ABC):
     @abstractmethod
     def present(self, output_dto: ReactivateTaskOutputDto) -> None:

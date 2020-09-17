@@ -24,7 +24,6 @@ class CompleteTaskOutputDto:
     new_task_id: Optional[TaskId]
 
 
-@dataclass
 class CompleteTaskOutputBoundary(ABC):
     @abstractmethod
     def present(self, output_dto: CompleteTaskOutputDto) -> None:
