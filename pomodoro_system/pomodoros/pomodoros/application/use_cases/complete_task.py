@@ -40,7 +40,7 @@ class CompleteTaskStrategy(ABC):
 
 class CompleteOneTimeTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
-        task.check_already_completed()
+        task.check_can_perform_actions()
 
         task.status = TaskStatus.COMPLETED
 
@@ -51,7 +51,7 @@ class CompleteOneTimeTaskStrategy(CompleteTaskStrategy):
 
 class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
-        task.check_already_completed()
+        task.check_can_perform_actions()
 
         new_task = self._produce_new_task(old_task=task)
 

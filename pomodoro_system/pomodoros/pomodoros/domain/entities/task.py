@@ -4,7 +4,8 @@ from typing import Optional, List
 
 from pomodoros.domain.entities import SubTask, Project, Priority
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.exceptions import TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask
+from pomodoros.domain.exceptions import TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, \
+    TaskAlreadyActive
 from pomodoros.domain.value_objects import (
     TaskStatus,
     Ordering,
@@ -41,19 +42,34 @@ class Task:
     def is_completed(self) -> bool:
         return self.status == TaskStatus.COMPLETED
 
-    def check_already_completed(self) -> None:
+    @property
+    def is_active(self) -> bool:
+        return self.status == TaskStatus.ACTIVE
+
+    def check_can_perform_actions(self) -> None:
         if self.is_completed:
             raise NoActionAllowedOnCompletedTask
 
-    def _check_task_name_available_in_project(self, new_project: Project) -> None:
+    def check_already_active(self) -> None:
+        if self.is_active:
+            raise TaskAlreadyActive
+
+    def _check_task_name_available_in_project(self, project: Project) -> None:
         task_in_new_project = list(
-            filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == self.name, new_project.tasks))
+            filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == self.name, project.tasks))
 
         if len(task_in_new_project):
             raise TaskNameNotAvailableInNewProject
 
     def pin_to_new_project(self, new_project: Project) -> None:
-        self.check_already_completed()
-        self._check_task_name_available_in_project(new_project=new_project)
+        self.check_can_perform_actions()
+        self._check_task_name_available_in_project(project=new_project)
 
         self.project = new_project
+
+    def reactivate(self) -> None:
+        self.check_can_perform_actions()
+        self.check_already_active()
+        self._check_task_name_available_in_project(project=self.project)
+
+        self.status = TaskStatus.ACTIVE

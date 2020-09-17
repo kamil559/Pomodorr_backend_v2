@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 
 from pomodoros.domain.entities import Task
+from pomodoros.domain.value_objects import TaskId
 
 
 class TasksRepository(ABC):
     @abstractmethod
-    def get(self, task_id) -> Task:
+    def get(self, task_id: TaskId) -> Task:
         pass
 
     @abstractmethod
