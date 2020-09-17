@@ -4,6 +4,7 @@ from typing import Optional, List
 
 from pomodoros.domain.entities import SubTask, Project, Priority
 from pomodoros.domain.entities.pomodoro import Pomodoro
+from pomodoros.domain.exceptions import TaskAlreadyCompleted
 from pomodoros.domain.value_objects import (
     TaskStatus,
     Ordering,
@@ -39,3 +40,7 @@ class Task:
     @property
     def is_completed(self) -> bool:
         return self.status == TaskStatus.COMPLETED
+
+    def check_already_completed(self) -> None:
+        if self.is_completed:
+            raise TaskAlreadyCompleted

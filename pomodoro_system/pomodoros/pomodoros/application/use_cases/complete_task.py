@@ -7,7 +7,6 @@ from typing import Optional
 
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.domain.entities import Task
-from pomodoros.domain.validations.task_validations import check_is_task_already_completed
 from pomodoros.domain.value_objects import TaskId, TaskStatus
 
 
@@ -41,6 +40,8 @@ class CompleteTaskStrategy(ABC):
 
 class CompleteOneTimeTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
+        task.check_already_completed()
+
         task.status = TaskStatus.COMPLETED
 
         self.tasks_repository.save(task)
@@ -50,6 +51,8 @@ class CompleteOneTimeTaskStrategy(CompleteTaskStrategy):
 
 class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
+        task.check_already_completed()
+
         new_task = self._produce_new_task(old_task=task)
 
         task.status = TaskStatus.COMPLETED
@@ -74,7 +77,6 @@ class CompleteTask:
 
     def execute(self, input_dto: CompleteTaskInputDto) -> None:
         task = self.tasks_repository.get(task_id=input_dto.id)
-        check_is_task_already_completed(task=task)
 
         if not task.renewal_interval:
             self._complete_task_strategy = CompleteRepeatableTaskStrategy(self.tasks_repository)
