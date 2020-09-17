@@ -24,7 +24,6 @@ class BeginPauseOutputDto:
     frame_type: FrameType
 
 
-@dataclass
 class BeginPauseOutputBoundary(ABC):
     @abstractmethod
     def present(self, output_dto: BeginPauseOutputDto) -> None:
@@ -44,16 +43,16 @@ class BeginPause:
 
     def execute(self, input_dto: BeginPauseInputDto) -> None:
         pomodoro = self.pomodoros_repository.get(pomodoro_id=input_dto.pomodoro_id)
-        check_is_pomodoro_in_progress()
 
-        pause = self._produce_pause(frame_type=input_dto.frame_type, pomodoro=pomodoro)
-        self.pauses_repository.save(pause)
+        new_pause = self._produce_pause(frame_type=input_dto.frame_type, pomodoro=pomodoro)
+        new_pause.begin(start_date=input_dto.start_date)
+        self.pauses_repository.save(new_pause)
 
         output_dto = BeginPauseOutputDto(
-            id=pause.id,
+            id=new_pause.id,
             pomodoro_id=pomodoro.id,
-            frame_type=pause.frame_type,
-            start_date=pause.start_date
+            frame_type=new_pause.frame_type,
+            start_date=new_pause.start_date
         )
 
         self.output_boundary.present(output_dto=output_dto)
