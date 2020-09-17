@@ -43,7 +43,11 @@ class StartDateGreaterThanEndDate(ValidationError):
     pass
 
 
-class DateFrameAlreadyFinished(ValidationError):
+class DateFrameIsAlreadyFinished(ValidationError):
+    pass
+
+
+class RelatedPomodoroIsAlreadyFinished(ValidationError):
     pass
 
 
