@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: compose/local/app/Dockerfile
+    image: pomodoro_system_local
+    volumes:
+      - .:/usr/src/app
