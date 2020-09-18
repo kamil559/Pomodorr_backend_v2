@@ -6,8 +6,7 @@ from typing import Optional, List, Set
 
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
-from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded, \
-    NoActionAllowedOnCompletedTask
+from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded
 from pomodoros.domain.value_objects import FrameType, DateFrameId, AcceptablePomodoroErrorMargin
 from user_config.domain.entities.user_config import UserConfig
 
@@ -37,7 +36,7 @@ class Pomodoro(DateFrame):
         self.start_date = start_date
 
     def finish(self, end_date: datetime) -> None:
-        self.check_related_task_is_already_finished()
+        self.task.check_can_perform_actions()
         super(Pomodoro, self).run_finish_date_frame_validations(end_date=end_date)
         self._check_pomodoro_length(checked_end_date=end_date)
         self._check_for_colliding_pomodoros(start_date=self.start_date, end_date=end_date,
@@ -52,10 +51,6 @@ class Pomodoro(DateFrame):
     @staticmethod
     def _date_is_lower_than_end(date_frame: DateFrame, end_date: datetime) -> bool:
         return date_frame.end_date > end_date
-
-    def check_related_task_is_already_finished(self) -> None:
-        if self.task.is_completed:
-            raise NoActionAllowedOnCompletedTask
 
     def _check_pomodoro_length(self, checked_end_date: datetime) -> None:
         pomodoro_duration = checked_end_date - self.start_date
