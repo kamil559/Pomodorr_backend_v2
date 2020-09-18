@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
@@ -39,7 +40,7 @@ class BeginPause:
 
     @staticmethod
     def _produce_pause(frame_type: FrameType, pomodoro: Pomodoro) -> Pause:
-        return Pause(id=None, frame_type=frame_type, start_date=None, end_date=None, pomodoro=pomodoro)
+        return Pause(id=uuid.uuid4(), frame_type=frame_type, start_date=None, end_date=None, pomodoro=pomodoro)
 
     def execute(self, input_dto: BeginPauseInputDto) -> None:
         pomodoro = self.pomodoros_repository.get(pomodoro_id=input_dto.pomodoro_id)

@@ -16,7 +16,7 @@ from pomodoros.domain.value_objects import (
 
 @dataclass
 class Task:
-    id: Optional[TaskId]
+    id: TaskId
     name: str
     status: TaskStatus
     priority: Priority

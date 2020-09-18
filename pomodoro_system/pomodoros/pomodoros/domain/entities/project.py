@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 
 from pomodoros.domain.entities import Priority
 from pomodoros.domain.entities.task import Task
@@ -10,7 +10,7 @@ from users.domain.entities import AbstractUser
 
 @dataclass
 class Project:
-    id: Optional[ProjectId]
+    id: ProjectId
     name: str
     priority: Priority
     ordering: Ordering

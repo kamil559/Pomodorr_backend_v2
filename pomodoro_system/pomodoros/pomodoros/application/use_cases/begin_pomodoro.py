@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
@@ -38,7 +39,7 @@ class BeginPomodoro:
 
     @staticmethod
     def _produce_pomodoro(frame_type: FrameType, task: Task) -> Pomodoro:
-        return Pomodoro(id=None, frame_type=frame_type, start_date=None, end_date=None, task=task,
+        return Pomodoro(id=uuid.uuid4(), frame_type=frame_type, start_date=None, end_date=None, task=task,
                         contained_pauses=None)
 
     def execute(self, input_dto: BeginPomodoroInputDto) -> None:

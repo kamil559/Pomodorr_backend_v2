@@ -10,7 +10,7 @@ from pomodoros.domain.value_objects import DateFrameDuration, FrameType, DateFra
 
 @dataclass
 class DateFrame(ABC):
-    id: Optional[DateFrameId]
+    id: DateFrameId
     frame_type: FrameType
     start_date: Optional[datetime]
     end_date: Optional[datetime]
