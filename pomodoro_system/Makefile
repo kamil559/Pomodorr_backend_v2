@@ -12,5 +12,5 @@ install_dev:
 
 .PHONY: freeze-dependencies
 freeze-dependencies:
-	pip install pip-tools==4.4.1
-	pip-compile --output-file=base.txt $(foreach lib,$(libs), ./$(lib)/requirements/base.txt ./$(lib)/requirements/dev.txt)
+	pip install --user pip-tools==4.4.1
+	pip-compile --output-file=requirements/base.txt $(foreach lib,$(libs), ./$(lib)/requirements/base.txt ./$(lib)/requirements/dev.txt)
