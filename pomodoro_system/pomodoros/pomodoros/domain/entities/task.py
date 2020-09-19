@@ -30,7 +30,7 @@ class Task:
     project: Project
     note: str
     created_at: datetime
-    completed_at: datetime
+    completed_at: Optional[datetime]
     sub_tasks: Optional[List[SubTask]]
     pomodoros: Optional[List[Pomodoro]]
 
