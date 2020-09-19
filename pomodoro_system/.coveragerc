@@ -1,0 +1,9 @@
+[run]
+include = ./*
+omit =
+    *tests*
+    *contrib*
+    *config*
+    *docs*
+    */__init__.py
+    */conftest.py

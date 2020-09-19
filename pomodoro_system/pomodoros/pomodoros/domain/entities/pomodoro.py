@@ -4,11 +4,11 @@ from datetime import timedelta, datetime
 from functools import reduce
 from typing import Optional, List, Set
 
+from foundation.value_objects.user_config import UserConfig
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded
 from pomodoros.domain.value_objects import FrameType, DateFrameId, AcceptablePomodoroErrorMargin
-from user_config.domain.entities.user_config import UserConfig
 
 
 @dataclass

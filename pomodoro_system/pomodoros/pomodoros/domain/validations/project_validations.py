@@ -1,5 +1,5 @@
+from foundation.value_objects.user import AbstractUser
 from pomodoros.domain.exceptions import ProjectNameNotAvailableForUser
-from users.domain.entities import AbstractUser
 
 
 def check_project_name_available_for_user(user: AbstractUser, project_name: str) -> None:

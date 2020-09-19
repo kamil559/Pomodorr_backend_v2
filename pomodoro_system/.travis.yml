@@ -1,0 +1,20 @@
+dist: bionic
+language: python
+cache: pip
+python:
+  - "3.7"
+  - "3.8"
+  - "3.9-dev"
+jobs:
+  allow_failures:
+    - python: "3.9-dev"
+before_install: cd pomodoro_system
+install:
+  - make install_dev
+script:
+  - flake8 ./
+  - black ./ -l 120 --check
+  - isort --apply --recursive --check-only
+  - ./run_mypy.sh
+  - ./run_pylint.sh
+  - pytest

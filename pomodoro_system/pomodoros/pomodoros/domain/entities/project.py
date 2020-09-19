@@ -2,10 +2,10 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import List
 
+from foundation.value_objects.user import AbstractUser
 from pomodoros.domain.entities import Priority
 from pomodoros.domain.entities.task import Task
 from pomodoros.domain.value_objects import Ordering, ProjectId
-from users.domain.entities import AbstractUser
 
 
 @dataclass

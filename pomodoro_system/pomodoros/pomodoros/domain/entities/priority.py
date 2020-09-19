@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
 
+from foundation.value_objects.user import AbstractUser
 from pomodoros.domain.value_objects import PriorityLevel, Color, PriorityId
-from users.domain.entities import AbstractUser
 
 
 @dataclass
