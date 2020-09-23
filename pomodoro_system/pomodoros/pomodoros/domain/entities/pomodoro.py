@@ -4,26 +4,27 @@ from datetime import timedelta, datetime
 from functools import reduce
 from typing import Optional, List, Set
 
-from foundation.value_objects.user_config import UserConfig
-from pomodoros.domain.entities import DateFrame, Task
+from foundation.value_objects import DateFrameDefinition
+from pomodoros.domain.entities import DateFrame
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.exceptions import CollidingDateFrameFound, PomodoroErrorMarginExceeded
-from pomodoros.domain.value_objects import FrameType, DateFrameId, AcceptablePomodoroErrorMargin
+from pomodoros.domain.value_objects import FrameType, AcceptablePomodoroErrorMargin, TaskId, PomodoroId
 
 
 @dataclass
 class Pomodoro(DateFrame):
-    task: Task
+    id: PomodoroId
+    task_id: TaskId
     frame_type = FrameType.TYPE_POMODORO
     contained_pauses: Optional[List[Pause]]
 
     @property
     def maximal_duration(self) -> timedelta:
         date_frame_owner = self.task.project.owner
-        user_config = date_frame_owner.config
+        user_config = date_frame_owner.date_frames_definition
         return self._normalized_length(user_config=user_config)
 
-    def _normalized_length(self, user_config: UserConfig):
+    def _normalized_length(self, user_config: DateFrameDefinition):
         if self.task.pomodoro_length is not None:
             return self.task.pomodoro_length
         return user_config.pomodoro_length
@@ -66,9 +67,9 @@ class Pomodoro(DateFrame):
 
     def _check_for_colliding_pomodoros(self, start_date: datetime,
                                        end_date: Optional[datetime] = None,
-                                       excluded_date_frame_ids: Optional[Set[DateFrameId]] = None):
+                                       excluded_date_frame_ids: Optional[Set[PomodoroId]] = None):
 
-        def check_if_excluded(pomodoro_id: DateFrameId) -> bool:
+        def check_if_excluded(pomodoro_id: PomodoroId) -> bool:
             return pomodoro_id not in excluded_date_frame_ids
 
         def check_if_finished(date_frame: DateFrame) -> bool:
@@ -84,7 +85,7 @@ class Pomodoro(DateFrame):
                        check_if_excluded(pomodoro.id) and
                        check_if_finished(pomodoro) and
                        check_if_overlaps(pomodoro, start_date),
-                       self.task.pomodoros)
+                       self.task.recent_pomodoros)
             )
 
         def validate_against_finished_pomodoro() -> List[Pomodoro]:
@@ -92,7 +93,7 @@ class Pomodoro(DateFrame):
                 filter(lambda pomodoro:
                        check_if_excluded(pomodoro.id) and
                        (check_if_overlaps(pomodoro, start_date) or
-                        check_if_overlaps(pomodoro, end_date)), self.task.pomodoros))
+                        check_if_overlaps(pomodoro, end_date)), self.task.recent_pomodoros))
 
         if end_date is None:
             colliding_date_frames = validate_against_unfinished_pomodoro()

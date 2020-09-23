@@ -1,11 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
 
-from foundation.value_objects.user import AbstractUser
-from pomodoros.domain.entities import Priority
-from pomodoros.domain.entities.task import Task
-from pomodoros.domain.value_objects import Ordering, ProjectId
+from foundation.entities.user import UserId
+from pomodoros.domain.value_objects import Ordering, ProjectId, Priority
 
 
 @dataclass
@@ -14,6 +11,5 @@ class Project:
     name: str
     priority: Priority
     ordering: Ordering
-    owner: AbstractUser
+    owner_id: UserId
     created_at: datetime
-    tasks: List[Task]

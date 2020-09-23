@@ -2,37 +2,30 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 
-from pomodoros.domain.entities import SubTask, Project, Priority
-from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.exceptions import TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, \
-    TaskAlreadyActive
-from pomodoros.domain.value_objects import (
-    TaskStatus,
-    Ordering,
-    PomodoroLength,
-    PomodoroRenewalInterval, BreakLength, TaskId
-)
+from foundation.value_objects import DateFrameDefinition
+from pomodoros.domain.entities import SubTask, Project
+from pomodoros.domain.exceptions import (
+    TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, TaskAlreadyActive)
+from pomodoros.domain.value_objects import TaskStatus, Ordering, PomodoroRenewalInterval, TaskId, Priority, ProjectId
 
 
 @dataclass
 class Task:
     id: TaskId
+    project_id: ProjectId
     name: str
     status: TaskStatus
     priority: Priority
     ordering: Ordering
-    pomodoros_to_do: int
-    pomodoro_length: Optional[PomodoroLength]
-    break_length: Optional[BreakLength]
     due_date: datetime
+    pomodoros_to_do: int
+    pomodoros_burn_down: int
+    date_frame_definition: Optional[DateFrameDefinition]
     reminder_date: datetime
     renewal_interval: PomodoroRenewalInterval
-    project: Project
     note: str
     created_at: datetime
-    completed_at: Optional[datetime]
     sub_tasks: Optional[List[SubTask]]
-    pomodoros: Optional[List[Pomodoro]]
 
     @property
     def next_due_date(self) -> datetime:

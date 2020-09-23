@@ -2,15 +2,15 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from pomodoros.domain.entities import DateFrame
-from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.exceptions import RelatedPomodoroIsAlreadyFinished
-from pomodoros.domain.value_objects import FrameType
+from pomodoros.domain.value_objects import FrameType, PauseId, PomodoroId
 
 
 @dataclass
 class Pause(DateFrame):
+    id: PauseId
     frame_type = FrameType.TYPE_PAUSE
-    pomodoro: Pomodoro
+    pomodoro_id: PomodoroId
 
     def begin(self, start_date: datetime) -> None:
         self.pomodoro.task.check_can_perform_actions()

@@ -5,14 +5,13 @@ from typing import Optional
 
 from pomodoros.domain.exceptions import FutureDateProvided, NaiveDateProvided, StartDateGreaterThanEndDate, \
     DateFrameIsAlreadyFinished
-from pomodoros.domain.value_objects import DateFrameDuration, FrameType, DateFrameId
+from pomodoros.domain.value_objects import DateFrameDuration, FrameType
 
 
 @dataclass
 class DateFrame(ABC):
-    id: DateFrameId
     frame_type: FrameType
-    start_date: Optional[datetime]
+    start_date: datetime
     end_date: Optional[datetime]
 
     def run_begin_date_frame_validations(self, start_date: datetime) -> None:

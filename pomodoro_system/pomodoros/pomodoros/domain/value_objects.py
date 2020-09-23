@@ -1,15 +1,16 @@
 import uuid
+from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
 
-PriorityId = uuid.UUID
-OwnerId = uuid.UUID
+from foundation.value_objects import Color
+
 ProjectId: uuid.UUID
 TaskId: uuid.UUID
 SubTaskId: uuid.UUID
-DateFrameId: uuid.UUID
-PriorityLevel: int
-Color: str
+PomodoroId: uuid.UUID
+PauseId: uuid.UUID
+
 Ordering: int
 PomodoroLength: timedelta
 BreakLength: timedelta
@@ -26,3 +27,16 @@ class TaskStatus(Enum):
 class FrameType(Enum):
     TYPE_POMODORO = 0
     TYPE_PAUSE = 1
+
+
+class PriorityLevel(Enum):
+    NO_PRIORITY = 0
+    LOW_PRIORITY = 1
+    MID_PRIORITY = 2
+    HIGH_PRIORITY = 3
+
+
+@dataclass
+class Priority:
+    color: Color
+    priority_level: PriorityLevel = PriorityLevel.NO_PRIORITY
