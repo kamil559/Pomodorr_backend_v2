@@ -2,11 +2,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 
-from foundation.value_objects import DateFrameDefinition
+from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import SubTask, Project
 from pomodoros.domain.exceptions import (
     TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, TaskAlreadyActive)
-from pomodoros.domain.value_objects import TaskStatus, Ordering, PomodoroRenewalInterval, TaskId, Priority, ProjectId
+from pomodoros.domain.value_objects import TaskStatus, Ordering, PomodoroRenewalInterval, TaskId, ProjectId
 
 
 @dataclass

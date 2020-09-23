@@ -6,11 +6,11 @@ import factory
 from factory.fuzzy import FuzzyAttribute
 
 from foundation.tests.factories import UserFactory
-from foundation.value_objects import DateFrameDefinition
+from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import Task, SubTask, Project
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.value_objects import TaskStatus, Priority
+from pomodoros.domain.value_objects import TaskStatus
 
 
 class PriorityFactory(factory.Factory):

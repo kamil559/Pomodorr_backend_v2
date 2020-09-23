@@ -3,7 +3,8 @@ from datetime import datetime
 from typing import Optional
 
 from foundation.entities.user import UserId
-from pomodoros.domain.value_objects import Ordering, ProjectId, Priority
+from foundation.value_objects import Priority
+from pomodoros.domain.value_objects import Ordering, ProjectId
 
 
 @dataclass

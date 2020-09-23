@@ -11,7 +11,7 @@ def task() -> Task:
 
 
 @pytest.fixture()
-def completed_task():
+def completed_task() -> Task:
     return TaskFactory(status=TaskStatus.COMPLETED)
 
 

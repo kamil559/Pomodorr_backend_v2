@@ -1,4 +1,4 @@
-__all__ = ['Project', 'SubTask', 'Task', 'DateFrame']
+__all__ = ['DateFrame', 'Project', 'SubTask', 'Task', ]
 
 from pomodoros.domain.entities.date_frame import DateFrame
 from pomodoros.domain.entities.project import Project
