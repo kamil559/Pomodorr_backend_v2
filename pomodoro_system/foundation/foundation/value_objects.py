@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from datetime import timedelta
+from enum import Enum
 
-from pomodoros.domain.value_objects import PomodoroLength, BreakLength
-
-Color: str
+Color = str
+PomodoroLength = timedelta
+BreakLength = timedelta
 
 
 @dataclass
@@ -20,3 +21,16 @@ class UserDateFrameDefinition(DateFrameDefinition):
     break_length = timedelta(minutes=5)
     longer_break_length = timedelta(minutes=15)
     gap_between_long_breaks = 3
+
+
+class PriorityLevel(Enum):
+    NO_PRIORITY = 0
+    LOW_PRIORITY = 1
+    MID_PRIORITY = 2
+    HIGH_PRIORITY = 3
+
+
+@dataclass
+class Priority:
+    color: Color
+    priority_level: PriorityLevel = PriorityLevel.NO_PRIORITY

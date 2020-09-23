@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from foundation.value_objects import DateFrameDefinition
 
-UserId: uuid.UUID
+UserId = uuid.UUID
 
 
 @dataclass
