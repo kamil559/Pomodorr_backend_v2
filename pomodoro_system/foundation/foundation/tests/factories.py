@@ -1,24 +1,20 @@
-import random
-from datetime import timedelta
+import uuid
 
 import factory
 from factory.fuzzy import FuzzyAttribute
 
-from foundation.value_objects.user import AbstractUser
-from foundation.value_objects.user_config import UserConfig
+from foundation.entities.user import AbstractUser
+from foundation.value_objects import UserDateFrameDefinition
 
 
-class UserConfigFactory(factory.Factory):
+class UserDateFrameDefinitionFactory(factory.Factory):
     class Meta:
-        model = UserConfig
-
-    pomodoro_length = FuzzyAttribute(lambda: timedelta(minutes=random.randint(5, 25)))
-    break_length = FuzzyAttribute(lambda: timedelta(minutes=random.randint(5, 10)))
+        model = UserDateFrameDefinition
 
 
 class UserFactory(factory.Factory):
     class Meta:
         model = AbstractUser
 
-    projects = factory.List([ProjectFactory(), ProjectFactory()])
-    user_config = factory.SubFactory(UserConfigFactory)
+    id = FuzzyAttribute(lambda: uuid.uuid4())
+    date_frame_definition = factory.SubFactory(UserDateFrameDefinitionFactory)

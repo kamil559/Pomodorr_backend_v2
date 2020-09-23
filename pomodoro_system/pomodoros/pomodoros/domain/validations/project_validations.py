@@ -1,4 +1,4 @@
-from foundation.value_objects.user import AbstractUser
+from foundation.entities.user import AbstractUser
 from pomodoros.domain.exceptions import ProjectNameNotAvailableForUser
 
 
