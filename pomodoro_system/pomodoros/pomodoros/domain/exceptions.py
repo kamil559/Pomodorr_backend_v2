@@ -31,7 +31,7 @@ class ProjectNameNotAvailableForUser(ValidationError):
     pass
 
 
-class CollidingDateFrameFound(ValidationError):
+class CollidingPomodoroWasFound(ValidationError):
     pass
 
 

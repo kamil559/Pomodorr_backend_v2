@@ -5,9 +5,9 @@ from typing import Optional, List
 
 from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import SubTask
-from pomodoros.domain.exceptions import (
-    TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, TaskAlreadyActive)
-from pomodoros.domain.value_objects import TaskStatus, Ordering, PomodoroRenewalInterval, TaskId, ProjectId
+from pomodoros.domain.exceptions import NoActionAllowedOnCompletedTask, TaskAlreadyActive, \
+    TaskNameNotAvailableInNewProject
+from pomodoros.domain.value_objects import TaskId, ProjectId, TaskStatus, Ordering, PomodoroRenewalInterval
 
 
 @dataclass
@@ -42,18 +42,20 @@ class Task:
 
     def check_can_perform_actions(self) -> None:
         if self.is_completed:
-            raise NoActionAllowedOnCompletedTask(_('pomodoros.domain.no_action_allowed_on_completed_task'))
+            raise NoActionAllowedOnCompletedTask(
+                _('pomodoros.domain.entities.task.no_action_allowed_on_completed_task'))
 
     def check_already_active(self) -> None:
         if self.is_active:
-            raise TaskAlreadyActive(_('pomodoros.domain.task_already_active'))
+            raise TaskAlreadyActive(_('pomodoros.domain.entities.task.task_already_active'))
 
     def _check_task_name_available_in_project(self, project_tasks: Optional[List['Task']]) -> None:
         task_in_new_project = list(
             filter(lambda task: task.is_active and task.name == self.name, project_tasks))
 
         if len(task_in_new_project):
-            raise TaskNameNotAvailableInNewProject(_('pomodoros.domain.task_name_not_available_in_new_project'))
+            raise TaskNameNotAvailableInNewProject(
+                _('pomodoros.domain.entities.task.task_name_not_available_in_new_project'))
 
     def pin_to_new_project(self, new_project_id: ProjectId, new_project_tasks: Optional[List['Task']]) -> None:
         self.check_can_perform_actions()
