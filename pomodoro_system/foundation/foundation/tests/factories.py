@@ -11,6 +11,11 @@ class UserDateFrameDefinitionFactory(factory.Factory):
     class Meta:
         model = UserDateFrameDefinition
 
+    pomodoro_length = UserDateFrameDefinition.pomodoro_length
+    break_length = UserDateFrameDefinition.break_length
+    longer_break_length = UserDateFrameDefinition.longer_break_length
+    gap_between_long_breaks = UserDateFrameDefinition.gap_between_long_breaks
+
 
 class UserFactory(factory.Factory):
     class Meta:
