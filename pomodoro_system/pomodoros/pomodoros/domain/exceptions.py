@@ -11,6 +11,10 @@ class TaskNameNotAvailableInNewProject(ValidationError):
     pass
 
 
+class TaskForDueDateAlreadyExists(ValidationError):
+    pass
+
+
 class TaskAlreadyActive(ValidationError):
     pass
 

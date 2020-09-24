@@ -46,11 +46,11 @@ class Task:
 
     def check_already_active(self) -> None:
         if self.is_active:
-            raise TaskAlreadyActive
+            raise TaskAlreadyActive(_('pomodoros.domain.task_already_active'))
 
-    def _check_task_name_available_in_project(self, new_project_tasks: Optional[List['Task']]) -> None:
+    def _check_task_name_available_in_project(self, project_tasks: Optional[List['Task']]) -> None:
         task_in_new_project = list(
-            filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == self.name, new_project_tasks))
+            filter(lambda task: task.is_active and task.name == self.name, project_tasks))
 
         if len(task_in_new_project):
             raise TaskNameNotAvailableInNewProject(_('pomodoros.domain.task_name_not_available_in_new_project'))
@@ -61,9 +61,8 @@ class Task:
 
         self.project_id = new_project_id
 
-    def reactivate(self) -> None:
-        self.check_can_perform_actions()
+    def reactivate(self, project_tasks: Optional[List['Task']]) -> None:
         self.check_already_active()
-        self._check_task_name_available_in_project(project=self.project)
+        self._check_task_name_available_in_project(project_tasks)
 
         self.status = TaskStatus.ACTIVE
