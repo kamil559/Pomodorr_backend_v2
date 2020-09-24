@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
+from gettext import gettext as _
 from typing import Optional, List
 
 from foundation.value_objects import DateFrameDefinition, Priority
-from pomodoros.domain.entities import SubTask, Project
+from pomodoros.domain.entities import SubTask
 from pomodoros.domain.exceptions import (
     TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, TaskAlreadyActive)
 from pomodoros.domain.value_objects import TaskStatus, Ordering, PomodoroRenewalInterval, TaskId, ProjectId
@@ -41,24 +42,24 @@ class Task:
 
     def check_can_perform_actions(self) -> None:
         if self.is_completed:
-            raise NoActionAllowedOnCompletedTask
+            raise NoActionAllowedOnCompletedTask(_('pomodoros.domain.no_action_allowed_on_completed_task'))
 
     def check_already_active(self) -> None:
         if self.is_active:
             raise TaskAlreadyActive
 
-    def _check_task_name_available_in_project(self, project: Project) -> None:
+    def _check_task_name_available_in_project(self, new_project_tasks: Optional[List['Task']]) -> None:
         task_in_new_project = list(
-            filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == self.name, project.tasks))
+            filter(lambda task: task.status == TaskStatus.ACTIVE and task.name == self.name, new_project_tasks))
 
         if len(task_in_new_project):
-            raise TaskNameNotAvailableInNewProject
+            raise TaskNameNotAvailableInNewProject(_('pomodoros.domain.task_name_not_available_in_new_project'))
 
-    def pin_to_new_project(self, new_project: Project) -> None:
+    def pin_to_new_project(self, new_project_id: ProjectId, new_project_tasks: Optional[List['Task']]) -> None:
         self.check_can_perform_actions()
-        self._check_task_name_available_in_project(project=new_project)
+        self._check_task_name_available_in_project(new_project_tasks)
 
-        self.project = new_project
+        self.project_id = new_project_id
 
     def reactivate(self) -> None:
         self.check_can_perform_actions()
