@@ -8,6 +8,7 @@ from factory.fuzzy import FuzzyAttribute
 from foundation.tests.factories import UserFactory
 from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import Task, SubTask, Project
+from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskStatus
 
@@ -84,3 +85,12 @@ class PomodoroFactory(factory.Factory):
     start_date = None
     end_date = None
     contained_pauses = factory.List([])
+
+
+class PauseFactory(factory.Factory):
+    class Meta:
+        model = Pause
+
+    id = FuzzyAttribute(lambda: uuid.uuid4())
+    start_date = FuzzyAttribute(lambda: datetime.now())
+    end_date = None

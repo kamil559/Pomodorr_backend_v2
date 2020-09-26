@@ -5,9 +5,11 @@ import pytest
 
 from foundation.value_objects import DateFrameDefinition
 from pomodoros.domain.entities import Task, Project
+from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskStatus
-from pomodoros.tests.factories import TaskFactory, ProjectFactory, PomodoroFactory, DateFrameDefinitionFactory
+from pomodoros.tests.factories import TaskFactory, ProjectFactory, PomodoroFactory, DateFrameDefinitionFactory, \
+    PauseFactory
 
 
 @pytest.fixture()
@@ -64,6 +66,17 @@ def finished_pomodoro(task: Task) -> Pomodoro:
     start_date = datetime.now()
     end_date = start_date + timedelta(minutes=25)
     return PomodoroFactory(task_id=task.id, start_date=start_date, end_date=end_date)
+
+
+@pytest.fixture()
+def pause() -> Pause:
+    return PauseFactory()
+
+
+@pytest.fixture()
+def paused_pomodoro(pause: Pause, task: Task) -> Pomodoro:
+    start_date = datetime.now()
+    return PomodoroFactory(task_id=task.id, start_date=start_date, contained_pauses=[pause, ])
 
 
 @pytest.fixture()
