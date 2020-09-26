@@ -49,6 +49,11 @@ def pomodoro(task: Task) -> Pomodoro:
 
 
 @pytest.fixture()
+def pomodoro_on_completed_task(completed_task: Task) -> Pomodoro:
+    return PomodoroFactory(task_id=completed_task.id)
+
+
+@pytest.fixture()
 def started_pomodoro(task: Task) -> Pomodoro:
     now = datetime.now()
     return PomodoroFactory(start_date=now, task_id=task.id)

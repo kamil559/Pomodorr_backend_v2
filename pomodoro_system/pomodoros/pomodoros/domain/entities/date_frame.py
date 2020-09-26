@@ -1,18 +1,22 @@
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from gettext import gettext as _
 from typing import Optional
 
 from pomodoros.domain.exceptions import FutureDateProvided, NaiveDateProvided, StartDateGreaterThanEndDate, \
     DateFrameIsAlreadyFinished
-from pomodoros.domain.value_objects import DateFrameDuration, FrameType
+from pomodoros.domain.value_objects import FrameType
 
 
-@dataclass
 class DateFrame:
     frame_type: FrameType
-    start_date: Optional[datetime]
-    end_date: Optional[datetime]
+
+    def __init__(self, start_date: Optional[datetime] = None, end_date: Optional[datetime] = None) -> None:
+        self.start_date = start_date
+        self.end_date = end_date
+
+    @property
+    def is_finished(self) -> bool:
+        return all([self.start_date, self.start_date is not None, self.end_date, self.end_date is not None])
 
     def run_begin_date_frame_validations(self, start_date: datetime) -> None:
         pass
@@ -27,12 +31,6 @@ class DateFrame:
 
         self._check_date_frame_is_already_finished()
         self._check_start_date_greater_than_end_date(start_date=self.start_date, end_date=end_date)
-
-    @property
-    def duration(self) -> Optional[DateFrameDuration]:
-        if self.start_date and self.end_date:
-            return self.end_date - self.start_date
-        return None
 
     @staticmethod
     def _check_is_datetime_tz_aware(date: datetime) -> None:

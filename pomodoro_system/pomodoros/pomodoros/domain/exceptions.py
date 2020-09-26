@@ -51,7 +51,7 @@ class DateFrameIsAlreadyFinished(ValidationError):
     pass
 
 
-class RelatedPomodoroIsAlreadyFinished(ValidationError):
+class NoActionAllowedOnFinishedPomodoro(ValidationError):
     pass
 
 

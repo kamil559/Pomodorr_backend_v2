@@ -1,5 +1,5 @@
 import operator
-from dataclasses import dataclass
+import uuid
 from datetime import timedelta, datetime
 from functools import reduce
 from gettext import gettext as _
@@ -8,28 +8,40 @@ from typing import Optional, List, Union
 from foundation.value_objects import DateFrameDefinition, UserDateFrameDefinition
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
-from pomodoros.domain.exceptions import CollidingPomodoroWasFound, PomodoroErrorMarginExceeded
+from pomodoros.domain.exceptions import CollidingPomodoroWasFound, PomodoroErrorMarginExceeded, \
+    NoActionAllowedOnFinishedPomodoro
 from pomodoros.domain.value_objects import FrameType, AcceptablePomodoroErrorMargin, TaskId, PomodoroId
 
 
-@dataclass
 class Pomodoro(DateFrame):
-    id: PomodoroId
-    task_id: TaskId
-    contained_pauses: Optional[List[Pause]]
     frame_type = FrameType.TYPE_POMODORO
+
+    def __init__(self, id: PomodoroId, task_id: TaskId, start_date: Optional[datetime] = None,
+                 end_date: Optional[datetime] = None, contained_pauses: Optional[List[Pause]] = None) -> None:
+        super().__init__(start_date=start_date, end_date=end_date)
+        self.id = id
+        self.task_id = task_id
+        self.contained_pauses = sorted(contained_pauses, key=lambda pause: pause.end_date)
+        self.pending_pause = None
+
+    @property
+    def is_paused(self) -> bool:
+        return self._current_pause is not None
+
+    @property
+    def _current_pause(self) -> Optional[Pause]:
+        ongoing_pauses = list(filter(lambda pause: not pause.is_finished, self.contained_pauses))
+        if len(ongoing_pauses):
+            return ongoing_pauses[-1]
 
     @staticmethod
     def _get_maximal_duration(date_frame_definition: Union[DateFrameDefinition, UserDateFrameDefinition]) -> timedelta:
         return date_frame_definition.pomodoro_length
 
-    @staticmethod
-    def _date_is_lower_than_start(date_frame: DateFrame, start_date: datetime) -> bool:
-        return date_frame.start_date > start_date
-
-    @staticmethod
-    def _date_is_lower_than_end(date_frame: DateFrame, end_date: datetime) -> bool:
-        return date_frame.end_date > end_date
+    def _check_can_perform_actions(self) -> None:
+        if self.is_finished:
+            raise NoActionAllowedOnFinishedPomodoro(
+                _('pomodoros.domain.entities.pomodoro.no_action_allowed_on_finished_pomodoro'))
 
     def _check_pomodoro_length(self, maximal_duration: timedelta, checked_end_date: datetime) -> None:
         pomodoro_duration = checked_end_date - self.start_date
@@ -93,3 +105,25 @@ class Pomodoro(DateFrame):
         self._check_for_colliding_pomodoros(recent_pomodoros, self.start_date, end_date)
 
         self.end_date = end_date
+
+    @staticmethod
+    def _produce_new_pause_object(start_date: datetime) -> Pause:
+        new_pause = Pause(id=uuid.uuid4(), start_date=start_date)
+        new_pause.run_begin_date_frame_validations(start_date)
+        return new_pause
+
+    def pause(self, related_task: Task, start_date: datetime):
+        related_task.check_can_perform_actions()
+        self._check_can_perform_actions()
+
+        if self._current_pause is None:
+            self.pending_pause = self._produce_new_pause_object(start_date)
+
+    def resume(self, related_task: Task, end_date: datetime):
+        related_task.check_can_perform_actions()
+        self._check_can_perform_actions()
+
+        if self._current_pause is not None:
+            self._current_pause.run_finish_date_frame_validations(end_date)
+            self._current_pause.end_date = end_date
+            self.pending_pause = self._current_pause
