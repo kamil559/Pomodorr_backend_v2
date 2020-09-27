@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from foundation.entities.user import UserId
+from foundation.domain.entities.user import UserId
 from foundation.value_objects import Priority
 from pomodoros.domain.value_objects import Ordering, ProjectId
 

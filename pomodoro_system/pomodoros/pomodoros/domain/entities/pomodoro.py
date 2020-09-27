@@ -95,7 +95,7 @@ class Pomodoro(DateFrame):
 
         self.start_date = start_date
 
-    def finish(self, date_frame_definition: Union[DateFrameDefinition, UserDateFrameDefinition], related_task: Task,
+    def finish(self, date_frame_definition: DateFrameDefinition, related_task: Task,
                recent_pomodoros: Optional[List['Pomodoro']], end_date: datetime) -> None:
         related_task.check_can_perform_actions()
         super(Pomodoro, self).run_finish_date_frame_validations(end_date)

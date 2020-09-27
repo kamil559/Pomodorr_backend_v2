@@ -3,7 +3,7 @@ import uuid
 import factory
 from factory.fuzzy import FuzzyAttribute
 
-from foundation.entities.user import AbstractUser
+from foundation.domain.entities.user import AbstractUser
 from foundation.value_objects import UserDateFrameDefinition
 
 
