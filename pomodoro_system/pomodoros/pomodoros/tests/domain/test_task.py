@@ -1,7 +1,7 @@
 import pytest
 
 from pomodoros.domain.exceptions import TaskNameNotAvailableInNewProject, NoActionAllowedOnCompletedTask, \
-    TaskAlreadyActive
+    TaskAlreadyActive, TaskAlreadyCompleted
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros.tests.factories import TaskFactory
 
@@ -10,6 +10,17 @@ def test_task_returns_proper_next_due_date(task):
     expected_next_due_date = task.due_date + task.renewal_interval
 
     assert task.next_due_date == expected_next_due_date
+
+
+def test_complete_task_successfully(task):
+    task.complete()
+
+    assert task.status == TaskStatus.COMPLETED
+
+
+def test_complete_already_completed_task_fails(completed_task):
+    with pytest.raises(TaskAlreadyCompleted):
+        completed_task.complete()
 
 
 def test_pin_to_project_successfully(task, project, project_tasks):

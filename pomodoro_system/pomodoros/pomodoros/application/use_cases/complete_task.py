@@ -40,29 +40,25 @@ class CompleteTaskStrategy(ABC):
 
 class CompleteOneTimeTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
-        task.check_can_perform_actions()
-
-        task.status = TaskStatus.COMPLETED
-
+        task.complete()
         self.tasks_repository.save(task)
+
         output_dto = CompleteTaskOutputDto(id=task.id, status=task.status, new_task_id=None)
         return output_dto
 
 
 class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
-        task.check_can_perform_actions()
+        new_task = self._produce_task_for_next_due_date(old_task=task)
+        task.complete()
 
-        new_task = self._produce_new_task(old_task=task)
-
-        task.status = TaskStatus.COMPLETED
         self.tasks_repository.save(task)
         self.tasks_repository.save(new_task)
         output_dto = CompleteTaskOutputDto(id=task.id, status=task.status, new_task_id=new_task.id)
         return output_dto
 
     @staticmethod
-    def _produce_new_task(old_task: Task) -> Task:
+    def _produce_task_for_next_due_date(old_task: Task) -> Task:
         new_task = deepcopy(old_task)
         new_task.id = uuid.uuid4()
         new_task.due_date = old_task.next_due_date
@@ -76,10 +72,10 @@ class CompleteTask:
         self._complete_task_strategy: CompleteTaskStrategy = CompleteOneTimeTaskStrategy(tasks_repository)
 
     def execute(self, input_dto: CompleteTaskInputDto) -> None:
-        task = self.tasks_repository.get(task_id=input_dto.id)
+        task = self.tasks_repository.get(input_dto.id)
 
         if not task.renewal_interval:
             self._complete_task_strategy = CompleteRepeatableTaskStrategy(self.tasks_repository)
 
-        output_dto = self._complete_task_strategy.complete_task(task=task)
-        self.output_boundary.present(output_dto=output_dto)
+        output_dto = self._complete_task_strategy.complete_task(task)
+        self.output_boundary.present(output_dto)
