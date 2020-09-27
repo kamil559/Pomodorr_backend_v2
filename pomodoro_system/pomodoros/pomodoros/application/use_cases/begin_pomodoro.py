@@ -3,23 +3,22 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
 
+from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.repositories.pomodoros import PomodorosRepository
 from pomodoros.application.repositories.tasks import TasksRepository
-from pomodoros.domain.entities import Task
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.value_objects import FrameType, DateFrameId, TaskId
+from pomodoros.domain.value_objects import FrameType, TaskId, PomodoroId
 
 
 @dataclass
 class BeginPomodoroInputDto:
-    start_date: datetime
-    frame_type: FrameType
     task_id: TaskId
+    start_date: datetime
 
 
 @dataclass
 class BeginPomodoroOutputDto:
-    id: DateFrameId
+    id: PomodoroId
     start_date: datetime
     frame_type: FrameType
 
@@ -32,27 +31,24 @@ class BeginPomodoroOutputBoundary(ABC):
 
 class BeginPomodoro:
     def __init__(self, output_boundary: BeginPomodoroOutputBoundary, pomodoros_repository: PomodorosRepository,
-                 tasks_repository: TasksRepository):
+                 tasks_repository: TasksRepository, recent_pomodoros_query: GetRecentPomodoros) -> None:
         self.output_boundary = output_boundary
         self.pomodoros_repository = pomodoros_repository
         self.tasks_repository = tasks_repository
+        self.recent_pomodoros_query = recent_pomodoros_query
 
     @staticmethod
-    def _produce_pomodoro(frame_type: FrameType, task: Task) -> Pomodoro:
-        return Pomodoro(id=uuid.uuid4(), frame_type=frame_type, start_date=None, end_date=None, task=task,
-                        contained_pauses=None)
+    def _produce_pomodoro(task_id: TaskId) -> Pomodoro:
+        return Pomodoro(id=uuid.uuid4(), task_id=task_id)
 
-    def execute(self, input_dto: BeginPomodoroInputDto) -> None:
-        task = self.tasks_repository.get(task_id=input_dto.task_id)
+    def execute(self, input_dto: BeginPomodoroInputDto, ) -> None:
+        task = self.tasks_repository.get(input_dto.task_id)
+        recent_pomodoros = self.recent_pomodoros_query.query(input_dto.task_id)
 
-        new_pomodoro = self._produce_pomodoro(frame_type=input_dto.frame_type, task=task)
-        new_pomodoro.begin(start_date=input_dto.start_date)
+        new_pomodoro = self._produce_pomodoro(task.id)
+        new_pomodoro.begin(task, recent_pomodoros, input_dto.start_date)
+
         self.pomodoros_repository.save(new_pomodoro)
 
-        output_dto = BeginPomodoroOutputDto(
-            id=new_pomodoro.id,
-            start_date=new_pomodoro.start_date,
-            frame_type=new_pomodoro.frame_type
-        )
-
-        self.output_boundary.present(output_dto=output_dto)
+        output_dto = BeginPomodoroOutputDto(new_pomodoro.id, new_pomodoro.start_date, new_pomodoro.frame_type)
+        self.output_boundary.present(output_dto)
