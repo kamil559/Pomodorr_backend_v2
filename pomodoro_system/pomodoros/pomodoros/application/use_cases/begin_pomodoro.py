@@ -41,7 +41,7 @@ class BeginPomodoro:
     def _produce_pomodoro(task_id: TaskId) -> Pomodoro:
         return Pomodoro(id=uuid.uuid4(), task_id=task_id)
 
-    def execute(self, input_dto: BeginPomodoroInputDto, ) -> None:
+    def execute(self, input_dto: BeginPomodoroInputDto) -> None:
         task = self.tasks_repository.get(input_dto.task_id)
         recent_pomodoros = self.recent_pomodoros_query.query(input_dto.task_id)
 

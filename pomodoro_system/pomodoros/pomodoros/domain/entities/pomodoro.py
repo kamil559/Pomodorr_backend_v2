@@ -21,7 +21,8 @@ class Pomodoro(DateFrame):
         super().__init__(start_date=start_date, end_date=end_date)
         self.id = id
         self.task_id = task_id
-        self.contained_pauses = sorted(contained_pauses, key=lambda pause: pause.end_date)
+        self.contained_pauses = sorted(contained_pauses,
+                                       key=lambda pause: pause.end_date) if contained_pauses is not None else []
         self._current_pause = None
 
     @property
