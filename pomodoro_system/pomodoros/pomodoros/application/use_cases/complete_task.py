@@ -54,6 +54,7 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
 
         self.tasks_repository.save(task)
         self.tasks_repository.save(new_task)
+
         output_dto = CompleteTaskOutputDto(id=task.id, status=task.status, new_task_id=new_task.id)
         return output_dto
 

@@ -37,6 +37,7 @@ class PausePomodoro:
         task = self.tasks_repository.get(pomodoro.task_id)
 
         pomodoro.pause(task, input_dto.pause_date)
+        self.pomodoros_repository.save(pomodoro)
 
         output_dto = PausePomodoroOutputDto(pomodoro.id, input_dto.pause_date)
         self.output_boundary.present(output_dto)

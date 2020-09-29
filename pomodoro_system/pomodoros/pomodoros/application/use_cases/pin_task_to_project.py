@@ -36,6 +36,7 @@ class PinTaskToProject:
         new_project_tasks = self.get_tasks_by_pomodoro_id_query.query(input_dto.new_project_id)
 
         task.pin_to_new_project(input_dto.new_project_id, new_project_tasks)
+        self.tasks_repository.save(task)
 
         output_dto = PinTaskToProjectOutputDto(input_dto.task_id, input_dto.new_project_id)
         self.output_boundary.present(output_dto)

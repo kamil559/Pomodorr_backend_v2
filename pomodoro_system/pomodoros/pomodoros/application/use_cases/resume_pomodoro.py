@@ -37,6 +37,7 @@ class ResumePomodoro:
         task = self.tasks_repository.get(pomodoro.task_id)
 
         pomodoro.resume(task, input_dto.resume_date)
+        self.pomodoros_repository.save(pomodoro)
 
         output_dto = ResumePomodoroOutputDto(pomodoro.id, input_dto.resume_date)
         self.output_boundary.present(output_dto)
