@@ -13,5 +13,5 @@ def test_resume_pomodoro_use_case(paused_pomodoro, resume_pomodoro_output_bounda
 
     assert paused_pomodoro.contained_pauses is not None
     assert len(paused_pomodoro.contained_pauses) == 1
-    assert paused_pomodoro.contained_pauses[-1].is_finished is True
+    assert paused_pomodoro.contained_pauses[-1].is_finished
     resume_pomodoro_output_boundary.present.assert_called_once_with(expected_output_dto)

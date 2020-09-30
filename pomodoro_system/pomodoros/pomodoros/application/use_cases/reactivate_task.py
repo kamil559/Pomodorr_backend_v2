@@ -31,11 +31,11 @@ class ReactivateTask:
         self.get_tasks_by_pomodoro_id_query = get_tasks_by_pomodoro_id_query
 
     def execute(self, input_dto: ReactivateTaskInputDto) -> None:
-        task = self.tasks_repository.get(task_id=input_dto.id)
+        task = self.tasks_repository.get(input_dto.id)
         task_project_tasks_collection = self.get_tasks_by_pomodoro_id_query.query(task.project_id)
 
         task.reactivate(task_project_tasks_collection)
         self.tasks_repository.save(task)
 
-        output_dto = ReactivateTaskOutputDto(id=task.id, status=task.status)
-        self.output_boundary.present(output_dto=output_dto)
+        output_dto = ReactivateTaskOutputDto(task.id, task.status)
+        self.output_boundary.present(output_dto)
