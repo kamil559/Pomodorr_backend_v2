@@ -26,14 +26,14 @@ class PinTaskToProjectOutputBoundary(ABC):
 
 class PinTaskToProject:
     def __init__(self, output_boundary: PinTaskToProjectOutputBoundary, tasks_repository: TasksRepository,
-                 get_tasks_by_pomodoro_id_query: GetTasksByPomodoroId) -> None:
+                 get_tasks_by_project_id_query: GetTasksByPomodoroId) -> None:
         self.output_boundary = output_boundary
         self.tasks_repository = tasks_repository
-        self.get_tasks_by_pomodoro_id_query = get_tasks_by_pomodoro_id_query
+        self.get_tasks_by_project_id_query = get_tasks_by_project_id_query
 
     def execute(self, input_dto: PinTaskToProjectInputDto) -> None:
         task = self.tasks_repository.get(input_dto.task_id)
-        new_project_tasks = self.get_tasks_by_pomodoro_id_query.query(input_dto.new_project_id)
+        new_project_tasks = self.get_tasks_by_project_id_query.query(input_dto.new_project_id)
 
         task.pin_to_new_project(input_dto.new_project_id, new_project_tasks)
         self.tasks_repository.save(task)
