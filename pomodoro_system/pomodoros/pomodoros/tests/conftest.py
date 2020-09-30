@@ -18,6 +18,11 @@ def task() -> Task:
 
 
 @pytest.fixture()
+def one_time_task() -> Task:
+    return TaskFactory(renewal_interval=None)
+
+
+@pytest.fixture()
 def completed_task() -> Task:
     return TaskFactory(status=TaskStatus.COMPLETED)
 

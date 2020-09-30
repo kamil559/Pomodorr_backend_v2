@@ -10,6 +10,7 @@ from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.repositories.pomodoros import PomodorosRepository
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.application.use_cases.begin_pomodoro import (BeginPomodoro, BeginPomodoroOutputBoundary)
+from pomodoros.application.use_cases.complete_task import CompleteTaskOutputBoundary, CompleteTask
 from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoroOutputBoundary, FinishPomodoro
 from pomodoros.domain.entities import Task, Project
 from pomodoros.domain.entities.pomodoro import Pomodoro
@@ -47,9 +48,9 @@ def tasks_repository() -> TasksRepository:
 
 
 @pytest.fixture()
-def populated_tasks_repository(task: Task, project: Project) -> TasksRepository:
+def populated_tasks_repository(one_time_task: Task, task: Task, project: Project) -> TasksRepository:
     other_tasks = [TaskFactory(project_id=task.project_id), TaskFactory(project_id=task.project_id)]
-    return InMemoryTasksRepository(initial_data=[task] + other_tasks)
+    return InMemoryTasksRepository(initial_data=[one_time_task, task] + other_tasks)
 
 
 @pytest.fixture()
@@ -64,7 +65,7 @@ def recent_pomodoros_list(task: Task) -> List[Pomodoro]:
 
 
 @pytest.fixture()
-def populated_recent_pomodoros_query(recent_pomodoros_list: List[Pomodoro]):
+def populated_recent_pomodoros_query(recent_pomodoros_list: List[Pomodoro]) -> GetRecentPomodoros:
     return GetRecentPomodorosStub(return_collection=recent_pomodoros_list)
 
 
@@ -88,8 +89,19 @@ def finish_pomodoro_output_boundary() -> Mock:
 
 @pytest.fixture()
 def finish_pomodoro_use_case(finish_pomodoro_output_boundary, populated_pomodoros_repository,
-                             populated_tasks_repository, users_repository, populated_recent_pomodoros_query):
+                             populated_tasks_repository, users_repository,
+                             populated_recent_pomodoros_query) -> FinishPomodoro:
     return FinishPomodoro(output_boundary=finish_pomodoro_output_boundary,
                           pomodoros_repository=populated_pomodoros_repository,
                           tasks_repository=populated_tasks_repository, users_repository=users_repository,
                           recent_pomodoros_query=populated_recent_pomodoros_query)
+
+
+@pytest.fixture()
+def complete_task_output_boundary() -> Mock:
+    return Mock(spec_set=CompleteTaskOutputBoundary)
+
+
+@pytest.fixture()
+def complete_task_use_case(complete_task_output_boundary, populated_tasks_repository) -> CompleteTask:
+    return CompleteTask(output_boundary=complete_task_output_boundary, tasks_repository=populated_tasks_repository)

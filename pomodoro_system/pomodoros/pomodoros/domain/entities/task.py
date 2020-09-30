@@ -37,6 +37,10 @@ class Task:
         return self.status == TaskStatus.COMPLETED
 
     @property
+    def is_repeatable(self) -> bool:
+        return self.renewal_interval is not None
+
+    @property
     def is_active(self) -> bool:
         return self.status == TaskStatus.ACTIVE
 

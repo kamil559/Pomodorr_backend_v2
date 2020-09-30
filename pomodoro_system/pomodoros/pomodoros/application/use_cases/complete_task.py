@@ -75,7 +75,7 @@ class CompleteTask:
     def execute(self, input_dto: CompleteTaskInputDto) -> None:
         task = self.tasks_repository.get(input_dto.id)
 
-        if not task.renewal_interval:
+        if task.is_repeatable:
             self._complete_task_strategy = CompleteRepeatableTaskStrategy(self.tasks_repository)
 
         output_dto = self._complete_task_strategy.complete_task(task)
