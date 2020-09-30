@@ -13,6 +13,7 @@ from pomodoros.application.use_cases.begin_pomodoro import (BeginPomodoro, Begin
 from pomodoros.application.use_cases.complete_task import CompleteTaskOutputBoundary, CompleteTask
 from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoroOutputBoundary, FinishPomodoro
 from pomodoros.application.use_cases.pause_pomodoro import PausePomodoro, PausePomodoroOutputBoundary
+from pomodoros.application.use_cases.resume_pomodoro import ResumePomodoroOutputBoundary, ResumePomodoro
 from pomodoros.domain.entities import Task, Project
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.tests.application.get_recent_pomodoros_query import GetRecentPomodorosStub
@@ -37,10 +38,10 @@ def pomodoros_repository() -> PomodorosRepository:
 
 
 @pytest.fixture()
-def populated_pomodoros_repository(started_pomodoro: Pomodoro) -> PomodorosRepository:
+def populated_pomodoros_repository(started_pomodoro: Pomodoro, paused_pomodoro: Pomodoro) -> PomodorosRepository:
     other_pomodoros = [PomodoroFactory(task_id=started_pomodoro.task_id),
                        PomodoroFactory(task_id=started_pomodoro.task_id)]
-    return InMemoryPomodorosRepository(initial_data=[started_pomodoro] + other_pomodoros)
+    return InMemoryPomodorosRepository(initial_data=[started_pomodoro, paused_pomodoro] + other_pomodoros)
 
 
 @pytest.fixture()
@@ -119,3 +120,16 @@ def pause_pomodoro_use_case(pause_pomodoro_output_boundary, populated_pomodoros_
     return PausePomodoro(output_boundary=pause_pomodoro_output_boundary,
                          pomodoros_repository=populated_pomodoros_repository,
                          tasks_repository=populated_tasks_repository)
+
+
+@pytest.fixture()
+def resume_pomodoro_output_boundary() -> Mock:
+    return Mock(spec_set=ResumePomodoroOutputBoundary)
+
+
+@pytest.fixture()
+def resume_pomodoro_use_case(resume_pomodoro_output_boundary, populated_pomodoros_repository,
+                             populated_tasks_repository):
+    return ResumePomodoro(output_boundary=resume_pomodoro_output_boundary,
+                          pomodoros_repository=populated_pomodoros_repository,
+                          tasks_repository=populated_tasks_repository)
