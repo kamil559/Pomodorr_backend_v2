@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "pomodoro_system"
+version = "0.1.0"
+description = ""
+authors = ["kamil559 <kamil.daniewski@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pony = "0.7.13"
+psycopg2-binary = "2.8.4"
+injector = "0.17.0"
+typing-extensions = "3.7.4.1"
+pytz = "2020.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "4.6.10"
+factory-boy = "3.1.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

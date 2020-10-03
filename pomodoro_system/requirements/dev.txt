@@ -1,18 +1,7 @@
--r ./base.txt
-
-# Testing
-# ------------------------------------------------------------------------------
-
-pytest-cov==2.10.0  # https://github.com/pytest-dev/pytest-cov
-pytest-lazy-fixture==0.6.3  # https://github.com/TvoroG/pytest-lazy-fixture
-codecov==2.1.7  # https://github.com/codecov
-
-# Code quality
-# ------------------------------------------------------------------------------
-pip-tools==4.4.1
-black==19.10b0
-isort==4.3.21
-flake8==3.8.3
-mypy==0.761
-pylint==2.5.3
-pylint-forbidden-imports==1.0.0
+factory-boy==3.1.0
+injector==0.17.0
+pony==0.7.13
+psycopg2-binary==2.8.4
+pytest==4.6.10
+pytz==2020.1
+typing-extensions==3.7.4.1

@@ -1,16 +1,11 @@
-# order of libs is meaningful. First, we install libs without internal dependencies that other libs depend on.
-libs := foundation pomodoros
-
-define install_dependency
-	pip install -e $(1)
-endef
-
 .PHONY: install_dev
 install_dev:
-	pip install -r requirements.txt -r requirements-dev.txt
-	$(foreach lib,$(libs),$(call install_dependency,$(lib)))
+	pip install -r requirements/requirements.txt
+	pip install -r requirements/dev.txt
+
 
 .PHONY: freeze-dependencies
 freeze-dependencies:
-	pip install --user pip-tools==4.4.1
-	pip-compile --output-file=requirements/base.txt $(foreach lib,$(libs), ./$(lib)/requirements/base.txt ./$(lib)/requirements/dev.txt)
+	pip install --user poetry==1.1.0
+	poetry export --without-hashes -o requirements/base.txt
+	poetry export --dev --without-hashes -o requirements/dev.txt
