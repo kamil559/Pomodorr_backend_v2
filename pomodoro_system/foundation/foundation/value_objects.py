@@ -32,5 +32,5 @@ class PriorityLevel(Enum):
 
 @dataclass
 class Priority:
-    color: Color
+    color: Color = "#d1d1d1"
     priority_level: PriorityLevel = PriorityLevel.NO_PRIORITY

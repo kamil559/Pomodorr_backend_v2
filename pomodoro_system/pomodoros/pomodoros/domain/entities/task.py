@@ -18,13 +18,13 @@ class Task:
     status: TaskStatus
     priority: Priority
     ordering: Ordering
-    due_date: datetime
+    due_date: Optional[datetime]
     pomodoros_to_do: int
     pomodoros_burn_down: int
     date_frame_definition: Optional[DateFrameDefinition]
-    reminder_date: datetime
-    renewal_interval: PomodoroRenewalInterval
-    note: str
+    reminder_date: Optional[datetime]
+    renewal_interval: Optional[PomodoroRenewalInterval]
+    note: Optional[str]
     created_at: datetime
     sub_tasks: Optional[List[SubTask]]
 
