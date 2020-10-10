@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime, timedelta
 
 from injector import inject
-from pony.orm import Database, PrimaryKey, Required, Optional, Set
+from pony.orm import Database, PrimaryKey, Required, Optional, Set, LongStr
 
 
 @inject
@@ -14,8 +14,8 @@ class Project(DatabaseProxy.database.Entity):
     _table_ = 'projects'
 
     id = PrimaryKey(uuid.UUID, auto=False)
-    name = Required(str)
-    priority_color = Required(str)
+    name = Required(str, max_len=128)
+    priority_color = Required(str, max_len=7)
     priority_level = Required(int)
     ordering = Required(int)
     owner_id = Required(uuid.UUID)
@@ -28,9 +28,9 @@ class Task(DatabaseProxy.database.Entity):
 
     id = PrimaryKey(uuid.UUID, auto=False)
     project_id = Required(uuid.UUID)
-    name = Required(str)
+    name = Required(str, max_len=128)
     status = Required(int)
-    priority_color = Required(str)
+    priority_color = Required(str, max_len=7)
     priority_level = Required(int)
     ordering = Required(int)
     due_date = Optional(datetime)
@@ -42,7 +42,7 @@ class Task(DatabaseProxy.database.Entity):
     gap_between_long_breaks = Optional(int)
     reminder_date = Optional(datetime)
     renewal_interval = Optional(timedelta)
-    note = Optional(str)
+    note = Optional(LongStr, lazy=False)
     created_at = Required(datetime)
     sub_tasks = Set(lambda: SubTask)
 
@@ -51,7 +51,7 @@ class SubTask(DatabaseProxy.database.Entity):
     _table_ = 'sub_tasks'
 
     id = PrimaryKey(uuid.UUID, auto=False)
-    name = Required(str)
+    name = Required(str, max_len=128)
     task = Required(Task)
     created_at = Required(datetime)
     is_completed = Required(bool)
