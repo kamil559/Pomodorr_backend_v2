@@ -12,6 +12,7 @@ psycopg2-binary = "2.8.4"
 injector = "0.17.0"
 typing-extensions = "3.7.4.1"
 pytz = "2020.1"
+python-dotenv = "0.14.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "4.6.10"
