@@ -1,12 +1,12 @@
 from abc import abstractmethod, ABC
 
 from pomodoros.domain.entities.pause import Pause
-from pomodoros.domain.value_objects import DateFrameId
+from pomodoros.domain.value_objects import PauseId
 
 
 class PausesRepository(ABC):
     @abstractmethod
-    def get(self, pause_id: DateFrameId) -> Pause:
+    def get(self, pause_id: PauseId) -> Pause:
         pass
 
     @abstractmethod
