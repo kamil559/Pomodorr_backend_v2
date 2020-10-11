@@ -4,7 +4,7 @@ from foundation.application.repositories.user import UsersRepository
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros, PomodoroDto
 from pomodoros.application.queries.tasks import GetTasksByPomodoroId, TaskDto
 from pomodoros.application.repositories.pauses import PauseRepository
-from pomodoros.application.repositories.pomodoros import PomodorosRepository
+from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.projects import ProjectsRepository
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.application.use_cases.begin_pomodoro import (
@@ -64,7 +64,7 @@ __all__ = [
 
     # repositories
     'PauseRepository',
-    'PomodorosRepository',
+    'PomodoroRepository',
     'ProjectsRepository',
     'TasksRepository',
 
@@ -118,25 +118,25 @@ __all__ = [
 class Pomodoros(injector.Module):
     @injector.provider
     def begin_pomodoro_uc(self, output_boundary: BeginPomodoroOutputBoundary,
-                          pomodoros_repository: PomodorosRepository,
+                          pomodoros_repository: PomodoroRepository,
                           tasks_repository: TasksRepository,
                           recent_pomodoros_query: GetRecentPomodoros) -> BeginPomodoro:
         return BeginPomodoro(output_boundary, pomodoros_repository, tasks_repository, recent_pomodoros_query)
 
     @injector.provider
-    def pause_pomodoro_uc(self, output_boundary: PausePomodoroOutputBoundary, pomodoros_repository: PomodorosRepository,
+    def pause_pomodoro_uc(self, output_boundary: PausePomodoroOutputBoundary, pomodoros_repository: PomodoroRepository,
                           tasks_repository: TasksRepository) -> PausePomodoro:
         return PausePomodoro(output_boundary, pomodoros_repository, tasks_repository)
 
     @injector.provider
     def resume_pomodoro_uc(self, output_boundary: ResumePomodoroOutputBoundary,
-                           pomodoros_repository: PomodorosRepository,
+                           pomodoros_repository: PomodoroRepository,
                            tasks_repository: TasksRepository) -> ResumePomodoro:
         return ResumePomodoro(output_boundary, pomodoros_repository, tasks_repository)
 
     @injector.provider
     def finish_pomodoro_uc(self, output_boundary: FinishPomodoroOutputBoundary,
-                           pomodoros_repository: PomodorosRepository, tasks_repository: TasksRepository,
+                           pomodoros_repository: PomodoroRepository, tasks_repository: TasksRepository,
                            users_repository: UsersRepository,
                            recent_pomodoros_query: GetRecentPomodoros) -> FinishPomodoro:
         return FinishPomodoro(output_boundary, pomodoros_repository, tasks_repository, users_repository,

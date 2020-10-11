@@ -1,11 +1,11 @@
 from typing import List, Optional, Dict
 
-from pomodoros.application.repositories.pomodoros import PomodorosRepository
+from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import PomodoroId
 
 
-class InMemoryPomodorosRepository(PomodorosRepository):
+class InMemoryPomodorosRepository(PomodoroRepository):
     def __init__(self, initial_data: Optional[List[Pomodoro]] = None):
         if initial_data is not None:
             self._rows = dict(map(lambda pomodoro: (pomodoro.id, pomodoro), initial_data))

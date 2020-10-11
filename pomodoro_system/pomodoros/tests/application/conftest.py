@@ -8,7 +8,7 @@ from foundation.domain.entities.user import AbstractUser
 from foundation.domain.tests.factories import UserFactory
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByPomodoroId
-from pomodoros.application.repositories.pomodoros import PomodorosRepository
+from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.application.use_cases.begin_pomodoro import (BeginPomodoro, BeginPomodoroOutputBoundary)
 from pomodoros.application.use_cases.complete_task import CompleteTaskOutputBoundary, CompleteTask
@@ -37,12 +37,12 @@ def begin_pomodoro_output_boundary() -> Mock:
 
 
 @pytest.fixture()
-def pomodoros_repository() -> PomodorosRepository:
+def pomodoros_repository() -> PomodoroRepository:
     return InMemoryPomodorosRepository()
 
 
 @pytest.fixture()
-def populated_pomodoros_repository(started_pomodoro: Pomodoro, paused_pomodoro: Pomodoro) -> PomodorosRepository:
+def populated_pomodoros_repository(started_pomodoro: Pomodoro, paused_pomodoro: Pomodoro) -> PomodoroRepository:
     other_pomodoros = [PomodoroFactory(task_id=started_pomodoro.task_id),
                        PomodoroFactory(task_id=started_pomodoro.task_id)]
     return InMemoryPomodorosRepository(initial_data=[started_pomodoro, paused_pomodoro] + other_pomodoros)
