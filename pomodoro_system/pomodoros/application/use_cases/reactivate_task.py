@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from pomodoros.application.queries.tasks import GetTasksByPomodoroId
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.value_objects import TaskStatus, TaskId
 
 
@@ -24,7 +24,7 @@ class ReactivateTaskOutputBoundary(ABC):
 
 
 class ReactivateTask:
-    def __init__(self, output_boundary: ReactivateTaskOutputBoundary, tasks_repository: TasksRepository,
+    def __init__(self, output_boundary: ReactivateTaskOutputBoundary, tasks_repository: TaskRepository,
                  get_tasks_by_pomodoro_id_query: GetTasksByPomodoroId) -> None:
         self.output_boundary = output_boundary
         self.tasks_repository = tasks_repository

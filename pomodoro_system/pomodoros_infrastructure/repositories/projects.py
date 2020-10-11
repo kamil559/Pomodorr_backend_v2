@@ -3,10 +3,10 @@ from typing import Type
 from pony.orm import ObjectNotFound
 
 from exceptions import NotFound
+from foundation.value_objects import Priority
 from pomodoros import ProjectRepository, ProjectId
 from pomodoros.domain.entities import Project
 from pomodoros_infrastructure.models import Project as ProjectModel
-from value_objects import Priority
 
 
 class SQLProjectRepository(ProjectRepository):

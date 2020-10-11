@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskId, TaskStatus
 
@@ -30,7 +30,7 @@ class CompleteTaskOutputBoundary(ABC):
 
 
 class CompleteTaskStrategy(ABC):
-    def __init__(self, tasks_repository: TasksRepository) -> None:
+    def __init__(self, tasks_repository: TaskRepository) -> None:
         self.tasks_repository = tasks_repository
 
     @abstractmethod
@@ -67,7 +67,7 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
 
 
 class CompleteTask:
-    def __init__(self, output_boundary: CompleteTaskOutputBoundary, tasks_repository: TasksRepository) -> None:
+    def __init__(self, output_boundary: CompleteTaskOutputBoundary, tasks_repository: TaskRepository) -> None:
         self.output_boundary = output_boundary
         self.tasks_repository = tasks_repository
         self._complete_task_strategy: CompleteTaskStrategy = CompleteOneTimeTaskStrategy(tasks_repository)

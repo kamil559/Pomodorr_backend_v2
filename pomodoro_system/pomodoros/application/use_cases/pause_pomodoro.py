@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.value_objects import PomodoroId
 
 
@@ -27,7 +27,7 @@ class PausePomodoroOutputBoundary(ABC):
 
 class PausePomodoro:
     def __init__(self, output_boundary: PausePomodoroOutputBoundary, pomodoros_repository: PomodoroRepository,
-                 tasks_repository: TasksRepository) -> None:
+                 tasks_repository: TaskRepository) -> None:
         self.output_boundary = output_boundary
         self.pomodoros_repository = pomodoros_repository
         self.tasks_repository = tasks_repository

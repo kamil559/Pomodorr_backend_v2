@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from pomodoros.application.queries.tasks import GetTasksByPomodoroId
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.value_objects import TaskId, ProjectId
 
 
@@ -25,7 +25,7 @@ class PinTaskToProjectOutputBoundary(ABC):
 
 
 class PinTaskToProject:
-    def __init__(self, output_boundary: PinTaskToProjectOutputBoundary, tasks_repository: TasksRepository,
+    def __init__(self, output_boundary: PinTaskToProjectOutputBoundary, tasks_repository: TaskRepository,
                  get_tasks_by_project_id_query: GetTasksByPomodoroId) -> None:
         self.output_boundary = output_boundary
         self.tasks_repository = tasks_repository

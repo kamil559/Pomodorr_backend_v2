@@ -4,12 +4,12 @@ from pomodoros import (
     PauseRepository,
     PomodoroRepository,
     ProjectRepository,
-    TasksRepository,
+    TaskRepository,
     GetRecentPomodoros,
     GetTasksByPomodoroId
 )
 from .models import Project, Task, SubTask, Pause, Pomodoro
-from .repositories import SQLPausesRepository, SQLPomodoroRepository, SQLProjectRepository
+from .repositories import SQLPausesRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
 
 __all__ = [
     # injected module
@@ -38,9 +38,8 @@ class PomodorosInfrastructure(injector.Module):
         return SQLProjectRepository()
 
     @injector.provider
-    def tasks_repository(self) -> TasksRepository:
-        # todo: add concrete repository
-        pass
+    def tasks_repository(self) -> TaskRepository:
+        return SQLTaskRepository()
 
     @injector.provider
     def recent_pomodoros_query(self) -> GetRecentPomodoros:

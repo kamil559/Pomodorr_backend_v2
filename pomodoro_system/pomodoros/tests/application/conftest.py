@@ -9,7 +9,7 @@ from foundation.domain.tests.factories import UserFactory
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByPomodoroId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.application.use_cases.begin_pomodoro import (BeginPomodoro, BeginPomodoroOutputBoundary)
 from pomodoros.application.use_cases.complete_task import CompleteTaskOutputBoundary, CompleteTask
 from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoroOutputBoundary, FinishPomodoro
@@ -22,7 +22,7 @@ from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.tests.application.get_recent_pomodoros_query import GetRecentPomodorosStub
 from pomodoros.tests.application.get_tasks_by_pomodoro_id_query import GetTasksByProjectIdStub
 from pomodoros.tests.application.in_memory_pomodoros_repository import InMemoryPomodorosRepository
-from pomodoros.tests.application.in_memory_tasks_repository import InMemoryTasksRepository
+from pomodoros.tests.application.in_memory_tasks_repository import InMemoryTaskRepository
 from pomodoros.tests.factories import PomodoroFactory
 
 
@@ -49,13 +49,13 @@ def populated_pomodoros_repository(started_pomodoro: Pomodoro, paused_pomodoro: 
 
 
 @pytest.fixture()
-def tasks_repository() -> TasksRepository:
-    return InMemoryTasksRepository()
+def tasks_repository() -> TaskRepository:
+    return InMemoryTaskRepository()
 
 
 @pytest.fixture()
-def populated_tasks_repository(one_time_task: Task, task: Task, completed_task: Task) -> TasksRepository:
-    return InMemoryTasksRepository(initial_data=[one_time_task, task, completed_task])
+def populated_tasks_repository(one_time_task: Task, task: Task, completed_task: Task) -> TaskRepository:
+    return InMemoryTaskRepository(initial_data=[one_time_task, task, completed_task])
 
 
 @pytest.fixture()
@@ -139,7 +139,7 @@ def resume_pomodoro_use_case(resume_pomodoro_output_boundary, populated_pomodoro
 
 
 @pytest.fixture()
-def populated_tasks_by_project_id_query(populated_tasks_repository: InMemoryTasksRepository) -> GetTasksByPomodoroId:
+def populated_tasks_by_project_id_query(populated_tasks_repository: InMemoryTaskRepository) -> GetTasksByPomodoroId:
     return GetTasksByProjectIdStub(return_collection=list(populated_tasks_repository.rows.values()))
 
 

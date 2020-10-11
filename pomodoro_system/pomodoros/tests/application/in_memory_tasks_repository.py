@@ -1,12 +1,12 @@
 from typing import List, Optional, Dict
 
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.entities import Task
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskId
 
 
-class InMemoryTasksRepository(TasksRepository):
+class InMemoryTaskRepository(TaskRepository):
     def __init__(self, initial_data: Optional[List[Task]] = None):
         if initial_data is not None:
             self._rows = dict(map(lambda task: (task.id, task), initial_data))

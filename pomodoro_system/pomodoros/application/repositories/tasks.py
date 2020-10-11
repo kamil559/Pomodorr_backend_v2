@@ -4,7 +4,7 @@ from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskId
 
 
-class TasksRepository(ABC):
+class TaskRepository(ABC):
     @abstractmethod
     def get(self, task_id: TaskId) -> Task:
         pass

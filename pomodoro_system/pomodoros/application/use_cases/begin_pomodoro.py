@@ -5,7 +5,7 @@ from datetime import datetime
 
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
-from pomodoros.application.repositories.tasks import TasksRepository
+from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import FrameType, TaskId, PomodoroId
 
@@ -31,7 +31,7 @@ class BeginPomodoroOutputBoundary(ABC):
 
 class BeginPomodoro:
     def __init__(self, output_boundary: BeginPomodoroOutputBoundary, pomodoros_repository: PomodoroRepository,
-                 tasks_repository: TasksRepository, recent_pomodoros_query: GetRecentPomodoros) -> None:
+                 tasks_repository: TaskRepository, recent_pomodoros_query: GetRecentPomodoros) -> None:
         self.output_boundary = output_boundary
         self.pomodoros_repository = pomodoros_repository
         self.tasks_repository = tasks_repository
