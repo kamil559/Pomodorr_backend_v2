@@ -96,6 +96,15 @@ __all__ = [
     'ReactivateTaskOutputDto',
     'PinTaskToProjectOutputDto',
 
+    # output boundaries
+    'BeginPomodoroOutputBoundary',
+    'PausePomodoroOutputBoundary',
+    'ResumePomodoroOutputBoundary',
+    'FinishPomodoroOutputBoundary',
+    'CompleteTaskOutputBoundary',
+    'ReactivateTaskOutputBoundary',
+    'PinTaskToProjectOutputBoundary',
+
     # queries
     'GetRecentPomodoros',
     'GetTasksByPomodoroId',

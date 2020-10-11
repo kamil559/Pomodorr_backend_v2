@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from foundation.application.repositories.user import UsersRepository
-from foundation.domain.entities.user import UserId
-from foundation.value_objects import DateFrameDefinition
+from foundation.domain.entities.user import DateFrameDefinition
+from foundation.value_objects import UserId
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.repositories.pomodoros import PomodorosRepository
 from pomodoros.application.repositories.tasks import TasksRepository

@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
@@ -5,6 +6,7 @@ from enum import Enum
 Color = str
 PomodoroLength = timedelta
 BreakLength = timedelta
+UserId = uuid.UUID
 
 
 @dataclass

@@ -1,9 +1,6 @@
-import uuid
 from dataclasses import dataclass
 
-from foundation.value_objects import DateFrameDefinition
-
-UserId = uuid.UUID
+from foundation.value_objects import DateFrameDefinition, UserId
 
 
 @dataclass
