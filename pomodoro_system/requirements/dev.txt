@@ -1,7 +1,15 @@
+click==7.1.2
 factory-boy==3.1.0
+flask-injector==0.12.3
+flask==1.1.1
 injector==0.17.0
+itsdangerous==1.1.0
+jinja2==2.11.2
+markupsafe==1.1.1
 pony==0.7.13
 psycopg2-binary==2.8.4
 pytest==4.6.10
+python-dotenv==0.14.0
 pytz==2020.1
 typing-extensions==3.7.4.1
+werkzeug==1.0.1
