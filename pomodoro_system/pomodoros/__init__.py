@@ -5,7 +5,7 @@ from pomodoros.application.queries.pomodoros import GetRecentPomodoros, Pomodoro
 from pomodoros.application.queries.tasks import GetTasksByPomodoroId, TaskDto
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
-from pomodoros.application.repositories.projects import ProjectsRepository
+from pomodoros.application.repositories.projects import ProjectRepository
 from pomodoros.application.repositories.tasks import TasksRepository
 from pomodoros.application.use_cases.begin_pomodoro import (
     BeginPomodoroOutputBoundary,
@@ -65,7 +65,7 @@ __all__ = [
     # repositories
     'PauseRepository',
     'PomodoroRepository',
-    'ProjectsRepository',
+    'ProjectRepository',
     'TasksRepository',
 
     # use cases
