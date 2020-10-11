@@ -9,7 +9,7 @@ from pomodoros.domain.value_objects import PauseId
 from pomodoros_infrastructure.models.date_frame import Pause as PauseModel
 
 
-class SQLPausesRepository(PauseRepository):
+class SQLPauseRepository(PauseRepository):
     @staticmethod
     def _to_entity(pause_model: Type[PauseModel]) -> Pause:
         return Pause(pause_model.id, pause_model.start_date, pause_model.end_date)

@@ -9,7 +9,7 @@ from pomodoros import (
     GetTasksByPomodoroId
 )
 from .models import Project, Task, SubTask, Pause, Pomodoro
-from .repositories import SQLPausesRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
+from .repositories import SQLPauseRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
 
 __all__ = [
     # injected module
@@ -27,7 +27,7 @@ __all__ = [
 class PomodorosInfrastructure(injector.Module):
     @injector.provider
     def pauses_repository(self) -> PauseRepository:
-        return SQLPausesRepository()
+        return SQLPauseRepository()
 
     @injector.provider
     def pomodoros_repository(self) -> PomodoroRepository:
