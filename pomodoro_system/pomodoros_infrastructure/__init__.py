@@ -8,13 +8,26 @@ from pomodoros import (
     GetRecentPomodoros,
     GetTasksByPomodoroId
 )
+from .models import Project, Task, SubTask, Pause, Pomodoro
+from .repositories import SQLPausesRepository
+
+__all__ = [
+    # injected module
+    'PomodorosInfrastructure',
+
+    # orm models
+    'Project',
+    'Task',
+    'SubTask',
+    'Pause',
+    'Pomodoro'
+]
 
 
 class PomodorosInfrastructure(injector.Module):
     @injector.provider
     def pauses_repository(self) -> PausesRepository:
-        # todo: add concrete repository
-        pass
+        return SQLPausesRepository()
 
     @injector.provider
     def pomodoros_repository(self) -> PomodorosRepository:
