@@ -4,7 +4,7 @@ from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.value_objects import PauseId
 
 
-class PausesRepository(ABC):
+class PauseRepository(ABC):
     @abstractmethod
     def get(self, pause_id: PauseId) -> Pause:
         pass
