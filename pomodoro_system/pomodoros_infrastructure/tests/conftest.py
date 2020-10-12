@@ -3,10 +3,9 @@ from typing import Tuple
 
 import pytest
 import pytz
-from pony.orm import db_session, sql_debug, BindingError
+from pony.orm import db_session
 
 from foundation.models import User
-from foundation.models import db
 from foundation.tests.factories import ORMUserFactory, ORMUserDateFrameDefinitionFactory
 from pomodoros_infrastructure import Project, Task, Pomodoro
 from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory, ORMPomodoroFactory
@@ -22,27 +21,6 @@ def yesterday_date_range() -> Tuple[datetime, datetime]:
 def today_date_range() -> Tuple[datetime, datetime]:
     today = datetime.now(tz=pytz.UTC)
     return today.replace(hour=10, minute=00), today.replace(hour=10, minute=25)
-
-
-def setup_database() -> None:
-    sql_debug(True)
-    try:
-        db.bind('sqlite', ':memory:')
-    except BindingError:
-        pass
-    else:
-        db.generate_mapping(check_tables=False)
-    db.create_tables()
-
-
-@pytest.fixture(autouse=True)
-def setup_teardown_tables() -> None:
-    setup_database()
-    try:
-        yield
-    finally:
-        db.drop_all_tables(with_all_data=True)
-        db.disconnect()
 
 
 @pytest.fixture()

@@ -1,6 +1,9 @@
+import pytest
 from pony.orm import db_session
 
 from pomodoros_infrastructure.queries.pomodoros import SQLGetRecentPomodoros
+
+pytestmark = pytest.mark.usefixtures("setup_teardown_tables")
 
 
 def test_get_recent_pomodoros_returns_pomodoro_from_today(orm_task, orm_pomodoro_for_today, orm_pomodoro_for_yesterday):
