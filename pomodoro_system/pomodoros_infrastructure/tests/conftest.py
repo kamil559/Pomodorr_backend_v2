@@ -44,6 +44,12 @@ def orm_task(orm_project: Project) -> Task:
 
 
 @pytest.fixture()
+def orm_random_task() -> Task:
+    with db_session:
+        return ORMTaskFactory()
+
+
+@pytest.fixture()
 def orm_pomodoro(orm_task: Task) -> Pomodoro:
     with db_session:
         return ORMPomodoroFactory(task_id=orm_task)
