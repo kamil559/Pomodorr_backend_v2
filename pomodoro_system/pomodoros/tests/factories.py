@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 import factory
 from factory.fuzzy import FuzzyAttribute
 
-from foundation.domain.tests.factories import UserFactory
+from foundation.tests.factories import UserFactory
 from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import Task, SubTask, Project
 from pomodoros.domain.entities.pause import Pause

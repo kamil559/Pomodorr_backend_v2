@@ -5,7 +5,7 @@ import pytest
 
 from foundation.application.repositories.user import UsersRepository
 from foundation.domain.entities.user import AbstractUser
-from foundation.domain.tests.factories import UserFactory
+from foundation.tests.factories import UserFactory
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository

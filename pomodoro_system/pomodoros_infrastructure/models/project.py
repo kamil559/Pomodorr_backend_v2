@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from pony.orm import PrimaryKey, Required
+from pony.orm import PrimaryKey, Required, Optional
 
 from foundation.models import db
 
@@ -16,4 +16,4 @@ class Project(db.Entity):
     ordering = Required(int)
     owner_id = Required(uuid.UUID)
     created_at = Required(datetime)
-    deleted_at = Required(datetime)
+    deleted_at = Optional(datetime)

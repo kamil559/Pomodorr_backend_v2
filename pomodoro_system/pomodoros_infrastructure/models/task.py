@@ -17,7 +17,7 @@ class Task(db.Entity):
     priority_level = Required(int)
     ordering = Required(int)
     due_date = Optional(datetime)
-    pomororos_to_do = Required(int)
+    pomodoros_to_do = Required(int)
     pomodoros_burn_down = Required(int)
     pomodoro_length = Optional(timedelta)
     break_length = Optional(timedelta)

@@ -11,7 +11,7 @@ from pomodoros import (
 )
 
 
-class PomodorosApp(injector.Module):
+class PomodorosWebb(injector.Module):
 
     @injector.provider
     def begin_pomodoro_output_boundary(self) -> BeginPomodoroOutputBoundary:

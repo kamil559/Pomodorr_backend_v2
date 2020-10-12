@@ -18,7 +18,7 @@ class SQLTaskRepository(TaskRepository):
                                                     task_model.longer_break_length, task_model.gap_between_long_breaks)
 
         return Task(task_model.id, task_model.project_id, task_model.name, TaskStatus(task_model.status), priority,
-                    task_model.ordering, task_model.due_date, task_model.pomororos_to_do,
+                    task_model.ordering, task_model.due_date, task_model.pomodoros_to_do,
                     task_model.pomodoros_burn_down, date_frame_definition, task_model.reminder_date,
                     task_model.renewal_interval, task_model.note, task_model.created_at, task_model.sub_tasks)
 
