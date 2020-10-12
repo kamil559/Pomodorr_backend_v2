@@ -1,11 +1,11 @@
 from typing import Optional, List
 
-from pomodoros.application.queries.tasks import GetTasksByPomodoroId, TaskDto
+from pomodoros.application.queries.tasks import GetTasksByProjectId, TaskDto
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import ProjectId
 
 
-class GetTasksByProjectIdStub(GetTasksByPomodoroId):
+class GetTasksByProjectIdStub(GetTasksByProjectId):
     def __init__(self, return_collection: Optional[List[Task]] = None):
         if return_collection is not None:
             self._rows = return_collection

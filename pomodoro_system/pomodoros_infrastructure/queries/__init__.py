@@ -1,5 +1,7 @@
 __all__ = [
-    'SQLGetRecentPomodoros'
+    'SQLGetRecentPomodoros',
+    'SQLGetTasksByProjectId'
 ]
 
 from .pomodoros import SQLGetRecentPomodoros
+from .tasks import SQLGetTasksByProjectId

@@ -2,7 +2,7 @@ import injector
 
 from foundation.application.repositories.user import UsersRepository
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros, PomodoroDto
-from pomodoros.application.queries.tasks import GetTasksByPomodoroId, TaskDto
+from pomodoros.application.queries.tasks import GetTasksByProjectId, TaskDto
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.projects import ProjectRepository
@@ -107,7 +107,7 @@ __all__ = [
 
     # queries
     'GetRecentPomodoros',
-    'GetTasksByPomodoroId',
+    'GetTasksByProjectId',
 
     # queries dtos
     'PomodoroDto',
@@ -149,11 +149,11 @@ class Pomodoros(injector.Module):
 
     @injector.provider
     def reactivate_task_uc(self, output_boundary: ReactivateTaskOutputBoundary, tasks_repository: TaskRepository,
-                           get_tasks_by_pomodoro_id_query: GetTasksByPomodoroId) -> ReactivateTask:
+                           get_tasks_by_pomodoro_id_query: GetTasksByProjectId) -> ReactivateTask:
         return ReactivateTask(output_boundary, tasks_repository, get_tasks_by_pomodoro_id_query)
 
     @injector.provider
     def pin_task_to_project_provider(self, output_boundary: PinTaskToProjectOutputBoundary,
                                      tasks_repository: TaskRepository,
-                                     get_tasks_by_project_id_query: GetTasksByPomodoroId) -> PinTaskToProject:
+                                     get_tasks_by_project_id_query: GetTasksByProjectId) -> PinTaskToProject:
         return PinTaskToProject(output_boundary, tasks_repository, get_tasks_by_project_id_query)

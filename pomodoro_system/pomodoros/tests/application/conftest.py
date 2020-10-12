@@ -7,7 +7,7 @@ from foundation.application.repositories.user import UsersRepository
 from foundation.domain.entities.user import AbstractUser
 from foundation.domain.tests.factories import UserFactory
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
-from pomodoros.application.queries.tasks import GetTasksByPomodoroId
+from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.application.use_cases.begin_pomodoro import (BeginPomodoro, BeginPomodoroOutputBoundary)
@@ -139,7 +139,7 @@ def resume_pomodoro_use_case(resume_pomodoro_output_boundary, populated_pomodoro
 
 
 @pytest.fixture()
-def populated_tasks_by_project_id_query(populated_tasks_repository: InMemoryTaskRepository) -> GetTasksByPomodoroId:
+def populated_tasks_by_project_id_query(populated_tasks_repository: InMemoryTaskRepository) -> GetTasksByProjectId:
     return GetTasksByProjectIdStub(return_collection=list(populated_tasks_repository.rows.values()))
 
 
