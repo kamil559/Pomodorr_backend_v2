@@ -1,8 +1,9 @@
 from typing import Type
 
+import pytz
 from pony.orm import ObjectNotFound
 
-from exceptions import NotFound
+from foundation.exceptions import NotFound
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.value_objects import PauseId
@@ -12,7 +13,8 @@ from pomodoros_infrastructure.models.date_frame import Pause as PauseModel
 class SQLPauseRepository(PauseRepository):
     @staticmethod
     def _to_entity(pause_model: Type[PauseModel]) -> Pause:
-        return Pause(pause_model.id, pause_model.start_date, pause_model.end_date)
+        return Pause(pause_model.id, pause_model.start_date.astimezone(tz=pytz.UTC),
+                     pause_model.end_date.astimezone(tz=pytz.UTC))
 
     def get(self, pause_id: PauseId) -> Pause:
         try:
@@ -24,7 +26,7 @@ class SQLPauseRepository(PauseRepository):
 
     @staticmethod
     def _get_for_update(pause_id: PauseId) -> Type[PauseModel]:
-        return PauseModel.get_for_update(pause_id)
+        return PauseModel.get_for_update(lambda pause: pause.id == pause_id)
 
     def save(self, pause: Pause) -> None:
         values_to_update = {

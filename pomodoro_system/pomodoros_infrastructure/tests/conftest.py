@@ -7,8 +7,9 @@ from pony.orm import db_session
 
 from foundation.models import User
 from foundation.tests.factories import ORMUserFactory, ORMUserDateFrameDefinitionFactory
-from pomodoros_infrastructure import Project, Task, Pomodoro
-from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory, ORMPomodoroFactory
+from pomodoros_infrastructure import Project, Task, Pomodoro, Pause
+from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory, ORMPomodoroFactory, \
+    ORMPauseFactory
 
 
 @pytest.fixture()
@@ -52,15 +53,14 @@ def orm_random_task() -> Task:
 @pytest.fixture()
 def orm_pomodoro(orm_task: Task) -> Pomodoro:
     with db_session:
-        return ORMPomodoroFactory(task_id=orm_task)
+        return ORMPomodoroFactory(task_id=orm_task.id)
 
 
 @pytest.fixture()
 def orm_random_pomodoro_for_today(today_date_range: Tuple[datetime, datetime]) -> Pomodoro:
     with db_session:
-        with db_session:
-            start_date, end_date = today_date_range
-            return ORMPomodoroFactory(start_date=start_date, end_date=end_date)
+        start_date, end_date = today_date_range
+        return ORMPomodoroFactory(start_date=start_date, end_date=end_date)
 
 
 @pytest.fixture()
@@ -82,3 +82,9 @@ def orm_pomodoro_for_yesterday(orm_task: Task, yesterday_date_range: Tuple[datet
     with db_session:
         start_date, end_date = yesterday_date_range
         return ORMPomodoroFactory(task_id=orm_task.id, start_date=start_date, end_date=end_date)
+
+
+@pytest.fixture()
+def orm_pause() -> Pause:
+    with db_session:
+        return ORMPauseFactory()
