@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 
 import pytest
 import pytz
-from pony.orm import db_session, sql_debug, flush
+from pony.orm import db_session, flush
 
 from foundation.exceptions import NotFound
 from pomodoros.domain.entities.pause import Pause
@@ -29,7 +29,6 @@ class TestPauseRepository:
             repo.get(random_uuid)
 
     def test_repository_saves_pause_values(self, orm_pause):
-        sql_debug(True)
         repo = SQLPauseRepository()
 
         with db_session(strict=True):

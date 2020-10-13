@@ -13,6 +13,6 @@ class Pause(DateFrame):
         super().__init__(start_date=start_date, end_date=end_date)
         self.id = id
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return [type(self), self.frame_type, self.start_date, self.end_date] == \
                [type(other), other.frame_type, other.start_date, other.end_date]

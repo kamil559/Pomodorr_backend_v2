@@ -126,3 +126,9 @@ class Pomodoro(DateFrame):
         if self.current_pause is not None:
             self.current_pause.run_finish_date_frame_validations(end_date)
             self.current_pause.end_date = end_date
+
+    def __eq__(self, other) -> bool:
+        return [type(self), self.task_id, self.frame_type, self.start_date,
+                self.end_date, list(self.contained_pauses)] == \
+               [type(other), other.task_id, other.frame_type, other.start_date,
+                other.end_date, list(other.contained_pauses)]
