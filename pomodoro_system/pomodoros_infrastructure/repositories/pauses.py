@@ -26,7 +26,7 @@ class SQLPauseRepository(PauseRepository):
 
     @staticmethod
     def _get_for_update(pause_id: PauseId) -> Type[PauseModel]:
-        return PauseModel.get_for_update(lambda pause: pause.id == pause_id)
+        return PauseModel.get_for_update(id=pause_id)
 
     def save(self, pause: Pause) -> None:
         values_to_update = {

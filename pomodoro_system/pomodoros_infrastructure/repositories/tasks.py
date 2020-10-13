@@ -40,7 +40,7 @@ class SQLTaskRepository(TaskRepository):
 
     @staticmethod
     def _get_for_update(task_id: TaskId) -> Type[TaskModel]:
-        return TaskModel.get_for_update(lambda task: task.id == task_id)
+        return TaskModel.get_for_update(id=task_id)
 
     def save(self, task: Task) -> None:
         values_to_update = {
@@ -49,6 +49,7 @@ class SQLTaskRepository(TaskRepository):
             'status': task.status.value,
             'priority_color': task.priority.color,
             'priority_level': task.priority.priority_level.value,
+            'ordering': task.ordering,
             'due_date': task.due_date,
             'pomodoros_to_do': task.pomodoros_to_do,
             'pomodoros_burn_down': task.pomodoros_burn_down,

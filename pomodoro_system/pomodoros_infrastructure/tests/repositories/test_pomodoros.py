@@ -33,7 +33,6 @@ class TestPomodoroRepository:
         with pytest.raises(NotFound):
             repo.get(random_uuid)
 
-    @db_session
     def test_repository_saves_pomodoro_values(self, orm_pause):
         repo = SQLPomodoroRepository()
         orm_pomodoro = orm_pause.pomodoro

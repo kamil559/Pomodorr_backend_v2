@@ -30,7 +30,7 @@ class SQLPomodoroRepository(PomodoroRepository):
 
     @staticmethod
     def _get_for_update(pomodoro_id: PomodoroId) -> Type[PomodoroModel]:
-        return PomodoroModel.get_for_update(lambda pomodoro: pomodoro.id == pomodoro_id)
+        return PomodoroModel.get_for_update(id=pomodoro_id)
 
     def save(self, pomodoro: Pomodoro) -> None:
         values_to_update = {

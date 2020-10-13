@@ -46,16 +46,15 @@ class TestSQLTaskRepository:
         with pytest.raises(NotFound):
             repo.get(random_uuid)
 
-    @db_session
     def test_repository_saves_task_values(self, orm_task, orm_second_project):
         repo = SQLTaskRepository()
-        domain_task = repo.get(orm_task.id)
 
         values_to_update = {
             'project_id': orm_second_project.id,
             'name': 'xyz',
             'status': TaskStatus.COMPLETED,
             'priority': Priority('#952424', PriorityLevel(randint(0, 3))),
+            'ordering': 1,
             'due_date': (datetime.now() + timedelta(days=1)).astimezone(tz=pytz.UTC),
             'pomodoros_to_do': 45,
             'pomodoros_burn_down': 2,
@@ -65,7 +64,10 @@ class TestSQLTaskRepository:
             'renewal_interval': timedelta(days=2),
             'note': 'Lorem ipsum'
         }
+
         with db_session(strict=True):
+            domain_task = repo.get(orm_task.id)
+
             for field, value in values_to_update.items():
                 setattr(domain_task, field, value)
 

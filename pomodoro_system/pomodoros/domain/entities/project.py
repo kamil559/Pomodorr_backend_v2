@@ -19,3 +19,6 @@ class Project:
     @property
     def is_removed(self):
         return self.deleted_at is not None
+
+    def __eq__(self, other) -> bool:
+        return type(self) is type(other) and self.__dict__ == other.__dict__
