@@ -4,7 +4,7 @@ from typing import Optional, List, Type
 import pytz
 
 from pomodoros import GetRecentPomodoros, TaskId, PomodoroDto
-from pomodoros_infrastructure.models import Pomodoro as PomodoroModel
+from pomodoros_infrastructure.models import PomodoroModel
 
 
 class SQLGetRecentPomodoros(GetRecentPomodoros):

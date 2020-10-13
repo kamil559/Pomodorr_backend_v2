@@ -1,11 +1,11 @@
 __all__ = [
-    'Project',
-    'Task',
-    'SubTask',
-    'Pause',
-    'Pomodoro'
+    'ProjectModel',
+    'TaskModel',
+    'SubTaskModel',
+    'PauseModel',
+    'PomodoroModel'
 ]
 
-from pomodoros_infrastructure.models.date_frame import Pause, Pomodoro
-from pomodoros_infrastructure.models.project import Project
-from pomodoros_infrastructure.models.task import Task, SubTask
+from pomodoros_infrastructure.models.date_frame import PauseModel, PomodoroModel
+from pomodoros_infrastructure.models.projectmodel import ProjectModel
+from pomodoros_infrastructure.models.taskmodel import TaskModel, SubTaskModel

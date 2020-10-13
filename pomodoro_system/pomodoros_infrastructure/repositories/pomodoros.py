@@ -7,7 +7,7 @@ from exceptions import NotFound
 from pomodoros import PomodoroRepository, PomodoroId
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros_infrastructure.models import Pomodoro as PomodoroModel
+from pomodoros_infrastructure.models import PomodoroModel
 
 
 class SQLPomodoroRepository(PomodoroRepository):

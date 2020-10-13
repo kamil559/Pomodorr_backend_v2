@@ -44,5 +44,5 @@ class TestPauseRepository:
         with db_session:
             fetched_pause = repo.get(domain_entity.id)
 
-        assert fetched_pause.start_date == new_start_date
-        assert fetched_pause.end_date == new_end_date
+            assert fetched_pause.start_date == new_start_date
+            assert fetched_pause.end_date == new_end_date

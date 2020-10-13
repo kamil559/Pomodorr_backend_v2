@@ -6,7 +6,7 @@ from pony.orm import PrimaryKey, Required, Optional, Set
 from foundation.models import db
 
 
-class DateFrame(db.Entity):
+class DateFrameModel(db.Entity):
     _table_ = 'date_frames'
 
     id = PrimaryKey(uuid.UUID, auto=False)
@@ -15,10 +15,10 @@ class DateFrame(db.Entity):
     end_date = Optional(datetime, sql_type='TIMESTAMP WITH TIME ZONE')
 
 
-class Pomodoro(DateFrame):
+class PomodoroModel(DateFrameModel):
     task_id = Required(uuid.UUID)
-    contained_pauses = Set(lambda: Pause)
+    contained_pauses = Set(lambda: PauseModel)
 
 
-class Pause(DateFrame):
-    pomodoro = Required(Pomodoro)
+class PauseModel(DateFrameModel):
+    pomodoro = Required(PomodoroModel)

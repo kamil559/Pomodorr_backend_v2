@@ -8,7 +8,7 @@ from pomodoros import (
     GetRecentPomodoros,
     GetTasksByProjectId
 )
-from .models import Project, Task, SubTask, Pause, Pomodoro
+from .models import ProjectModel, TaskModel, SubTaskModel, PauseModel, PomodoroModel
 from .queries import SQLGetRecentPomodoros, SQLGetTasksByProjectId
 from .repositories import SQLPauseRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
 
@@ -17,11 +17,11 @@ __all__ = [
     'PomodorosInfrastructure',
 
     # orm models
-    'Project',
-    'Task',
-    'SubTask',
-    'Pause',
-    'Pomodoro'
+    'ProjectModel',
+    'TaskModel',
+    'SubTaskModel',
+    'PauseModel',
+    'PomodoroModel'
 ]
 
 

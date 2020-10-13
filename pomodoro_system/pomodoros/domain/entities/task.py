@@ -80,3 +80,6 @@ class Task:
         self._check_task_name_available_in_project(project_tasks)
 
         self.status = TaskStatus.ACTIVE
+
+    def __eq__(self, other) -> bool:
+        return type(self) is type(other) and self.__dict__ == other.__dict__

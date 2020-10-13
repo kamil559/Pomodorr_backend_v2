@@ -6,7 +6,7 @@ from pony.orm import PrimaryKey, Required, Optional
 from foundation.models import db
 
 
-class Project(db.Entity):
+class ProjectModel(db.Entity):
     _table_ = 'projects'
 
     id = PrimaryKey(uuid.UUID, auto=False)

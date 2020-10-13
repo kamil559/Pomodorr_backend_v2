@@ -9,12 +9,12 @@ from factory.fuzzy import FuzzyAttribute
 from foundation.models import db
 from foundation.tests.factories import ORMUserFactory, PonyFactory
 from pomodoros.domain.value_objects import TaskStatus, FrameType
-from pomodoros_infrastructure import Project, Task, SubTask, Pomodoro, Pause
+from pomodoros_infrastructure import ProjectModel, TaskModel, SubTaskModel, PomodoroModel, PauseModel
 
 
 class ORMProjectFactory(PonyFactory):
     class Meta:
-        model = Project
+        model = ProjectModel
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
@@ -29,7 +29,7 @@ class ORMProjectFactory(PonyFactory):
 
 class ORMSubTaskFactory(PonyFactory):
     class Meta:
-        model = SubTask
+        model = SubTaskModel
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
@@ -41,7 +41,7 @@ class ORMSubTaskFactory(PonyFactory):
 
 class ORMTaskFactory(PonyFactory):
     class Meta:
-        model = Task
+        model = TaskModel
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
@@ -67,7 +67,7 @@ class ORMTaskFactory(PonyFactory):
 
 class ORMPomodoroFactory(PonyFactory):
     class Meta:
-        model = Pomodoro
+        model = PomodoroModel
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
@@ -80,7 +80,7 @@ class ORMPomodoroFactory(PonyFactory):
 
 class ORMPauseFactory(PonyFactory):
     class Meta:
-        model = Pause
+        model = PauseModel
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)

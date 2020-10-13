@@ -2,7 +2,7 @@ from typing import Optional, List, Type
 
 from pomodoros import GetTasksByProjectId, ProjectId, TaskDto
 from pomodoros.domain.value_objects import TaskStatus
-from pomodoros_infrastructure.models import Task as TaskModel
+from pomodoros_infrastructure.models import TaskModel
 
 
 class SQLGetTasksByProjectId(GetTasksByProjectId):

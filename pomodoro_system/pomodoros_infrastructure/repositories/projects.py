@@ -6,7 +6,7 @@ from exceptions import NotFound
 from foundation.value_objects import Priority
 from pomodoros import ProjectRepository, ProjectId
 from pomodoros.domain.entities import Project
-from pomodoros_infrastructure.models import Project as ProjectModel
+from pomodoros_infrastructure.models import ProjectModel
 
 
 class SQLProjectRepository(ProjectRepository):

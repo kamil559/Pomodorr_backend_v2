@@ -6,7 +6,7 @@ from pony.orm import PrimaryKey, Required, Optional, LongStr, Set
 from foundation.models import db
 
 
-class Task(db.Entity):
+class TaskModel(db.Entity):
     _table_ = 'tasks'
 
     id = PrimaryKey(uuid.UUID, auto=False)
@@ -27,14 +27,14 @@ class Task(db.Entity):
     renewal_interval = Optional(timedelta)
     note = Optional(LongStr, lazy=False)
     created_at = Required(datetime)
-    sub_tasks = Set(lambda: SubTask)
+    sub_tasks = Set(lambda: SubTaskModel)
 
 
-class SubTask(db.Entity):
+class SubTaskModel(db.Entity):
     _table_ = 'sub_tasks'
 
     id = PrimaryKey(uuid.UUID, auto=False)
     name = Required(str, max_len=128)
-    task = Required(Task)
+    task = Required(TaskModel)
     created_at = Required(datetime)
     is_completed = Required(bool)

@@ -7,7 +7,7 @@ from foundation.exceptions import NotFound
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.value_objects import PauseId
-from pomodoros_infrastructure.models.date_frame import Pause as PauseModel
+from pomodoros_infrastructure.models.date_frame import PauseModel
 
 
 class SQLPauseRepository(PauseRepository):

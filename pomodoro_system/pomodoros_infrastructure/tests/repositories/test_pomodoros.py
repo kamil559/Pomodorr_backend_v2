@@ -26,7 +26,7 @@ class TestPomodoroRepository:
         assert expected_entity == result
 
     @db_session
-    def test_repository_raises_error_when_no_pause_was_found(self):
+    def test_repository_raises_error_when_no_pomodoro_was_found(self):
         repo = SQLPomodoroRepository()
         random_uuid = uuid.uuid4()
 
@@ -34,7 +34,7 @@ class TestPomodoroRepository:
             repo.get(random_uuid)
 
     @db_session
-    def test_repository_saves_pause_values(self, orm_pause):
+    def test_repository_saves_pomodoro_values(self, orm_pause):
         repo = SQLPomodoroRepository()
         orm_pomodoro = orm_pause.pomodoro
 
@@ -52,5 +52,5 @@ class TestPomodoroRepository:
         with db_session:
             fetched_pomodoro = repo.get(domain_pomodoro.id)
 
-        assert fetched_pomodoro.start_date == new_start_date
-        assert fetched_pomodoro.end_date == new_end_date
+            assert fetched_pomodoro.start_date == new_start_date
+            assert fetched_pomodoro.end_date == new_end_date
