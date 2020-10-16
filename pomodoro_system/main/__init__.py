@@ -16,7 +16,8 @@ class Application:
 
 
 def _get_config_file_path(config_file_name: str) -> str:
-    return os.environ.get(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, config_file_name))
+    return os.environ.get("CONFIG_PATH",
+                          os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, config_file_name))
 
 
 def _setup_dependencies(settings: dict) -> injector.Injector:
@@ -35,7 +36,7 @@ def _generate_db_mappings(settings: dict) -> None:
 
 
 def initialize_application() -> Application:
-    config_file_path = _get_config_file_path('.envs')
+    config_file_path = _get_config_file_path('.envs/local/application')
 
     dotenv.load_dotenv(config_file_path)
 
