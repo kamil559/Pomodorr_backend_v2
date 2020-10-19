@@ -8,6 +8,7 @@ injector==0.17.0
 itsdangerous==1.1.0
 jinja2==2.11.2
 markupsafe==1.1.1
+marshmallow==3.8.0
 more-itertools==8.5.0; python_version > "2.7"
 packaging==20.4
 pluggy==0.13.1

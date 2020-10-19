@@ -1,8 +1,8 @@
 import os
 from dataclasses import dataclass
 
-import dotenv
 import injector
+from dotenv import load_dotenv
 
 from foundation.models import db
 from pomodoros import Pomodoros
@@ -15,9 +15,8 @@ class Application:
     injector: injector.Injector
 
 
-def _get_config_file_path(config_file_name: str) -> str:
-    return os.environ.get("CONFIG_PATH",
-                          os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, config_file_name))
+def _get_config_file_path(env_name: str) -> str:
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.environ.get(env_name)))
 
 
 def _setup_dependencies(settings: dict) -> injector.Injector:
@@ -31,23 +30,28 @@ def _setup_dependencies(settings: dict) -> injector.Injector:
 
 
 def _generate_db_mappings(settings: dict) -> None:
-    db.bind(**settings['database'])
+    if bool(os.getenv('TESTING')):
+        db.bind(provider=settings['database']['provider'], filename=settings['database']['filename'])
+    else:
+        db.bind(**settings['database'])
     db.generate_mapping(create_tables=True)
 
 
 def initialize_application() -> Application:
-    config_file_path = _get_config_file_path('.envs/local/application')
-
-    dotenv.load_dotenv(config_file_path)
+    app_config_file_path = _get_config_file_path('APPLICATION_CONFIG')
+    db_config_file_path = _get_config_file_path('DB_CONFIG')
+    load_dotenv(dotenv_path=app_config_file_path, override=True)
+    load_dotenv(dotenv_path=db_config_file_path, override=True)
 
     settings = {
         'database': {
-            'provider': os.environ['DB_PROVIDER'],
-            'host': os.environ['POSTGRES_HOST'],
-            'port': os.environ['POSTGRES_PORT'],
-            'user': os.environ['POSTGRES_USER'],
-            'password': os.environ['POSTGRES_PASSWORD'],
-            'database': os.environ['POSTGRES_DB']
+            'provider': os.getenv('DB_PROVIDER'),
+            'host': os.getenv('DB_HOST'),
+            'port': os.getenv('DB_PORT'),
+            'user': os.getenv('DB_USER'),
+            'password': os.getenv('DB_PASSWORD'),
+            'database': os.getenv('DB_NAME'),
+            'filename': os.getenv('DB_FILENAME')  # optional (in case of running sqlite3 DB)
         },
     }
 

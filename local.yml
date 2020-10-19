@@ -16,8 +16,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./.envs/local/application
-      - ./.envs/local/database
+      - .envs/local/.application
     command: /start
 
   postgres:
@@ -28,4 +27,4 @@ services:
     volumes:
       - local_postgres_data:/var/lib/postgresql/data
     env_file:
-      - ./.envs/local/database
+      - .envs/local/.database
