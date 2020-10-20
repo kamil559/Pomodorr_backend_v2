@@ -5,3 +5,7 @@ class RepositoryError(Exception):
 
 class NotFound(RepositoryError):
     pass
+
+
+class AlreadyExists(RepositoryError):
+    pass

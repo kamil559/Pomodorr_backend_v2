@@ -5,7 +5,7 @@ import pytest
 import pytz
 from pony.orm import db_session, flush
 
-from exceptions import NotFound
+from foundation.exceptions import NotFound
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros_infrastructure.repositories import SQLPomodoroRepository

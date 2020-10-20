@@ -33,16 +33,17 @@ class TestPauseRepository:
 
         with db_session(strict=True):
             domain_entity = Pause(orm_pause.id, orm_pause.start_date, orm_pause.end_date)
-            new_start_date = datetime.now(tz=pytz.UTC)
+            new_start_date = datetime.now()
             domain_entity.start_date = new_start_date
             new_end_date = domain_entity.start_date + timedelta(minutes=5)
             domain_entity.end_date = new_end_date
 
             repo.save(domain_entity)
             flush()
-
+        expected_start_date = new_start_date.astimezone(tz=pytz.UTC)
+        expected_end_date = new_end_date.astimezone(tz=pytz.UTC)
         with db_session:
             fetched_pause = repo.get(domain_entity.id)
 
-            assert fetched_pause.start_date == new_start_date
-            assert fetched_pause.end_date == new_end_date
+            assert fetched_pause.start_date == expected_start_date
+            assert fetched_pause.end_date == expected_end_date

@@ -10,5 +10,5 @@ class PomodoroRepository(ABC):
         pass
 
     @abstractmethod
-    def save(self, pomodoro: Pomodoro) -> None:
+    def save(self, pomodoro: Pomodoro, create: bool = False) -> None:
         pass

@@ -1,9 +1,9 @@
 from typing import Type
 
-import pytz
 from pony.orm import ObjectNotFound
 
 from foundation.exceptions import NotFound
+from foundation.utils import with_tzinfo
 from foundation.value_objects import Priority, DateFrameDefinition, PriorityLevel
 from pomodoros import TaskRepository, TaskId
 from pomodoros.domain.entities import SubTask
@@ -22,11 +22,11 @@ class SQLTaskRepository(TaskRepository):
 
         return Task(
             task_model.id, task_model.project_id, task_model.name, TaskStatus(task_model.status), priority,
-            task_model.ordering, task_model.due_date.astimezone(tz=pytz.UTC), task_model.pomodoros_to_do,
-            task_model.pomodoros_burn_down, date_frame_definition, task_model.reminder_date.astimezone(tz=pytz.UTC),
-            task_model.renewal_interval, task_model.note, task_model.created_at.astimezone(tz=pytz.UTC),
+            task_model.ordering, with_tzinfo(task_model.due_date), task_model.pomodoros_to_do,
+            task_model.pomodoros_burn_down, date_frame_definition, with_tzinfo(task_model.reminder_date),
+            task_model.renewal_interval, task_model.note, with_tzinfo(task_model.created_at),
             sub_tasks=list(map(lambda sub_task: SubTask(sub_task.id, sub_task.name, sub_task.task_id,
-                                                        sub_task.created_at.astimezone(tz=pytz.UTC),
+                                                        with_tzinfo(sub_task.created_at),
                                                         sub_task.is_completed), task_model.sub_tasks))
         )
 

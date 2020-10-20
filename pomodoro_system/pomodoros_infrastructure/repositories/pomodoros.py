@@ -1,23 +1,23 @@
 from typing import Type
 
-import pytz
 from pony.orm import ObjectNotFound
 
-from exceptions import NotFound
+from foundation.exceptions import NotFound, AlreadyExists
+from foundation.utils import with_tzinfo, to_utc
 from pomodoros import PomodoroRepository, PomodoroId
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
+from pomodoros_infrastructure import PauseModel
 from pomodoros_infrastructure.models import PomodoroModel
 
 
 class SQLPomodoroRepository(PomodoroRepository):
-
     @staticmethod
     def _to_entity(pomodoro_model: Type[PomodoroModel]) -> Pomodoro:
-        return Pomodoro(pomodoro_model.id, pomodoro_model.task_id, pomodoro_model.start_date.astimezone(tz=pytz.UTC),
-                        pomodoro_model.end_date.astimezone(tz=pytz.UTC),
-                        list(map(lambda pause: Pause(pause.id, pause.start_date.astimezone(tz=pytz.UTC),
-                                                     pause.end_date.astimezone(tz=pytz.UTC)),
+        return Pomodoro(pomodoro_model.id, pomodoro_model.task_id,
+                        with_tzinfo(pomodoro_model.start_date), with_tzinfo(pomodoro_model.end_date),
+                        list(map(lambda pause: Pause(pause.id, with_tzinfo(pause.start_date),
+                                                     with_tzinfo(pause.end_date)),
                                  pomodoro_model.contained_pauses)))
 
     def get(self, pomodoro_id: PomodoroId) -> Pomodoro:
@@ -30,14 +30,33 @@ class SQLPomodoroRepository(PomodoroRepository):
 
     @staticmethod
     def _get_for_update(pomodoro_id: PomodoroId) -> Type[PomodoroModel]:
-        return PomodoroModel.get_for_update(id=pomodoro_id)
+        orm_pomodoro = PomodoroModel.get_for_update(id=pomodoro_id)
 
-    def save(self, pomodoro: Pomodoro) -> None:
-        values_to_update = {
+        if orm_pomodoro is None:
+            raise NotFound()
+        return orm_pomodoro
+
+    @staticmethod
+    def _persist_new_orm_entity(pomodoro: Pomodoro) -> None:
+        if PomodoroModel.exists(id=pomodoro.id):
+            raise AlreadyExists()
+        else:
+            orm_pomodoro = PomodoroModel(id=pomodoro.id, frame_type=pomodoro.frame_type, task_id=pomodoro.task_id,
+                                         start_date=to_utc(pomodoro.start_date), end_date=to_utc(pomodoro.end_date))
+            contained_pauses = [PauseModel(id=pause.id, frame_type=pause.frame_type,
+                                           start_date=to_utc(pause.start_date), end_date=to_utc(pause.end_date),
+                                           pomodoro=orm_pomodoro) for pause in pomodoro.contained_pauses]
+            orm_pomodoro.contained_pauses = contained_pauses
+
+    def save(self, pomodoro: Pomodoro, create: bool = False) -> None:
+        values_to_save = {
             'task_id': pomodoro.task_id,
-            'start_date': pomodoro.start_date,
-            'end_date': pomodoro.end_date
+            'start_date': to_utc(pomodoro.start_date),
+            'end_date': to_utc(pomodoro.end_date)
         }
 
-        pomodoro = self._get_for_update(pomodoro.id)
-        pomodoro.set(**values_to_update)
+        if create:
+            self._persist_new_orm_entity(pomodoro)
+        else:
+            orm_pomodoro = self._get_for_update(pomodoro.id)
+            orm_pomodoro.set(**values_to_save)
