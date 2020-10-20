@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from pomodoros.domain.value_objects import TaskId, TaskStatus, ProjectId
 
@@ -19,5 +19,5 @@ class TaskDto:
 
 class GetTasksByProjectId(ABC):
     @abstractmethod
-    def query(self, project_id: ProjectId) -> Optional[List[TaskDto]]:
+    def query(self, project_id: ProjectId) -> List[TaskDto]:
         pass

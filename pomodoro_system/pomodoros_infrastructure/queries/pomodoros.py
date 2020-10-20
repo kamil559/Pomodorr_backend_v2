@@ -34,5 +34,4 @@ class SQLGetRecentPomodoros(GetRecentPomodoros):
                                                 self._is_finished(pomodoro) and
                                                 self._is_from_today(pomodoro, today_date))
 
-        return list(map(lambda orm_pomodoro: self._to_entity(orm_pomodoro), recent_pomodoros)) if \
-            recent_pomodoros else []
+        return list(map(lambda orm_pomodoro: self._to_entity(orm_pomodoro), recent_pomodoros))
