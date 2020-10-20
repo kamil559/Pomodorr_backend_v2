@@ -11,8 +11,8 @@ class DateFrameModel(db.Entity):
 
     id = PrimaryKey(uuid.UUID, auto=False)
     frame_type = Required(int)
-    start_date = Required(datetime, sql_type='TIMESTAMP WITH TIME ZONE')
-    end_date = Optional(datetime, sql_type='TIMESTAMP WITH TIME ZONE')
+    start_date = Required(datetime)
+    end_date = Optional(datetime)
 
 
 class PomodoroModel(DateFrameModel):
