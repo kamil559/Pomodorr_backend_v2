@@ -1,25 +1,18 @@
 import pytest
-from pony.orm import sql_debug, BindingError
+from pony.orm import BindingError
 
 from models import db
 
 
-def setup_database() -> None:
-    sql_debug(True)
+@pytest.fixture(scope='class')
+def setup_teardown_tables() -> None:
     try:
-        db.bind('sqlite', ':memory:')
+        db.bind(provider='sqlite', filename=':memory:', create_db=True)
     except BindingError:
         pass
     else:
-        db.generate_mapping(check_tables=False)
-    db.create_tables()
-
-
-@pytest.fixture()
-def setup_teardown_tables() -> None:
-    setup_database()
-    try:
+        db.generate_mapping(create_tables=True)
         yield
-    finally:
         db.drop_all_tables(with_all_data=True)
         db.disconnect()
+        db.provider = db.schema = None
