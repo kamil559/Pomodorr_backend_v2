@@ -33,6 +33,14 @@ def project_owner() -> User:
 
 
 @pytest.fixture()
+def random_project_owner() -> User:
+    with db_session:
+        user = ORMUserFactory(date_frame_definition=None)
+        ORMUserDateFrameDefinitionFactory(user=user)
+        return user
+
+
+@pytest.fixture()
 def orm_project(project_owner: User) -> ProjectModel:
     with db_session:
         return ORMProjectFactory(owner_id=project_owner.id)

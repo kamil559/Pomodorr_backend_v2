@@ -2,11 +2,14 @@ import uuid
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
+from typing import TypeVar
 
 Color = str
 PomodoroLength = timedelta
 BreakLength = timedelta
 UserId = uuid.UUID
+
+T = TypeVar('T')
 
 
 @dataclass

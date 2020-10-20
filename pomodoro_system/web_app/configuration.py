@@ -1,5 +1,7 @@
+import flask_injector
 import injector
 
+from output_boundaries.pomodoros import JSONBeginPomodoroPresenter
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     PausePomodoroOutputBoundary,
@@ -12,11 +14,10 @@ from pomodoros import (
 
 
 class PomodorosWebb(injector.Module):
-
     @injector.provider
+    @flask_injector.request
     def begin_pomodoro_output_boundary(self) -> BeginPomodoroOutputBoundary:
-        # todo: add concrete output boundary
-        pass
+        return JSONBeginPomodoroPresenter()
 
     @injector.provider
     def pause_pomodoro_output_boundary(self) -> PausePomodoroOutputBoundary:

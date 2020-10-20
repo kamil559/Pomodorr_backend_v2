@@ -89,7 +89,7 @@ class Pomodoro(DateFrame):
         if len(colliding_date_frames):
             raise CollidingPomodoroWasFound(_('pomodoros.domain.entities.pomodoro.colliding_pomodoro_was_found'))
 
-    def begin(self, related_task: Task, recent_pomodoros: Optional[List['Pomodoro']], start_date: datetime) -> None:
+    def begin(self, related_task: Task, recent_pomodoros: List['Pomodoro'], start_date: datetime) -> None:
         related_task.check_can_perform_actions()
         super(Pomodoro, self).run_begin_date_frame_validations(start_date)
         self._check_for_colliding_pomodoros(recent_pomodoros, start_date)
