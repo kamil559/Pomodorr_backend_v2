@@ -15,7 +15,7 @@ class InMemoryPomodorosRepository(PomodoroRepository):
     def get(self, pomodoro_id: PomodoroId) -> Pomodoro:
         return self._rows[pomodoro_id]
 
-    def save(self, pomodoro: Pomodoro) -> None:
+    def save(self, pomodoro: Pomodoro, create: bool = False) -> None:
         self._rows[pomodoro.id] = pomodoro
 
     @property

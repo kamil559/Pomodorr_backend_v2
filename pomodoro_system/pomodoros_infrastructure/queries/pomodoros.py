@@ -1,17 +1,23 @@
 from datetime import datetime
-from typing import Optional, List, Type
+from typing import List, Type
 
 import pytz
 
-from pomodoros import GetRecentPomodoros, TaskId, PomodoroDto
+from foundation.utils import with_tzinfo
+from pomodoros import GetRecentPomodoros, TaskId
+from pomodoros.domain.entities.pause import Pause
+from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros_infrastructure.models import PomodoroModel
 
 
 class SQLGetRecentPomodoros(GetRecentPomodoros):
     @staticmethod
-    def _to_dto(pomodoro_model: Type[PomodoroModel]) -> PomodoroDto:
-        return PomodoroDto(pomodoro_model.id, pomodoro_model.task_id, pomodoro_model.start_date,
-                           pomodoro_model.end_date)
+    def _to_entity(pomodoro_model: Type[PomodoroModel]) -> Pomodoro:
+        return Pomodoro(pomodoro_model.id, pomodoro_model.task_id, with_tzinfo(pomodoro_model.start_date),
+                        with_tzinfo(pomodoro_model.end_date),
+                        list(map(lambda pause: Pause(pause.id, with_tzinfo(pause.start_date),
+                                                     with_tzinfo(pause.end_date)),
+                                 pomodoro_model.contained_pauses)))
 
     @staticmethod
     def _is_finished(pomodoro_model: Type[PomodoroModel]) -> bool:
@@ -21,13 +27,12 @@ class SQLGetRecentPomodoros(GetRecentPomodoros):
     def _is_from_today(pomodoro_model: Type[PomodoroModel], today_date: datetime.date) -> bool:
         return pomodoro_model.start_date.date() == today_date or pomodoro_model.end_date.date() == today_date
 
-    def query(self, task_id: TaskId) -> Optional[List[PomodoroDto]]:
+    def query(self, task_id: TaskId) -> List[Pomodoro]:
         today_date = datetime.now(tz=pytz.UTC).date()
-        recent_pomodoros = PomodoroModel.select(
-            lambda pomodoro: pomodoro.task_id == task_id and
-                             self._is_finished(pomodoro) and
-                             self._is_from_today(pomodoro, today_date)
-        )
+        recent_pomodoros = PomodoroModel.select(lambda pomodoro:
+                                                pomodoro.task_id == task_id and
+                                                self._is_finished(pomodoro) and
+                                                self._is_from_today(pomodoro, today_date))
 
-        if recent_pomodoros:
-            return list(map(lambda pomodoro: self._to_dto(pomodoro), recent_pomodoros))
+        return list(map(lambda orm_pomodoro: self._to_entity(orm_pomodoro), recent_pomodoros)) if \
+            recent_pomodoros else []

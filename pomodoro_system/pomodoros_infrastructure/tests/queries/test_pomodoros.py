@@ -32,16 +32,16 @@ class TestGetRecentPomodorosQuery:
         assert orm_pomodoro_for_today.id == result[0].id
 
     @db_session
-    def test_query_returns_none_if_task_has_no_recent_pomodoros(self, orm_task):
+    def test_query_returns_empty_collection_if_task_has_no_recent_pomodoros(self, orm_task):
         query_object = SQLGetRecentPomodoros()
         result = query_object.query(orm_task.id)
 
-        assert result is None
+        assert result == []
 
     @db_session
-    def test_query_returns_none_if_non_existing_task_id_was_passed(self):
+    def test_query_returns_empty_collection_if_non_existing_task_id_was_passed(self):
         query_object = SQLGetRecentPomodoros()
         random_uuid = uuid.uuid4()
         result = query_object.query(random_uuid)
 
-        assert result is None
+        assert result == []
