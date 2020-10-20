@@ -43,10 +43,10 @@ class SQLPomodoroRepository(PomodoroRepository):
         else:
             orm_pomodoro = PomodoroModel(id=pomodoro.id, frame_type=pomodoro.frame_type, task_id=pomodoro.task_id,
                                          start_date=to_utc(pomodoro.start_date), end_date=to_utc(pomodoro.end_date))
-            contained_pauses = [PauseModel(id=pause.id, frame_type=pause.frame_type,
+            contained_pauses = [PauseModel(id=pause.id, frame_type=pause.frame_type.value,
                                            start_date=to_utc(pause.start_date), end_date=to_utc(pause.end_date),
                                            pomodoro=orm_pomodoro) for pause in pomodoro.contained_pauses]
-            orm_pomodoro.contained_pauses = contained_pauses
+            orm_pomodoro.set(contained_pauses=contained_pauses)
 
     def save(self, pomodoro: Pomodoro, create: bool = False) -> None:
         values_to_save = {
@@ -60,3 +60,10 @@ class SQLPomodoroRepository(PomodoroRepository):
         else:
             orm_pomodoro = self._get_for_update(pomodoro.id)
             orm_pomodoro.set(**values_to_save)
+
+            if pomodoro.new_pause:
+                orm_pause = PauseModel(id=pomodoro.new_pause.id, frame_type=pomodoro.new_pause.frame_type.value,
+                                       start_date=to_utc(pomodoro.new_pause.start_date),
+                                       end_date=to_utc(pomodoro.new_pause.end_date),
+                                       pomodoro=orm_pomodoro)
+                orm_pomodoro.contained_pauses.add(orm_pause)

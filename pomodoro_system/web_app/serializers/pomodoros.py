@@ -1,7 +1,7 @@
 import pytz
 from marshmallow import fields, Schema, post_load, EXCLUDE
 
-from pomodoros import BeginPomodoroInputDto
+from pomodoros import BeginPomodoroInputDto, PausePomodoroInputDto
 
 
 class BeginPomodoroSchema(Schema):
@@ -14,5 +14,17 @@ class BeginPomodoroSchema(Schema):
         unknown = EXCLUDE
 
     @post_load
-    def make_dto(self, data: dict, **kwargs) -> BeginPomodoroInputDto:
+    def map_to_dto(self, data: dict, **kwargs) -> BeginPomodoroInputDto:
         return BeginPomodoroInputDto(**data)
+
+
+class PausePomodoroSchema(Schema):
+    pomodoro_id = fields.UUID(required=True)
+    pause_date = fields.AwareDateTime(required=True, allow_none=False, default_timezone=pytz.UTC)
+
+    class Meta:
+        unknown = EXCLUDE
+
+    @post_load()
+    def map_to_dto(self, data: dict, **_kwargs) -> PausePomodoroInputDto:
+        return PausePomodoroInputDto(**data)

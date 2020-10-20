@@ -128,7 +128,7 @@ def test_pause_pomodoro_sets_new_current_pause_if_does_not_exist(started_pomodor
     now = datetime.now()
     started_pomodoro.pause(related_task=task, start_date=now)
 
-    assert started_pomodoro.current_pause is not None
+    assert started_pomodoro.new_pause is not None
 
 
 def test_pause_pomodoro_does_not_set_current_pause_attribute_if_already_exists(paused_pomodoro, task, pause):
