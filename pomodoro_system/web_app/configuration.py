@@ -1,7 +1,6 @@
 import flask_injector
 import injector
 
-from output_boundaries.pomodoros import JSONBeginPomodoroPresenter, JSONPausePomodoroPresenter
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     PausePomodoroOutputBoundary,
@@ -11,9 +10,11 @@ from pomodoros import (
     ReactivateTaskOutputBoundary,
     PinTaskToProjectOutputBoundary
 )
+from web_app.authorization.pomodoros import BeginPomodoroResourceProtector, PausePomodoroResourceProtector
+from .output_boundaries.pomodoros import JSONBeginPomodoroPresenter, JSONPausePomodoroPresenter
 
 
-class PomodorosWebb(injector.Module):
+class PomodorosWeb(injector.Module):
     @injector.provider
     @flask_injector.request
     def begin_pomodoro_output_boundary(self) -> BeginPomodoroOutputBoundary:
@@ -53,3 +54,11 @@ class PomodorosWebb(injector.Module):
     def pin_task_to_project_output_boundary(self) -> PinTaskToProjectOutputBoundary:
         # todo: add concrete output boundary
         pass
+
+    @injector.provider
+    def begin_pomodoro_resource_protector(self) -> BeginPomodoroResourceProtector:
+        return BeginPomodoroResourceProtector()
+
+    @injector.provider
+    def pause_pomodoro_resource_protector(self) -> PausePomodoroResourceProtector:
+        return PausePomodoroResourceProtector()

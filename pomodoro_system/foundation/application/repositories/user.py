@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from foundation.domain.entities.user import UserId, AbstractUser
+from foundation.value_objects import UserId
+from interfaces import AbstractUser
 
 
 class UsersRepository(ABC):

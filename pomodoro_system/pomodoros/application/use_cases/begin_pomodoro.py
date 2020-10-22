@@ -52,7 +52,7 @@ class BeginPomodoro:
         new_pomodoro = self._produce_pomodoro(task.id)
         new_pomodoro.begin(task, recent_pomodoros, input_dto.start_date)
 
-        self.pomodoros_repository.save(new_pomodoro)
+        self.pomodoros_repository.save(new_pomodoro, create=True)
 
         output_dto = BeginPomodoroOutputDto(new_pomodoro.id, new_pomodoro.start_date, new_pomodoro.frame_type)
         self.output_boundary.present(output_dto)

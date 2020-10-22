@@ -7,7 +7,7 @@ from foundation.utils import with_tzinfo
 from pomodoros import GetRecentPomodoros, TaskId
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros_infrastructure import PomodoroModel
+from pomodoros_infrastructure.models import PomodoroModel
 
 
 class SQLGetRecentPomodoros(GetRecentPomodoros):
