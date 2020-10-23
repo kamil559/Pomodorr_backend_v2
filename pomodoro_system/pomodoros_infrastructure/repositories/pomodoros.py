@@ -30,12 +30,11 @@ class SQLPomodoroRepository(PomodoroRepository):
 
     @staticmethod
     def _get_orm_instance(pomodoro_id: PomodoroId) -> Type[PomodoroModel]:
-        try:
-            orm_pomodoro = PomodoroModel.get_for_update(id=pomodoro_id)
-        except ObjectNotFound:
+        orm_pomodoro = PomodoroModel.get_for_update(id=pomodoro_id)
+
+        if orm_pomodoro is None:
             raise NotFound()
-        else:
-            return orm_pomodoro
+        return orm_pomodoro
 
     @staticmethod
     def _persist_new_orm_entity(pomodoro: Pomodoro) -> None:
@@ -50,15 +49,15 @@ class SQLPomodoroRepository(PomodoroRepository):
             orm_pomodoro.set(contained_pauses=contained_pauses)
 
     def save(self, pomodoro: Pomodoro, create: bool = False) -> None:
-        values_to_save = {
-            'task_id': pomodoro.task_id,
-            'start_date': to_utc(pomodoro.start_date),
-            'end_date': to_utc(pomodoro.end_date)
-        }
-
         if create:
             self._persist_new_orm_entity(pomodoro)
         else:
+            values_to_save = {
+                'task_id': pomodoro.task_id,
+                'start_date': to_utc(pomodoro.start_date),
+                'end_date': to_utc(pomodoro.end_date)
+            }
+
             orm_pomodoro = self._get_orm_instance(pomodoro.id)
             orm_pomodoro.set(**values_to_save)
 
