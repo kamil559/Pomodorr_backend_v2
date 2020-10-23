@@ -25,7 +25,7 @@ class SQLTaskRepository(TaskRepository):
             task_model.ordering, with_tzinfo(task_model.due_date), task_model.pomodoros_to_do,
             task_model.pomodoros_burn_down, date_frame_definition, with_tzinfo(task_model.reminder_date),
             task_model.renewal_interval, task_model.note, with_tzinfo(task_model.created_at),
-            sub_tasks=list(map(lambda sub_task: SubTask(sub_task.id, sub_task.name, sub_task.task_id,
+            sub_tasks=list(map(lambda sub_task: SubTask(sub_task.id, sub_task.name, sub_task.id,
                                                         with_tzinfo(sub_task.created_at),
                                                         sub_task.is_completed), task_model.sub_tasks))
         )

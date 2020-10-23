@@ -29,7 +29,7 @@ class TestSQLTaskRepository:
             orm_task.ordering, orm_task.due_date, orm_task.pomodoros_to_do, orm_task.pomodoros_burn_down,
             date_frame_definition, orm_task.reminder_date, orm_task.renewal_interval, orm_task.note,
             orm_task.created_at,
-            sub_tasks=list(map(lambda sub_task: SubTaskModel(sub_task.id, sub_task.name, sub_task.task_id,
+            sub_tasks=list(map(lambda sub_task: SubTaskModel(sub_task.id, sub_task.name, sub_task.id,
                                                              sub_task.created_at.astimezone(tz=pytz.UTC),
                                                              sub_task.is_completed), orm_task.sub_tasks))
         )

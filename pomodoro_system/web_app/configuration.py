@@ -1,9 +1,14 @@
 import flask_injector
 import injector
 
+from authorization.projects import ProjectProtector
 from authorization.tasks import TaskProtector
 from foundation.application.repositories.user import UserRepository
-from output_boundaries.tasks import JSONCompleteTaskOutputBoundary, JSONReactivateTaskPresenter
+from output_boundaries.tasks import (
+    JSONCompleteTaskOutputBoundary,
+    JSONReactivateTaskPresenter,
+    JSONPinTaskToProjectPresenter
+)
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     PausePomodoroOutputBoundary,
@@ -56,17 +61,20 @@ class PomodorosWeb(injector.Module):
     @injector.provider
     @flask_injector.request
     def pin_task_to_project_output_boundary(self) -> PinTaskToProjectOutputBoundary:
-        # todo: add concrete output boundary
-        pass
-
-    @injector.provider
-    def begin_pomodoro_resource_protector(self) -> TaskProtector:
-        return TaskProtector()
-
-    @injector.provider
-    def pause_resume_pomodoro_resource_protector(self) -> PomodoroProtector:
-        return PomodoroProtector()
+        return JSONPinTaskToProjectPresenter()
 
     @injector.provider
     def user_repository(self) -> UserRepository:
         return SQLUserRepository()
+
+    @injector.provider
+    def task_protector(self) -> TaskProtector:
+        return TaskProtector()
+
+    @injector.provider
+    def pomodoro_protector(self) -> PomodoroProtector:
+        return PomodoroProtector()
+
+    @injector.provider
+    def project_protector(self) -> ProjectProtector:
+        return ProjectProtector()

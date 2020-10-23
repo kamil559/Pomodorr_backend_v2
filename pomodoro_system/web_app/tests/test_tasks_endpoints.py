@@ -56,3 +56,35 @@ class TestReactivateTaskAPI:
                                 headers={'Authorization': random_project_owner_authorization_token}, json={})
 
         assert response.status_code == 403
+
+
+class TestPinTaskToProjectAPI:
+    @db_session
+    def test_pin_task_to_project_with_valid_data(self, client: testing.FlaskClient, orm_task, orm_second_project,
+                                                 project_owner_authorization_token):
+        response = client.patch(f'tasks/{orm_task.id}/pin',
+                                headers={'Authorization': project_owner_authorization_token},
+                                json={'new_project_id': str(orm_second_project.id)})
+
+        task_repo = SQLTaskRepository()
+        fetched_task = task_repo.get(orm_task.id)
+
+        assert response.status_code == 200
+        assert response.json['new_project_id'] == str(orm_second_project.id)
+        assert fetched_task.project_id == orm_second_project.id
+
+    def test_pin_task_to_project_without_authorization_header(self, client: testing.FlaskClient, orm_task,
+                                                              orm_second_project):
+        response = client.patch(f'tasks/{orm_task.id}/pin', headers={},
+                                json={'new_project_id': str(orm_second_project.id)})
+
+        assert response.status_code == 401
+
+    def test_pin_task_to_project_with_random_authenticated_user(self, client: testing.FlaskClient, orm_task,
+                                                                orm_second_project,
+                                                                random_project_owner_authorization_token):
+        response = client.patch(f'tasks/{orm_task.id}/pin',
+                                headers={'Authorization': random_project_owner_authorization_token},
+                                json={'new_project_id': str(orm_second_project.id)})
+
+        assert response.status_code == 403

@@ -8,7 +8,7 @@ from pomodoros import (
     PinTaskToProjectOutputBoundary,
     PinTaskToProjectOutputDto
 )
-from serializers.tasks import CompleteTaskSchema, ReactivateTaskSchema
+from serializers.tasks import CompleteTaskSchema, ReactivateTaskSchema, PinTaskToProjectSchema
 
 
 class JSONCompleteTaskOutputBoundary(PausePomodoroOutputBoundary):
@@ -25,4 +25,5 @@ class JSONReactivateTaskPresenter(ReactivateTaskOutputBoundary):
 
 class JSONPinTaskToProjectPresenter(PinTaskToProjectOutputBoundary):
     def present(self, output_dto: PinTaskToProjectOutputDto) -> None:
-        pass
+        serialized_output_data = PinTaskToProjectSchema().dump(output_dto)
+        self.response = make_response(jsonify(serialized_output_data), 200)

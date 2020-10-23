@@ -23,4 +23,4 @@ class GetRecentPomodorosStub(GetRecentPomodoros):
 
     def query(self, task_id: TaskId) -> Optional[List[Pomodoro]]:
         return list(map(lambda pomodoro: self._to_pomodoro_dto(pomodoro),
-                        filter(lambda row: row.task_id == task_id, self._rows))) if self._rows else []
+                        filter(lambda row: row.id == task_id, self._rows))) if self._rows else []

@@ -1,7 +1,7 @@
 import pytz
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
-from pomodoros import CompleteTaskInputDto, ReactivateTaskInputDto
+from pomodoros import CompleteTaskInputDto, ReactivateTaskInputDto, PinTaskToProjectInputDto
 
 
 class CompleteTaskSchema(Schema):
@@ -26,3 +26,15 @@ class ReactivateTaskSchema(Schema):
     @post_load()
     def make_dto(self, data: dict, **_kwargs) -> ReactivateTaskInputDto:
         return ReactivateTaskInputDto(**data)
+
+
+class PinTaskToProjectSchema(Schema):
+    id = fields.UUID(required=True)
+    new_project_id = fields.UUID(required=True)
+
+    class Meta:
+        unknown = EXCLUDE
+
+    @post_load()
+    def make_dto(self, data: dict, **_kwargs) -> PinTaskToProjectInputDto:
+        return PinTaskToProjectInputDto(**data)

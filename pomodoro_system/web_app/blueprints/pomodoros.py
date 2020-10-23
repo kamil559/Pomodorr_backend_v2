@@ -7,7 +7,8 @@ from flask_jwt_extended import jwt_required, get_current_user
 from authorization.tasks import TaskProtector
 from pomodoros import (TaskId, BeginPomodoroOutputBoundary, BeginPomodoro, PomodoroId, PausePomodoro,
                        PausePomodoroOutputBoundary, ResumePomodoro, ResumePomodoroOutputBoundary, FinishPomodoro,
-                       FinishPomodoroOutputBoundary)
+                       FinishPomodoroOutputBoundary, BeginPomodoroInputDto, PausePomodoroInputDto,
+                       ResumePomodoroInputDto, FinishPomodoroInputDto)
 from serializers.pomodoros import BeginPomodoroSchema, PausePomodoroSchema, ResumePomodoroSchema, FinishPomodoroSchema
 from web_app.authorization.pomodoros import (
     PomodoroProtector
@@ -21,8 +22,8 @@ pomodoros_blueprint = Blueprint('pomodoros', __name__, url_prefix='/pomodoros')
 @jwt_required
 def begin_pomodoro(task_id: TaskId, begin_pomodoro_uc: BeginPomodoro,
                    presenter: BeginPomodoroOutputBoundary, protector: TaskProtector) -> Response:
-    input_dto = get_dto_or_abort(BeginPomodoroSchema, {'task_id': task_id,
-                                                       'start_date': str(datetime.now(tz=pytz.UTC))})
+    input_dto: BeginPomodoroInputDto = get_dto_or_abort(
+        BeginPomodoroSchema, {'task_id': task_id, 'start_date': str(datetime.now(tz=pytz.UTC))})
     requester_id = get_current_user()
     protector.authorize(requester_id, task_id)
 
@@ -34,8 +35,8 @@ def begin_pomodoro(task_id: TaskId, begin_pomodoro_uc: BeginPomodoro,
 @jwt_required
 def pause_pomodoro(pomodoro_id: PomodoroId, pause_pomodoro_uc: PausePomodoro,
                    presenter: PausePomodoroOutputBoundary, protector: PomodoroProtector) -> Response:
-    input_dto = get_dto_or_abort(PausePomodoroSchema, {'pomodoro_id': pomodoro_id,
-                                                       'pause_date': str(datetime.now(tz=pytz.UTC))})
+    input_dto: PausePomodoroInputDto = get_dto_or_abort(
+        PausePomodoroSchema, {'pomodoro_id': pomodoro_id, 'pause_date': str(datetime.now(tz=pytz.UTC))})
     requester_id = get_current_user()
     protector.authorize(requester_id, pomodoro_id)
 
@@ -48,8 +49,8 @@ def pause_pomodoro(pomodoro_id: PomodoroId, pause_pomodoro_uc: PausePomodoro,
 def resume_pomodoro(pomodoro_id: PomodoroId, resume_pomodoro_uc: ResumePomodoro,
                     presenter: ResumePomodoroOutputBoundary,
                     protector: PomodoroProtector) -> Response:
-    input_dto = get_dto_or_abort(ResumePomodoroSchema, {'pomodoro_id': pomodoro_id,
-                                                        'resume_date': str(datetime.now(tz=pytz.UTC))})
+    input_dto: ResumePomodoroInputDto = get_dto_or_abort(
+        ResumePomodoroSchema, {'pomodoro_id': pomodoro_id, 'resume_date': str(datetime.now(tz=pytz.UTC))})
     requester_id = get_current_user()
     protector.authorize(requester_id, pomodoro_id)
 
@@ -62,9 +63,8 @@ def resume_pomodoro(pomodoro_id: PomodoroId, resume_pomodoro_uc: ResumePomodoro,
 def finish_pomodoro(pomodoro_id: PomodoroId, finish_pomodoro_uc: FinishPomodoro,
                     presenter: FinishPomodoroOutputBoundary, protector: PomodoroProtector) -> Response:
     requester_id = get_current_user()
-    input_dto = get_dto_or_abort(FinishPomodoroSchema, {'id': pomodoro_id,
-                                                        'end_date': str(datetime.now(tz=pytz.UTC)),
-                                                        'owner_id': requester_id})
+    input_dto: FinishPomodoroInputDto = get_dto_or_abort(
+        FinishPomodoroSchema, {'id': pomodoro_id, 'end_date': str(datetime.now(tz=pytz.UTC)), 'owner_id': requester_id})
 
     protector.authorize(requester_id, pomodoro_id)
 
