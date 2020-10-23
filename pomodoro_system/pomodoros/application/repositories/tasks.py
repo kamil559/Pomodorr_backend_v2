@@ -10,5 +10,5 @@ class TaskRepository(ABC):
         pass
 
     @abstractmethod
-    def save(self, task: Task) -> None:
+    def save(self, task: Task, create: bool = False) -> None:
         pass

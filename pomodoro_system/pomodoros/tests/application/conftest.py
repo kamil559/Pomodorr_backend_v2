@@ -22,7 +22,7 @@ from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.tests.application.get_recent_pomodoros_query import GetRecentPomodorosStub
 from pomodoros.tests.application.get_tasks_by_pomodoro_id_query import GetTasksByProjectIdStub
 from pomodoros.tests.application.in_memory_pomodoros_repository import InMemoryPomodorosRepository
-from pomodoros.tests.application.in_memory_tasks_repository import InMemoryTaskRepository
+from pomodoros.tests.application.in_memory_task_repository import InMemoryTaskRepository
 from pomodoros.tests.factories import PomodoroFactory
 
 
@@ -109,7 +109,7 @@ def complete_task_output_boundary() -> Mock:
 
 @pytest.fixture()
 def complete_task_use_case(complete_task_output_boundary, populated_tasks_repository) -> CompleteTask:
-    return CompleteTask(output_boundary=complete_task_output_boundary, tasks_repository=populated_tasks_repository)
+    return CompleteTask(output_boundary=complete_task_output_boundary, task_repository=populated_tasks_repository)
 
 
 @pytest.fixture()

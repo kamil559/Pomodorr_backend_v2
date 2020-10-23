@@ -16,7 +16,7 @@ class InMemoryTaskRepository(TaskRepository):
     def get(self, task_id: TaskId) -> Optional[Pomodoro]:
         return self._rows[task_id]
 
-    def save(self, task: Task) -> None:
+    def save(self, task: Task, create: bool = True) -> None:
         self._rows[task.id] = task
 
     @property

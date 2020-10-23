@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+from foundation.value_objects import T
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskId, TaskStatus
@@ -24,14 +25,16 @@ class CompleteTaskOutputDto:
 
 
 class CompleteTaskOutputBoundary(ABC):
+    response: Optional[T]
+
     @abstractmethod
     def present(self, output_dto: CompleteTaskOutputDto) -> None:
         pass
 
 
 class CompleteTaskStrategy(ABC):
-    def __init__(self, tasks_repository: TaskRepository) -> None:
-        self.tasks_repository = tasks_repository
+    def __init__(self, task_repository: TaskRepository) -> None:
+        self.task_repository = task_repository
 
     @abstractmethod
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
@@ -41,7 +44,7 @@ class CompleteTaskStrategy(ABC):
 class CompleteOneTimeTaskStrategy(CompleteTaskStrategy):
     def complete_task(self, task: Task) -> CompleteTaskOutputDto:
         task.complete()
-        self.tasks_repository.save(task)
+        self.task_repository.save(task)
 
         output_dto = CompleteTaskOutputDto(id=task.id, status=task.status, new_task_id=None)
         return output_dto
@@ -52,8 +55,8 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
         new_task = self._produce_task_for_next_due_date(old_task=task)
         task.complete()
 
-        self.tasks_repository.save(task)
-        self.tasks_repository.save(new_task)
+        self.task_repository.save(task)
+        self.task_repository.save(new_task, create=True)
 
         output_dto = CompleteTaskOutputDto(id=task.id, status=task.status, new_task_id=new_task.id)
         return output_dto
@@ -67,16 +70,16 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
 
 
 class CompleteTask:
-    def __init__(self, output_boundary: CompleteTaskOutputBoundary, tasks_repository: TaskRepository) -> None:
+    def __init__(self, output_boundary: CompleteTaskOutputBoundary, task_repository: TaskRepository) -> None:
         self.output_boundary = output_boundary
-        self.tasks_repository = tasks_repository
-        self._complete_task_strategy: CompleteTaskStrategy = CompleteOneTimeTaskStrategy(tasks_repository)
+        self.task_repository = task_repository
+        self._complete_task_strategy: CompleteTaskStrategy = CompleteOneTimeTaskStrategy(task_repository)
 
     def execute(self, input_dto: CompleteTaskInputDto) -> None:
-        task = self.tasks_repository.get(input_dto.id)
+        task = self.task_repository.get(input_dto.id)
 
         if task.is_repeatable:
-            self._complete_task_strategy = CompleteRepeatableTaskStrategy(self.tasks_repository)
+            self._complete_task_strategy = CompleteRepeatableTaskStrategy(self.task_repository)
 
         output_dto = self._complete_task_strategy.complete_task(task)
         self.output_boundary.present(output_dto)

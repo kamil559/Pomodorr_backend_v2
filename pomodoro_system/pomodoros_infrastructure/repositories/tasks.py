@@ -2,18 +2,18 @@ from typing import Type
 
 from pony.orm import ObjectNotFound
 
-from foundation.exceptions import NotFound
-from foundation.utils import with_tzinfo
+from foundation.exceptions import NotFound, AlreadyExists
+from foundation.utils import with_tzinfo, to_utc
 from foundation.value_objects import Priority, DateFrameDefinition, PriorityLevel
 from pomodoros import TaskRepository, TaskId
 from pomodoros.domain.entities import SubTask
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskStatus
+from pomodoros_infrastructure import SubTaskModel
 from pomodoros_infrastructure.models import TaskModel
 
 
 class SQLTaskRepository(TaskRepository):
-
     @staticmethod
     def _to_entity(task_model: Type[TaskModel]) -> Task:
         priority = Priority(task_model.priority_color, PriorityLevel(task_model.priority_level))
@@ -30,6 +30,25 @@ class SQLTaskRepository(TaskRepository):
                                                         sub_task.is_completed), task_model.sub_tasks))
         )
 
+    @staticmethod
+    def _persist_new_orm_entity(task: Task) -> Type[TaskModel]:
+        if TaskModel.exists(id=task.id):
+            raise AlreadyExists()
+        else:
+            orm_task = TaskModel(id=task.id, project_id=task.project_id, name=task.name, status=task.status.value,
+                                 priority_color=task.priority.color, priority_level=task.priority.priority_level.value,
+                                 ordering=task.ordering, due_date=to_utc(task.due_date),
+                                 pomodoros_to_do=task.pomodoros_to_do, pomodoros_burn_down=task.pomodoros_burn_down,
+                                 pomodoro_length=task.date_frame_definition.pomodoro_length,
+                                 break_length=task.date_frame_definition.break_length,
+                                 longer_break_length=task.date_frame_definition.longer_break_length,
+                                 gap_between_long_breaks=task.date_frame_definition.gap_between_long_breaks,
+                                 reminder_date=to_utc(task.reminder_date), renewal_interval=task.renewal_interval,
+                                 note=task.note, created_at=to_utc(task.created_at))
+            _sub_tasks = [
+                SubTaskModel(id=sub_task.id, name=sub_task.name, task=orm_task, created_at=to_utc(sub_task.created_at),
+                             is_completed=sub_task.is_completed) for sub_task in task.sub_tasks]
+
     def get(self, task_id: TaskId) -> Task:
         try:
             task = TaskModel[task_id]
@@ -40,27 +59,34 @@ class SQLTaskRepository(TaskRepository):
 
     @staticmethod
     def _get_for_update(task_id: TaskId) -> Type[TaskModel]:
-        return TaskModel.get_for_update(id=task_id)
+        orm_task = TaskModel.get_for_update(id=task_id)
 
-    def save(self, task: Task) -> None:
-        values_to_update = {
-            'project_id': task.project_id,
-            'name': task.name,
-            'status': task.status.value,
-            'priority_color': task.priority.color,
-            'priority_level': task.priority.priority_level.value,
-            'ordering': task.ordering,
-            'due_date': task.due_date,
-            'pomodoros_to_do': task.pomodoros_to_do,
-            'pomodoros_burn_down': task.pomodoros_burn_down,
-            'pomodoro_length': task.date_frame_definition.pomodoro_length,
-            'break_length': task.date_frame_definition.break_length,
-            'longer_break_length': task.date_frame_definition.longer_break_length,
-            'gap_between_long_breaks': task.date_frame_definition.gap_between_long_breaks,
-            'reminder_date': task.reminder_date,
-            'renewal_interval': task.renewal_interval,
-            'note': task.note
-        }
+        if orm_task is None:
+            raise NotFound()
+        return orm_task
 
-        task = self._get_for_update(task.id)
-        task.set(**values_to_update)
+    def save(self, task: Task, create: bool = False) -> None:
+        if create:
+            self._persist_new_orm_entity(task)
+        else:
+            values_to_update = {
+                'project_id': task.project_id,
+                'name': task.name,
+                'status': task.status.value,
+                'priority_color': task.priority.color,
+                'priority_level': task.priority.priority_level.value,
+                'ordering': task.ordering,
+                'due_date': task.due_date,
+                'pomodoros_to_do': task.pomodoros_to_do,
+                'pomodoros_burn_down': task.pomodoros_burn_down,
+                'pomodoro_length': task.date_frame_definition.pomodoro_length,
+                'break_length': task.date_frame_definition.break_length,
+                'longer_break_length': task.date_frame_definition.longer_break_length,
+                'gap_between_long_breaks': task.date_frame_definition.gap_between_long_breaks,
+                'reminder_date': task.reminder_date,
+                'renewal_interval': task.renewal_interval,
+                'note': task.note
+            }
+
+            task = self._get_for_update(task.id)
+            task.set(**values_to_update)

@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager
 from pony.flask import Pony
 
 from blueprints.pomodoros import pomodoros_blueprint
+from blueprints.tasks import tasks_blueprint
 from foundation.value_objects import UserId
 from main import initialize_application
 from web_app.configuration import PomodorosWeb
@@ -24,6 +25,7 @@ def create_app() -> Flask:
     jwt = JWTManager(flask_app)  # noqa
 
     flask_app.register_blueprint(pomodoros_blueprint)
+    flask_app.register_blueprint(tasks_blueprint)
 
     pomodoros_app_context = initialize_application()
     FlaskInjector(flask_app, modules=[PomodorosWeb()], injector=pomodoros_app_context.injector)

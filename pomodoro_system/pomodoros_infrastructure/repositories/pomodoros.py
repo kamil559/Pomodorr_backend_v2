@@ -43,10 +43,9 @@ class SQLPomodoroRepository(PomodoroRepository):
         else:
             orm_pomodoro = PomodoroModel(id=pomodoro.id, frame_type=pomodoro.frame_type.value, task_id=pomodoro.task_id,
                                          start_date=to_utc(pomodoro.start_date), end_date=to_utc(pomodoro.end_date))
-            contained_pauses = [PauseModel(id=pause.id, frame_type=pause.frame_type.value,
-                                           start_date=to_utc(pause.start_date), end_date=to_utc(pause.end_date),
-                                           pomodoro=orm_pomodoro) for pause in pomodoro.contained_pauses]
-            orm_pomodoro.set(contained_pauses=contained_pauses)
+            _contained_pauses = [PauseModel(id=pause.id, frame_type=pause.frame_type.value,
+                                            start_date=to_utc(pause.start_date), end_date=to_utc(pause.end_date),
+                                            pomodoro=orm_pomodoro) for pause in pomodoro.contained_pauses]
 
     def save(self, pomodoro: Pomodoro, create: bool = False) -> None:
         if create:
