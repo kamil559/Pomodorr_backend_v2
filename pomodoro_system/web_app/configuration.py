@@ -1,6 +1,7 @@
 import flask_injector
 import injector
 
+from foundation.application.repositories.user import UserRepository
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     PausePomodoroOutputBoundary,
@@ -10,11 +11,12 @@ from pomodoros import (
     ReactivateTaskOutputBoundary,
     PinTaskToProjectOutputBoundary
 )
-from web_app.authorization.pomodoros import BeginPomodoroResourceProtector, PauseResumePomodoroResourceProtector
+from web_app.authorization.pomodoros import TaskProtector, PomodoroProtector
+from web_app.users.repository import SQLUserRepository
 from .output_boundaries.pomodoros import (
     JSONBeginPomodoroPresenter,
     JSONPausePomodoroPresenter,
-    JSONResumePomodoroPresenter
+    JSONResumePomodoroPresenter, JSONFinishPomodoroPresenter
 )
 
 
@@ -37,8 +39,7 @@ class PomodorosWeb(injector.Module):
     @injector.provider
     @flask_injector.request
     def finish_pomodoro_output_boundary(self) -> FinishPomodoroOutputBoundary:
-        # todo: add concrete output boundary
-        pass
+        return JSONFinishPomodoroPresenter()
 
     @injector.provider
     @flask_injector.request
@@ -59,9 +60,13 @@ class PomodorosWeb(injector.Module):
         pass
 
     @injector.provider
-    def begin_pomodoro_resource_protector(self) -> BeginPomodoroResourceProtector:
-        return BeginPomodoroResourceProtector()
+    def begin_pomodoro_resource_protector(self) -> TaskProtector:
+        return TaskProtector()
 
     @injector.provider
-    def pause_resume_pomodoro_resource_protector(self) -> PauseResumePomodoroResourceProtector:
-        return PauseResumePomodoroResourceProtector()
+    def pause_resume_pomodoro_resource_protector(self) -> PomodoroProtector:
+        return PomodoroProtector()
+
+    @injector.provider
+    def user_repository(self) -> UserRepository:
+        return SQLUserRepository()

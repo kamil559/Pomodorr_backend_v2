@@ -5,7 +5,7 @@ from pomodoros import (BeginPomodoroOutputBoundary, BeginPomodoroOutputDto, Paus
                        FinishPomodoroOutputBoundary, FinishPomodoroOutputDto, CompleteTaskOutputBoundary,
                        CompleteTaskOutputDto, ReactivateTaskOutputBoundary, ReactivateTaskOutputDto,
                        PinTaskToProjectOutputBoundary, PinTaskToProjectOutputDto)
-from serializers.pomodoros import BeginPomodoroSchema, PausePomodoroSchema, ResumePomodoroSchema
+from serializers.pomodoros import BeginPomodoroSchema, PausePomodoroSchema, ResumePomodoroSchema, FinishPomodoroSchema
 
 
 class JSONBeginPomodoroPresenter(BeginPomodoroOutputBoundary):
@@ -28,7 +28,8 @@ class JSONResumePomodoroPresenter(ResumePomodoroOutputBoundary):
 
 class JSONFinishPomodoroPresenter(FinishPomodoroOutputBoundary):
     def present(self, output_dto: FinishPomodoroOutputDto) -> None:
-        pass
+        serialized_output_data = FinishPomodoroSchema().dump(output_dto)
+        self.response = make_response(jsonify(serialized_output_data), 200)
 
 
 class JSONCompleteTaskPresenter(CompleteTaskOutputBoundary):

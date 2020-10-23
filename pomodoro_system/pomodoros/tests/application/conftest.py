@@ -3,7 +3,7 @@ from unittest.mock import Mock
 
 import pytest
 
-from foundation.application.repositories.user import UsersRepository
+from foundation.application.repositories.user import UserRepository
 from foundation.tests.factories import UserFactory
 from interfaces import AbstractUser
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
@@ -84,7 +84,7 @@ def begin_pomodoro_use_case(begin_pomodoro_output_boundary, pomodoros_repository
 
 @pytest.fixture()
 def users_repository(user: AbstractUser) -> Mock:
-    return Mock(spec_set=UsersRepository, get=Mock(return_value=user))
+    return Mock(spec_set=UserRepository, get=Mock(return_value=user))
 
 
 @pytest.fixture()
@@ -97,8 +97,8 @@ def finish_pomodoro_use_case(finish_pomodoro_output_boundary, populated_pomodoro
                              populated_tasks_repository, users_repository,
                              populated_recent_pomodoros_query) -> FinishPomodoro:
     return FinishPomodoro(output_boundary=finish_pomodoro_output_boundary,
-                          pomodoros_repository=populated_pomodoros_repository,
-                          tasks_repository=populated_tasks_repository, users_repository=users_repository,
+                          pomodoro_repository=populated_pomodoros_repository,
+                          task_repository=populated_tasks_repository, user_repository=users_repository,
                           recent_pomodoros_query=populated_recent_pomodoros_query)
 
 

@@ -1,7 +1,7 @@
 import pytz
 from marshmallow import fields, Schema, post_load, EXCLUDE
 
-from pomodoros import BeginPomodoroInputDto, PausePomodoroInputDto, ResumePomodoroInputDto
+from pomodoros import BeginPomodoroInputDto, PausePomodoroInputDto, ResumePomodoroInputDto, FinishPomodoroInputDto
 
 
 class BeginPomodoroSchema(Schema):
@@ -40,3 +40,18 @@ class ResumePomodoroSchema(Schema):
     @post_load()
     def make_dto(self, data: dict, **_kwargs):
         return ResumePomodoroInputDto(**data)
+
+
+class FinishPomodoroSchema(Schema):
+    id = fields.UUID(required=True)
+    end_date = fields.AwareDateTime(required=True, allow_none=False, default_timezone=pytz.UTC)
+    owner_id = fields.UUID(required=True, load_only=True)
+    start_date = fields.AwareDateTime(dump_only=True, default_timezone=pytz.UTC)
+    frame_type = fields.Function(dump_only=True, serialize=lambda obj: obj.frame_type.value)
+
+    class Meta:
+        unknown = EXCLUDE
+
+    @post_load()
+    def make_dto(self, data: dict, **_kwargs) -> FinishPomodoroInputDto:
+        return FinishPomodoroInputDto(**data)

@@ -1,6 +1,6 @@
 import injector
 
-from foundation.application.repositories.user import UsersRepository
+from foundation.application.repositories.user import UserRepository
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByProjectId, TaskDto
 from pomodoros.application.repositories.pauses import PauseRepository
@@ -135,7 +135,7 @@ class Pomodoros(injector.Module):
     @injector.provider
     def finish_pomodoro_uc(self, output_boundary: FinishPomodoroOutputBoundary,
                            pomodoros_repository: PomodoroRepository, tasks_repository: TaskRepository,
-                           users_repository: UsersRepository,
+                           users_repository: UserRepository,
                            recent_pomodoros_query: GetRecentPomodoros) -> FinishPomodoro:
         return FinishPomodoro(output_boundary, pomodoros_repository, tasks_repository, users_repository,
                               recent_pomodoros_query)

@@ -8,7 +8,7 @@ from pomodoros_infrastructure import TaskModel, ProjectModel, PomodoroModel
 from value_objects import UserId
 
 
-class BeginPomodoroResourceProtector(ResourceProtector):
+class TaskProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
         project_id = select(task.project_id for task in TaskModel if task.id == resource_id).get()
         owner_id = select(project.owner_id for project in ProjectModel if project.id == project_id).get()
@@ -17,7 +17,7 @@ class BeginPomodoroResourceProtector(ResourceProtector):
             abort(403)
 
 
-class PauseResumePomodoroResourceProtector(ResourceProtector):
+class PomodoroProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
         task_id_query = select(pomodoro.task_id for pomodoro in PomodoroModel if pomodoro.id == resource_id)
         project_id_query = select(task.project_id for task in TaskModel if task.id == task_id_query.get())
