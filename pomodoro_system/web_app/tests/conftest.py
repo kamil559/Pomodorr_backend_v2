@@ -5,6 +5,7 @@ from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
 
 from flask_app import create_app
+from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure.tests.conftest import *
 
 
@@ -50,3 +51,9 @@ def paused_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
                                 end_date=None)
         pause.pomodoro = started_orm_pomodoro
         return started_orm_pomodoro
+
+
+@pytest.fixture()
+def orm_completed_task(orm_project: ProjectModel) -> TaskModel:
+    with db_session:
+        return ORMTaskFactory(project_id=orm_project.id, status=TaskStatus.COMPLETED.value)

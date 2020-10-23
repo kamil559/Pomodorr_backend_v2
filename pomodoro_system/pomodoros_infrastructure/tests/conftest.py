@@ -8,8 +8,12 @@ from pony.orm import db_session
 from foundation.models import User
 from foundation.tests.factories import ORMUserFactory, ORMUserDateFrameDefinitionFactory
 from pomodoros_infrastructure import ProjectModel, TaskModel, PomodoroModel, PauseModel
-from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory, ORMPomodoroFactory, \
+from pomodoros_infrastructure.tests.factories import (
+    ORMProjectFactory,
+    ORMTaskFactory,
+    ORMPomodoroFactory,
     ORMPauseFactory
+)
 
 
 @pytest.fixture()

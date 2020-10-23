@@ -3,7 +3,7 @@ import injector
 
 from authorization.tasks import TaskProtector
 from foundation.application.repositories.user import UserRepository
-from output_boundaries.tasks import JSONPausePomodoroOutputBoundary
+from output_boundaries.tasks import JSONCompleteTaskOutputBoundary, JSONReactivateTaskPresenter
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     PausePomodoroOutputBoundary,
@@ -46,13 +46,12 @@ class PomodorosWeb(injector.Module):
     @injector.provider
     @flask_injector.request
     def complete_task_output_boundary(self) -> CompleteTaskOutputBoundary:
-        return JSONPausePomodoroOutputBoundary()
+        return JSONCompleteTaskOutputBoundary()
 
     @injector.provider
     @flask_injector.request
     def reactivate_task_output_boundary(self) -> ReactivateTaskOutputBoundary:
-        # todo: add concrete output boundary
-        pass
+        return JSONReactivateTaskPresenter()
 
     @injector.provider
     @flask_injector.request

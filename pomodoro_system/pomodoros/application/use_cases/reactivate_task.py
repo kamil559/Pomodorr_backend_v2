@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Optional
 
+from foundation.value_objects import T
 from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.value_objects import TaskStatus, TaskId
@@ -18,6 +20,8 @@ class ReactivateTaskOutputDto:
 
 
 class ReactivateTaskOutputBoundary(ABC):
+    response: Optional[T]
+
     @abstractmethod
     def present(self, output_dto: ReactivateTaskOutputDto) -> None:
         pass
