@@ -40,3 +40,13 @@ def random_project_owner_authorization_token(app: Flask, client: FlaskClient, ra
 def started_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
     with db_session:
         return ORMPomodoroFactory(task_id=orm_task.id, end_date=None)
+
+
+@pytest.fixture()
+def paused_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
+    with db_session:
+        started_orm_pomodoro = ORMPomodoroFactory(task_id=orm_task.id, end_date=None)
+        pause = ORMPauseFactory(start_date=datetime.now(tz=pytz.UTC),
+                                end_date=None)
+        pause.pomodoro = started_orm_pomodoro
+        return started_orm_pomodoro

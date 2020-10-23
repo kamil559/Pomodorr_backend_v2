@@ -17,7 +17,7 @@ class BeginPomodoroResourceProtector(ResourceProtector):
             abort(403)
 
 
-class PausePomodoroResourceProtector(ResourceProtector):
+class PauseResumePomodoroResourceProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
         task_id_query = select(pomodoro.task_id for pomodoro in PomodoroModel if pomodoro.id == resource_id)
         project_id_query = select(task.project_id for task in TaskModel if task.id == task_id_query.get())

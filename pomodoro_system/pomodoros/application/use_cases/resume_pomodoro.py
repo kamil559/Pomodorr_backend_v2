@@ -1,7 +1,9 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
+from foundation.value_objects import T
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.value_objects import PomodoroId
@@ -20,6 +22,8 @@ class ResumePomodoroOutputDto:
 
 
 class ResumePomodoroOutputBoundary(ABC):
+    response: Optional[T]
+
     @abstractmethod
     def present(self, output_dto: ResumePomodoroOutputDto) -> None:
         pass

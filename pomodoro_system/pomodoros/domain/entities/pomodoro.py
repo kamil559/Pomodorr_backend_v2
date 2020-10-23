@@ -23,6 +23,7 @@ class Pomodoro(DateFrame):
         self.task_id = task_id
         self.contained_pauses = sorted(contained_pauses,
                                        key=lambda pause: pause.end_date) if contained_pauses is not None else []
+        self.modified_pauses: List[Pause] = []
         self.new_pause = None
 
     @property
@@ -119,10 +120,11 @@ class Pomodoro(DateFrame):
     def resume(self, related_task: Task, end_date: datetime):
         related_task.check_can_perform_actions()
         self._check_can_perform_actions()
-
-        if self.current_pause is not None:
-            self.current_pause.run_finish_date_frame_validations(end_date)
-            self.current_pause.end_date = end_date
+        pause_to_finish = self.current_pause
+        if pause_to_finish is not None:
+            pause_to_finish.run_finish_date_frame_validations(end_date)
+            pause_to_finish.end_date = end_date
+            self.modified_pauses.append(pause_to_finish)
 
     def __eq__(self, other) -> bool:
         return [type(self), self.task_id, self.frame_type, self.start_date,

@@ -29,12 +29,13 @@ class SQLPomodoroRepository(PomodoroRepository):
             return self._to_entity(pomodoro)
 
     @staticmethod
-    def _get_for_update(pomodoro_id: PomodoroId) -> Type[PomodoroModel]:
-        orm_pomodoro = PomodoroModel.get_for_update(id=pomodoro_id)
-
-        if orm_pomodoro is None:
+    def _get_orm_instance(pomodoro_id: PomodoroId) -> Type[PomodoroModel]:
+        try:
+            orm_pomodoro = PomodoroModel.get_for_update(id=pomodoro_id)
+        except ObjectNotFound:
             raise NotFound()
-        return orm_pomodoro
+        else:
+            return orm_pomodoro
 
     @staticmethod
     def _persist_new_orm_entity(pomodoro: Pomodoro) -> None:
@@ -58,7 +59,7 @@ class SQLPomodoroRepository(PomodoroRepository):
         if create:
             self._persist_new_orm_entity(pomodoro)
         else:
-            orm_pomodoro = self._get_for_update(pomodoro.id)
+            orm_pomodoro = self._get_orm_instance(pomodoro.id)
             orm_pomodoro.set(**values_to_save)
 
             if pomodoro.new_pause:
@@ -67,3 +68,7 @@ class SQLPomodoroRepository(PomodoroRepository):
                                        end_date=to_utc(pomodoro.new_pause.end_date),
                                        pomodoro=orm_pomodoro)
                 orm_pomodoro.contained_pauses.add(orm_pause)
+
+            if pomodoro.modified_pauses:
+                for pause in pomodoro.modified_pauses:
+                    PauseModel[pause.id].set(**{'start_date': pause.start_date, 'end_date': pause.end_date})
