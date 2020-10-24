@@ -57,7 +57,9 @@ def test_reactivate_already_active_task_fails(task):
         task.reactivate(project_tasks=[task])
 
 
-def test_reactivate_task_of_project_containing_task_with_the_same_name_fails(completed_task, ):
+def test_reactivate_task_of_project_containing_task_with_the_same_name_fails(
+        completed_task,
+):
     task_with_the_same_name = TaskFactory(project_id=completed_task.project_id, name=completed_task.name)
 
     with pytest.raises(TaskNameNotAvailableInNewProject):

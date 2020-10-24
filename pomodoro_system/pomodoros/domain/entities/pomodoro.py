@@ -13,7 +13,12 @@ from pomodoros.domain.exceptions import (
     PomodoroErrorMarginExceeded,
     NoActionAllowedOnFinishedPomodoro,
 )
-from pomodoros.domain.value_objects import FrameType, AcceptablePomodoroErrorMargin, TaskId, PomodoroId
+from pomodoros.domain.value_objects import (
+    FrameType,
+    AcceptablePomodoroErrorMargin,
+    TaskId,
+    PomodoroId,
+)
 
 
 class Pomodoro(DateFrame):
@@ -55,7 +60,9 @@ class Pomodoro(DateFrame):
     def _check_pomodoro_length(self, maximal_duration: timedelta, checked_end_date: datetime) -> None:
         pomodoro_duration = checked_end_date - self.start_date
         pauses_duration = reduce(
-            operator.add, (pause.end_date - pause.end_date for pause in self.contained_pauses), timedelta(0)
+            operator.add,
+            (pause.end_date - pause.end_date for pause in self.contained_pauses),
+            timedelta(0),
         )
 
         total_duration = pomodoro_duration - pauses_duration
@@ -66,7 +73,9 @@ class Pomodoro(DateFrame):
 
     @staticmethod
     def _check_for_colliding_pomodoros(
-            recent_pomodoros: Optional[List["Pomodoro"]], start_date: datetime, end_date: Optional[datetime] = None
+            recent_pomodoros: Optional[List["Pomodoro"]],
+            start_date: datetime,
+            end_date: Optional[datetime] = None,
     ):
         def check_if_finished(date_frame: DateFrame) -> bool:
             return all(
@@ -107,7 +116,12 @@ class Pomodoro(DateFrame):
         if len(colliding_date_frames):
             raise CollidingPomodoroWasFound(_("pomodoros.domain.entities.pomodoro.colliding_pomodoro_was_found"))
 
-    def begin(self, related_task: Task, recent_pomodoros: List["Pomodoro"], start_date: datetime) -> None:
+    def begin(
+            self,
+            related_task: Task,
+            recent_pomodoros: List["Pomodoro"],
+            start_date: datetime,
+    ) -> None:
         related_task.check_can_perform_actions()
         super(Pomodoro, self).run_begin_date_frame_validations(start_date)
         self._check_for_colliding_pomodoros(recent_pomodoros, start_date)
@@ -159,5 +173,11 @@ class Pomodoro(DateFrame):
                    self.start_date,
                    self.end_date,
                    list(self.contained_pauses),
-               ] == [type(other), other.id, other.frame_type, other.start_date, other.end_date,
-                     list(other.contained_pauses)]
+               ] == [
+                   type(other),
+                   other.id,
+                   other.frame_type,
+                   other.start_date,
+                   other.end_date,
+                   list(other.contained_pauses),
+               ]

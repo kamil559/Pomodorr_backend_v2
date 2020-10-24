@@ -25,7 +25,10 @@ def _setup_dependencies(settings: dict) -> injector.Injector:
 
 def _generate_db_mappings(settings: dict) -> None:
     if bool(os.getenv("TESTING")):
-        db.bind(provider=settings["database"]["provider"], filename=settings["database"]["filename"])
+        db.bind(
+            provider=settings["database"]["provider"],
+            filename=settings["database"]["filename"],
+        )
     else:
         db.bind(**settings["database"])
     db.generate_mapping(create_tables=True)

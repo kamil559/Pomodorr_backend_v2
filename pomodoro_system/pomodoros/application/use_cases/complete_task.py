@@ -70,7 +70,11 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
 
 
 class CompleteTask:
-    def __init__(self, output_boundary: CompleteTaskOutputBoundary, task_repository: TaskRepository) -> None:
+    def __init__(
+            self,
+            output_boundary: CompleteTaskOutputBoundary,
+            task_repository: TaskRepository,
+    ) -> None:
         self.output_boundary = output_boundary
         self.task_repository = task_repository
         self._complete_task_strategy: CompleteTaskStrategy = CompleteOneTimeTaskStrategy(task_repository)

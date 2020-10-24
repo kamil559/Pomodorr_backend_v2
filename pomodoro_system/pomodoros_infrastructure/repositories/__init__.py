@@ -1,4 +1,9 @@
-__all__ = ["SQLPauseRepository", "SQLPomodoroRepository", "SQLProjectRepository", "SQLTaskRepository"]
+__all__ = [
+    "SQLPauseRepository",
+    "SQLPomodoroRepository",
+    "SQLProjectRepository",
+    "SQLTaskRepository",
+]
 
 from .pauses import SQLPauseRepository
 from .pomodoros import SQLPomodoroRepository

@@ -1,11 +1,17 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoroInputDto, FinishPomodoroOutputDto
+from pomodoros.application.use_cases.finish_pomodoro import (
+    FinishPomodoroInputDto,
+    FinishPomodoroOutputDto,
+)
 
 
 def test_finish_pomodoro_use_case(
-        user, started_pomodoro, finish_pomodoro_output_boundary, finish_pomodoro_use_case,
-        populated_pomodoros_repository
+        user,
+        started_pomodoro,
+        finish_pomodoro_output_boundary,
+        finish_pomodoro_use_case,
+        populated_pomodoros_repository,
 ):
     now = datetime.now()
     finish_pomodoro_input_dto = FinishPomodoroInputDto(id=started_pomodoro.id, end_date=now, owner_id=user.id)

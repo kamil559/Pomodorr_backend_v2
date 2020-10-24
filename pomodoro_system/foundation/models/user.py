@@ -3,7 +3,9 @@ from datetime import timedelta
 
 from pony.orm import Database, PrimaryKey, Optional, Required
 
-from foundation.value_objects import UserDateFrameDefinition as UserDateFrameDefinitionEntity
+from foundation.value_objects import (
+    UserDateFrameDefinition as UserDateFrameDefinitionEntity,
+)
 
 db = Database()
 

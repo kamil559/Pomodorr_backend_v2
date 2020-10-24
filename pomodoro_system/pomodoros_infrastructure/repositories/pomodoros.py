@@ -21,7 +21,11 @@ class SQLPomodoroRepository(PomodoroRepository):
             with_tzinfo(pomodoro_model.end_date),
             list(
                 map(
-                    lambda pause: Pause(pause.id, with_tzinfo(pause.start_date), with_tzinfo(pause.end_date)),
+                    lambda pause: Pause(
+                        pause.id,
+                        with_tzinfo(pause.start_date),
+                        with_tzinfo(pause.end_date),
+                    ),
                     pomodoro_model.contained_pauses,
                 )
             ),
@@ -55,7 +59,7 @@ class SQLPomodoroRepository(PomodoroRepository):
                 start_date=to_utc(pomodoro.start_date),
                 end_date=to_utc(pomodoro.end_date),
             )
-            _contained_pauses = [
+            [
                 PauseModel(
                     id=pause.id,
                     frame_type=pause.frame_type.value,

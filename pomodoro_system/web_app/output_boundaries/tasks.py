@@ -8,7 +8,11 @@ from pomodoros import (
     PinTaskToProjectOutputBoundary,
     PinTaskToProjectOutputDto,
 )
-from serializers.tasks import CompleteTaskSchema, ReactivateTaskSchema, PinTaskToProjectSchema
+from serializers.tasks import (
+    CompleteTaskSchema,
+    ReactivateTaskSchema,
+    PinTaskToProjectSchema,
+)
 
 
 class JSONCompleteTaskOutputBoundary(PausePomodoroOutputBoundary):

@@ -1,7 +1,11 @@
 import pytz
 from marshmallow import Schema, fields, post_load, EXCLUDE
 
-from pomodoros import CompleteTaskInputDto, ReactivateTaskInputDto, PinTaskToProjectInputDto
+from pomodoros import (
+    CompleteTaskInputDto,
+    ReactivateTaskInputDto,
+    PinTaskToProjectInputDto,
+)
 
 
 class CompleteTaskSchema(Schema):

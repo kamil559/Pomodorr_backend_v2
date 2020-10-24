@@ -86,7 +86,13 @@ def pause() -> Pause:
 @pytest.fixture()
 def paused_pomodoro(pause: Pause, task: Task) -> Pomodoro:
     start_date = datetime.now()
-    return PomodoroFactory(task_id=task.id, start_date=start_date, contained_pauses=[pause, ])
+    return PomodoroFactory(
+        task_id=task.id,
+        start_date=start_date,
+        contained_pauses=[
+            pause,
+        ],
+    )
 
 
 @pytest.fixture()

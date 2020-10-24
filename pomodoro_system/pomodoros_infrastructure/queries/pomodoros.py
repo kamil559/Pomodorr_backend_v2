@@ -20,7 +20,11 @@ class SQLGetRecentPomodoros(GetRecentPomodoros):
             with_tzinfo(pomodoro_model.end_date),
             list(
                 map(
-                    lambda pause: Pause(pause.id, with_tzinfo(pause.start_date), with_tzinfo(pause.end_date)),
+                    lambda pause: Pause(
+                        pause.id,
+                        with_tzinfo(pause.start_date),
+                        with_tzinfo(pause.end_date),
+                    ),
                     pomodoro_model.contained_pauses,
                 )
             ),

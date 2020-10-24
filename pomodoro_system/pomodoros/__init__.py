@@ -49,7 +49,13 @@ from pomodoros.application.use_cases.resume_pomodoro import (
     ResumePomodoroInputDto,
     ResumePomodoroOutputDto,
 )
-from pomodoros.domain.value_objects import ProjectId, TaskId, SubTaskId, PomodoroId, PauseId
+from pomodoros.domain.value_objects import (
+    ProjectId,
+    TaskId,
+    SubTaskId,
+    PomodoroId,
+    PauseId,
+)
 
 __all__ = [
     # injected module
@@ -114,7 +120,12 @@ class Pomodoros(injector.Module):
             tasks_repository: TaskRepository,
             recent_pomodoros_query: GetRecentPomodoros,
     ) -> BeginPomodoro:
-        return BeginPomodoro(output_boundary, pomodoros_repository, tasks_repository, recent_pomodoros_query)
+        return BeginPomodoro(
+            output_boundary,
+            pomodoros_repository,
+            tasks_repository,
+            recent_pomodoros_query,
+        )
 
     @injector.provider
     def pause_pomodoro_uc(
@@ -144,12 +155,18 @@ class Pomodoros(injector.Module):
             recent_pomodoros_query: GetRecentPomodoros,
     ) -> FinishPomodoro:
         return FinishPomodoro(
-            output_boundary, pomodoros_repository, tasks_repository, users_repository, recent_pomodoros_query
+            output_boundary,
+            pomodoros_repository,
+            tasks_repository,
+            users_repository,
+            recent_pomodoros_query,
         )
 
     @injector.provider
     def complete_task_uc(
-            self, output_boundary: CompleteTaskOutputBoundary, tasks_repository: TaskRepository
+            self,
+            output_boundary: CompleteTaskOutputBoundary,
+            tasks_repository: TaskRepository,
     ) -> CompleteTask:
         return CompleteTask(output_boundary, tasks_repository)
 

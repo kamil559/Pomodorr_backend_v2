@@ -42,7 +42,11 @@ class SQLTaskRepository(TaskRepository):
             sub_tasks=list(
                 map(
                     lambda sub_task: SubTask(
-                        sub_task.id, sub_task.name, sub_task.id, with_tzinfo(sub_task.created_at), sub_task.is_completed
+                        sub_task.id,
+                        sub_task.name,
+                        sub_task.id,
+                        with_tzinfo(sub_task.created_at),
+                        sub_task.is_completed,
                     ),
                     task_model.sub_tasks,
                 )
@@ -74,7 +78,7 @@ class SQLTaskRepository(TaskRepository):
                 note=task.note,
                 created_at=to_utc(task.created_at),
             )
-            _sub_tasks = [
+            [
                 SubTaskModel(
                     id=sub_task.id,
                     name=sub_task.name,

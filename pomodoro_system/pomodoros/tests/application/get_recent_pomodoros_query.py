@@ -23,7 +23,11 @@ class GetRecentPomodorosStub(GetRecentPomodoros):
             with_tzinfo(pomodoro.end_date),
             list(
                 map(
-                    lambda pause: Pause(pause.id, with_tzinfo(pause.start_date), with_tzinfo(pause.end_date)),
+                    lambda pause: Pause(
+                        pause.id,
+                        with_tzinfo(pause.start_date),
+                        with_tzinfo(pause.end_date),
+                    ),
                     pomodoro.contained_pauses,
                 )
             ),
@@ -32,7 +36,10 @@ class GetRecentPomodorosStub(GetRecentPomodoros):
     def query(self, task_id: TaskId) -> Optional[List[Pomodoro]]:
         return (
             list(
-                map(lambda pomodoro: self._to_pomodoro_dto(pomodoro), filter(lambda row: row.id == task_id, self._rows))
+                map(
+                    lambda pomodoro: self._to_pomodoro_dto(pomodoro),
+                    filter(lambda row: row.id == task_id, self._rows),
+                )
             )
             if self._rows
             else []

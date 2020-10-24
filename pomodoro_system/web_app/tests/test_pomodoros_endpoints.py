@@ -12,7 +12,9 @@ class TestBeginPomodoroAPI:
             self, client: testing.FlaskClient, orm_task, project_owner_authorization_token
     ):
         response = client.post(
-            f"/pomodoros/{orm_task.id}/begin", headers={"Authorization": project_owner_authorization_token}, json={}
+            f"/pomodoros/{orm_task.id}/begin",
+            headers={"Authorization": project_owner_authorization_token},
+            json={},
         )
 
         assert response.status_code == 201
@@ -23,7 +25,10 @@ class TestBeginPomodoroAPI:
         assert response.status_code == 401
 
     def test_begin_pomodoro_with_random_authenticated_user(
-            self, client: testing.FlaskClient, orm_task, random_project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            orm_task,
+            random_project_owner_authorization_token,
     ):
         response = client.post(
             f"/pomodoros/{orm_task.id}/begin",
@@ -37,7 +42,10 @@ class TestBeginPomodoroAPI:
 class TestPausePomodoroAPI:
     @db_session
     def test_pause_pomodoro_with_valid_data(
-            self, client: testing.FlaskClient, started_orm_pomodoro, project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            started_orm_pomodoro,
+            project_owner_authorization_token,
     ):
         response = client.post(
             f"/pomodoros/{started_orm_pomodoro.id}/pause",
@@ -60,7 +68,10 @@ class TestPausePomodoroAPI:
         assert response.status_code == 401
 
     def test_pause_pomodoro_with_random_authenticated_user(
-            self, client: testing.FlaskClient, started_orm_pomodoro, random_project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            started_orm_pomodoro,
+            random_project_owner_authorization_token,
     ):
         response = client.post(
             f"/pomodoros/{started_orm_pomodoro.id}/pause",
@@ -74,7 +85,10 @@ class TestPausePomodoroAPI:
 class TestResumePomodoroAPI:
     @db_session(optimistic=False)
     def test_resume_pomodoro_with_valid_data(
-            self, client: testing.FlaskClient, paused_orm_pomodoro, project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            paused_orm_pomodoro,
+            project_owner_authorization_token,
     ):
         response = client.post(
             f"/pomodoros/{paused_orm_pomodoro.id}/resume",
@@ -97,7 +111,10 @@ class TestResumePomodoroAPI:
         assert response.status_code == 401
 
     def test_resume_pomodoro_with_random_authenticated_user(
-            self, client: testing.FlaskClient, paused_orm_pomodoro, random_project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            paused_orm_pomodoro,
+            random_project_owner_authorization_token,
     ):
         response = client.post(
             f"/pomodoros/{paused_orm_pomodoro.id}/resume",
@@ -111,7 +128,10 @@ class TestResumePomodoroAPI:
 class TestFinishPomodoroAPI:
     @db_session
     def test_finish_pomodoro_with_valid_data(
-            self, client: testing.FlaskClient, started_orm_pomodoro, project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            started_orm_pomodoro,
+            project_owner_authorization_token,
     ):
         response = client.patch(
             f"/pomodoros/{started_orm_pomodoro.id}/finish",
@@ -133,7 +153,10 @@ class TestFinishPomodoroAPI:
         assert response.status_code == 401
 
     def test_finish_pomodoro_with_random_authenticated_user(
-            self, client: testing.FlaskClient, started_orm_pomodoro, random_project_owner_authorization_token
+            self,
+            client: testing.FlaskClient,
+            started_orm_pomodoro,
+            random_project_owner_authorization_token,
     ):
         response = client.patch(
             f"/pomodoros/{started_orm_pomodoro.id}/finish",

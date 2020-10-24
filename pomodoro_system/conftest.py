@@ -1,7 +1,10 @@
 import pytest
-from pony.orm import BindingError
+from pony.orm import BindingError, db_session
 
-from models import db
+from foundation.models import db, User
+from foundation.tests.factories import ORMUserFactory, ORMUserDateFrameDefinitionFactory
+from pomodoros_infrastructure import ProjectModel, TaskModel
+from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory
 
 
 @pytest.fixture(scope="class")
@@ -16,3 +19,37 @@ def setup_teardown_tables() -> None:
         db.drop_all_tables(with_all_data=True)
         db.disconnect()
         db.provider = db.schema = None
+
+
+@pytest.fixture()
+def project_owner() -> User:
+    with db_session:
+        user = ORMUserFactory(date_frame_definition=None)
+        ORMUserDateFrameDefinitionFactory(user=user)
+        return user
+
+
+@pytest.fixture()
+def random_project_owner() -> User:
+    with db_session:
+        user = ORMUserFactory(date_frame_definition=None)
+        ORMUserDateFrameDefinitionFactory(user=user)
+        return user
+
+
+@pytest.fixture()
+def orm_project(project_owner: User) -> ProjectModel:
+    with db_session:
+        return ORMProjectFactory(owner_id=project_owner.id)
+
+
+@pytest.fixture()
+def orm_second_project(project_owner: User) -> ProjectModel:
+    with db_session:
+        return ORMProjectFactory(owner_id=project_owner.id)
+
+
+@pytest.fixture()
+def orm_task(orm_project: ProjectModel) -> TaskModel:
+    with db_session:
+        return ORMTaskFactory(project_id=orm_project.id)

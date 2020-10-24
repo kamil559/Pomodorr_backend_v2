@@ -5,7 +5,11 @@ from pony.orm import ObjectNotFound
 from application.repositories.user import UserRepository
 from foundation.exceptions import NotFound, AlreadyExists
 from foundation.models import User
-from foundation.value_objects import UserId, DateFrameDefinition, UserDateFrameDefinition
+from foundation.value_objects import (
+    UserId,
+    DateFrameDefinition,
+    UserDateFrameDefinition,
+)
 from interfaces import AbstractUser
 
 

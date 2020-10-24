@@ -20,7 +20,14 @@ class DateFrame:
 
     @property
     def is_finished(self) -> bool:
-        return all([self.start_date, self.start_date is not None, self.end_date, self.end_date is not None])
+        return all(
+            [
+                self.start_date,
+                self.start_date is not None,
+                self.end_date,
+                self.end_date is not None,
+            ]
+        )
 
     def run_begin_date_frame_validations(self, start_date: datetime) -> None:
         pass
@@ -49,7 +56,14 @@ class DateFrame:
             raise FutureDateProvided
 
     def _check_date_frame_is_already_finished(self) -> None:
-        if all([self.start_date, self.start_date is not None, self.end_date, self.end_date is not None]):
+        if all(
+                [
+                    self.start_date,
+                    self.start_date is not None,
+                    self.end_date,
+                    self.end_date is not None,
+                ]
+        ):
             raise DateFrameIsAlreadyFinished(_("pomodoros.domain.entities.date_frame.date_frame_is_already_finished"))
 
     @staticmethod

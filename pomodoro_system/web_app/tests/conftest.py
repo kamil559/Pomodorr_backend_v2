@@ -1,12 +1,22 @@
 import os
+from datetime import datetime
 
+import pytest
+import pytz
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
+from pony.orm import db_session
 
 from flask_app import create_app
+from foundation.models import User
 from pomodoros.domain.value_objects import TaskStatus
-from pomodoros_infrastructure.tests.conftest import *
+from pomodoros_infrastructure import TaskModel, PomodoroModel, ProjectModel
+from pomodoros_infrastructure.tests.factories import (
+    ORMPomodoroFactory,
+    ORMPauseFactory,
+    ORMTaskFactory,
+)
 
 
 @pytest.fixture(scope="package")

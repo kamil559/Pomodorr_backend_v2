@@ -5,11 +5,8 @@ import pytest
 import pytz
 from pony.orm import db_session
 
-from foundation.models import User
-from foundation.tests.factories import ORMUserFactory, ORMUserDateFrameDefinitionFactory
-from pomodoros_infrastructure import ProjectModel, TaskModel, PomodoroModel, PauseModel
+from pomodoros_infrastructure import TaskModel, PomodoroModel, PauseModel
 from pomodoros_infrastructure.tests.factories import (
-    ORMProjectFactory,
     ORMTaskFactory,
     ORMPomodoroFactory,
     ORMPauseFactory,
@@ -26,40 +23,6 @@ def yesterday_date_range() -> Tuple[datetime, datetime]:
 def today_date_range() -> Tuple[datetime, datetime]:
     today = datetime.now(tz=pytz.UTC)
     return today.replace(hour=10, minute=00), today.replace(hour=10, minute=25)
-
-
-@pytest.fixture()
-def project_owner() -> User:
-    with db_session:
-        user = ORMUserFactory(date_frame_definition=None)
-        ORMUserDateFrameDefinitionFactory(user=user)
-        return user
-
-
-@pytest.fixture()
-def random_project_owner() -> User:
-    with db_session:
-        user = ORMUserFactory(date_frame_definition=None)
-        ORMUserDateFrameDefinitionFactory(user=user)
-        return user
-
-
-@pytest.fixture()
-def orm_project(project_owner: User) -> ProjectModel:
-    with db_session:
-        return ORMProjectFactory(owner_id=project_owner.id)
-
-
-@pytest.fixture()
-def orm_second_project(project_owner: User) -> ProjectModel:
-    with db_session:
-        return ORMProjectFactory(owner_id=project_owner.id)
-
-
-@pytest.fixture()
-def orm_task(orm_project: ProjectModel) -> TaskModel:
-    with db_session:
-        return ORMTaskFactory(project_id=orm_project.id)
 
 
 @pytest.fixture()

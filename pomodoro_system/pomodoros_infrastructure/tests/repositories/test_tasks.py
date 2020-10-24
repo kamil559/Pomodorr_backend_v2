@@ -82,7 +82,10 @@ class TestSQLTaskRepository:
             "pomodoros_to_do": 45,
             "pomodoros_burn_down": 2,
             "date_frame_definition": DateFrameDefinition(
-                timedelta(minutes=20), timedelta(7), timedelta(minutes=13), randint(1, 5)
+                timedelta(minutes=20),
+                timedelta(7),
+                timedelta(minutes=13),
+                randint(1, 5),
             ),
             "reminder_date": (datetime.now() + timedelta(hours=5)).astimezone(tz=pytz.UTC),
             "renewal_interval": timedelta(days=2),

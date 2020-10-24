@@ -19,7 +19,13 @@ class TestPomodoroRepository:
         orm_pomodoro = orm_pause.pomodoro
         domain_pause = Pause(orm_pause.id, orm_pause.start_date, orm_pause.end_date)
         expected_entity = Pomodoro(
-            orm_pomodoro.id, orm_pomodoro.id, orm_pomodoro.start_date, orm_pomodoro.end_date, [domain_pause, ]
+            orm_pomodoro.id,
+            orm_pomodoro.id,
+            orm_pomodoro.start_date,
+            orm_pomodoro.end_date,
+            [
+                domain_pause,
+            ],
         )
 
         result = repo.get(orm_pomodoro.id)
@@ -40,7 +46,11 @@ class TestPomodoroRepository:
 
         with db_session(strict=True):
             domain_pomodoro = Pomodoro(
-                orm_pomodoro.id, orm_pomodoro.id, orm_pomodoro.start_date, orm_pomodoro.end_date, None
+                orm_pomodoro.id,
+                orm_pomodoro.id,
+                orm_pomodoro.start_date,
+                orm_pomodoro.end_date,
+                None,
             )
             new_start_date = datetime.now(tz=pytz.UTC)
             domain_pomodoro.start_date = new_start_date

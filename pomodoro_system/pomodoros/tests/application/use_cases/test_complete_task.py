@@ -1,6 +1,9 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.complete_task import CompleteTaskInputDto, CompleteTaskOutputDto
+from pomodoros.application.use_cases.complete_task import (
+    CompleteTaskInputDto,
+    CompleteTaskOutputDto,
+)
 from pomodoros.domain.value_objects import TaskStatus
 
 
@@ -18,7 +21,10 @@ def test_complete_task_use_case_with_one_time_task(
 
 
 def test_complete_task_use_case_with_repeatable_task(
-        task, complete_task_output_boundary, complete_task_use_case, populated_tasks_repository
+        task,
+        complete_task_output_boundary,
+        complete_task_use_case,
+        populated_tasks_repository,
 ):
     now = datetime.now()
     complete_task_input_dto = CompleteTaskInputDto(id=task.id, completed_at=now)

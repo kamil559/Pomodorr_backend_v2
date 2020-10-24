@@ -10,7 +10,12 @@ from pomodoros import (
 )
 from .models import ProjectModel, TaskModel, SubTaskModel, PauseModel, PomodoroModel
 from .queries import SQLGetRecentPomodoros, SQLGetTasksByProjectId
-from .repositories import SQLPauseRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
+from .repositories import (
+    SQLPauseRepository,
+    SQLPomodoroRepository,
+    SQLProjectRepository,
+    SQLTaskRepository,
+)
 
 __all__ = [
     # injected module

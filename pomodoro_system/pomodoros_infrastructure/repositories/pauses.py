@@ -13,7 +13,11 @@ from pomodoros_infrastructure.models.date_frame import PauseModel
 class SQLPauseRepository(PauseRepository):
     @staticmethod
     def _to_entity(pause_model: Type[PauseModel]) -> Pause:
-        return Pause(pause_model.id, with_tzinfo(pause_model.start_date), with_tzinfo(pause_model.end_date))
+        return Pause(
+            pause_model.id,
+            with_tzinfo(pause_model.start_date),
+            with_tzinfo(pause_model.end_date),
+        )
 
     def get(self, pause_id: PauseId) -> Pause:
         try:
