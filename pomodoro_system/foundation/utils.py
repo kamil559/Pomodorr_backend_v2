@@ -17,7 +17,7 @@ def to_utc(date: datetime) -> Optional[datetime]:
     return date.astimezone(tz=pytz.UTC)
 
 
-def with_tzinfo(date: datetime, tz: Union[BaseTzInfo, timezone] = pytz.UTC) -> datetime:
+def with_tzinfo(date: datetime, tz_info: Union[BaseTzInfo, timezone] = pytz.UTC) -> datetime:
     if date is None:
         return
-    return date.replace(tzinfo=tz)
+    return date.replace(tzinfo=tz_info)

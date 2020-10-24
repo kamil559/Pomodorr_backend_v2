@@ -1,7 +1,7 @@
 #!/bin/bash
 MODULES_PATHS=""
 for dirname in $(ls); do
-    if [ -d "$dirname" ] && [ -e "$dirname/setup.py" ]; then
+    if [ -d "$dirname" ] && [ -e "$dirname/__init__.py" ]; then
 	MODULES_PATHS="$MODULES_PATHS $dirname/$dirname"
     fi
 done

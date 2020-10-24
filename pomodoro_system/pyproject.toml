@@ -35,3 +35,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line_length = 120
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+| \.mypy_cache
+| \.tox
+| \.venv
+| _build
+| buck-out
+| build
+| dist
+)/
