@@ -18,8 +18,8 @@ class ORMProjectFactory(PonyFactory):
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
-    name = factory.Faker('name')
-    priority_color = factory.Faker('color')
+    name = factory.Faker("name")
+    priority_color = factory.Faker("color")
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
     ordering = factory.Sequence(lambda number: number)
     owner_id = factory.LazyAttribute(lambda project: ORMUserFactory().id)
@@ -33,7 +33,7 @@ class ORMSubTaskFactory(PonyFactory):
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
-    name = factory.Faker('name')
+    name = factory.Faker("name")
     task_id = FuzzyAttribute(lambda: ORMTaskFactory().id)
     created_at = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     is_completed = FuzzyAttribute(lambda: bool(random.randint(0, 1)))
@@ -46,9 +46,9 @@ class ORMTaskFactory(PonyFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     project_id = FuzzyAttribute(lambda: ORMProjectFactory().id)
-    name = factory.Faker('name')
+    name = factory.Faker("name")
     status = TaskStatus.ACTIVE.value
-    priority_color = factory.Faker('color')
+    priority_color = factory.Faker("color")
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
     ordering = factory.Sequence(lambda number: number)
     due_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC) + timedelta(days=random.randint(1, 7)))
@@ -60,7 +60,7 @@ class ORMTaskFactory(PonyFactory):
     gap_between_long_breaks = FuzzyAttribute(lambda: random.randint(4, 7))
     reminder_date = factory.LazyAttribute(lambda task: task.due_date - timedelta(days=random.randint(1, 2)))
     renewal_interval = FuzzyAttribute(lambda: timedelta(days=random.randint(1, 7)))
-    note = factory.Faker('text')
+    note = factory.Faker("text")
     created_at = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     sub_tasks = factory.List([])
 

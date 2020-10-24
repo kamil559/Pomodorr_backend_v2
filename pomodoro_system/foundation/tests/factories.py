@@ -11,10 +11,9 @@ from interfaces import AbstractUser
 
 
 class PonyOptions(factory.base.FactoryOptions):
-
     def _build_default_options(self):
         return super()._build_default_options() + [
-            factory.base.OptionDefault('db', None, inherit=True),
+            factory.base.OptionDefault("db", None, inherit=True),
         ]
 
 

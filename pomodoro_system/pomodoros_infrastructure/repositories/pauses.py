@@ -29,8 +29,8 @@ class SQLPauseRepository(PauseRepository):
 
     def save(self, pause: Pause) -> None:
         values_to_update = {
-            'start_date': to_utc(pause.start_date),
-            'end_date': to_utc(pause.end_date),
+            "start_date": to_utc(pause.start_date),
+            "end_date": to_utc(pause.end_date),
         }
 
         pause = self._get_for_update(pause.id)

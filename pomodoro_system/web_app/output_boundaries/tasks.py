@@ -6,7 +6,7 @@ from pomodoros import (
     ReactivateTaskOutputBoundary,
     ReactivateTaskOutputDto,
     PinTaskToProjectOutputBoundary,
-    PinTaskToProjectOutputDto
+    PinTaskToProjectOutputDto,
 )
 from serializers.tasks import CompleteTaskSchema, ReactivateTaskSchema, PinTaskToProjectSchema
 

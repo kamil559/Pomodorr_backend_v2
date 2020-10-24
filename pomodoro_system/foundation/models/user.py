@@ -9,14 +9,14 @@ db = Database()
 
 
 class User(db.Entity):
-    _table_ = 'users'
+    _table_ = "users"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     date_frame_definition = Optional(lambda: UserDateFrameDefinition, lazy=False)
 
 
 class UserDateFrameDefinition(db.Entity):
-    _table_ = 'user_date_frame_definitions'
+    _table_ = "user_date_frame_definitions"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     pomodoro_length = Required(timedelta, default=UserDateFrameDefinitionEntity.pomodoro_length)

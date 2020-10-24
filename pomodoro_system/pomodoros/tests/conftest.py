@@ -8,8 +8,13 @@ from pomodoros.domain.entities import Task, Project
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskStatus
-from pomodoros.tests.factories import TaskFactory, ProjectFactory, PomodoroFactory, DateFrameDefinitionFactory, \
-    PauseFactory
+from pomodoros.tests.factories import (
+    TaskFactory,
+    ProjectFactory,
+    PomodoroFactory,
+    DateFrameDefinitionFactory,
+    PauseFactory,
+)
 
 
 @pytest.fixture()
@@ -95,20 +100,24 @@ def overlapping_unfinished_pomodoros() -> List[Pomodoro]:
 @pytest.fixture()
 def finished_non_overlapping_pomodoros() -> List[Pomodoro]:
     now = datetime.now()
-    first_finished_pomodoro = PomodoroFactory(start_date=now - timedelta(minutes=45),
-                                              end_date=now - timedelta(minutes=30))
-    second_finished_pomodoro = PomodoroFactory(start_date=now - timedelta(minutes=25),
-                                               end_date=now - timedelta(minutes=5))
+    first_finished_pomodoro = PomodoroFactory(
+        start_date=now - timedelta(minutes=45), end_date=now - timedelta(minutes=30)
+    )
+    second_finished_pomodoro = PomodoroFactory(
+        start_date=now - timedelta(minutes=25), end_date=now - timedelta(minutes=5)
+    )
     return [first_finished_pomodoro, second_finished_pomodoro]
 
 
 @pytest.fixture()
 def overlapping_finished_pomodoros() -> List[Pomodoro]:
     now = datetime.now()
-    first_overlapping_pomodoro = PomodoroFactory(start_date=now + timedelta(minutes=5),
-                                                 end_date=now + timedelta(minutes=25))
-    second_overlapping_pomodoro = PomodoroFactory(start_date=now + timedelta(minutes=30),
-                                                  end_date=now + timedelta(minutes=55))
+    first_overlapping_pomodoro = PomodoroFactory(
+        start_date=now + timedelta(minutes=5), end_date=now + timedelta(minutes=25)
+    )
+    second_overlapping_pomodoro = PomodoroFactory(
+        start_date=now + timedelta(minutes=30), end_date=now + timedelta(minutes=55)
+    )
     return [first_overlapping_pomodoro, second_overlapping_pomodoro]
 
 

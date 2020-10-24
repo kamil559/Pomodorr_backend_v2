@@ -7,7 +7,7 @@ from foundation.models import db
 
 
 class ProjectModel(db.Entity):
-    _table_ = 'projects'
+    _table_ = "projects"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     name = Required(str, max_len=128)

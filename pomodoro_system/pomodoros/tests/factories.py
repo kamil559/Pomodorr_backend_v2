@@ -18,7 +18,7 @@ class PriorityFactory(factory.Factory):
         model = Priority
 
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
-    color = factory.Faker('color')
+    color = factory.Faker("color")
 
 
 class ProjectFactory(factory.Factory):
@@ -26,7 +26,7 @@ class ProjectFactory(factory.Factory):
         model = Project
 
     id = FuzzyAttribute(lambda: uuid.uuid4())
-    name = factory.Faker('name')
+    name = factory.Faker("name")
     priority = factory.SubFactory(PriorityFactory)
     ordering = factory.Sequence(lambda number: number)
     owner_id = FuzzyAttribute(lambda: UserFactory().id)
@@ -50,7 +50,7 @@ class TaskFactory(factory.Factory):
 
     id = FuzzyAttribute(lambda: uuid.uuid4())
     project_id = FuzzyAttribute(lambda: ProjectFactory().id)
-    name = factory.Faker('name')
+    name = factory.Faker("name")
     status = TaskStatus.ACTIVE
     priority = factory.SubFactory(PriorityFactory)
     ordering = factory.Sequence(lambda number: number)
@@ -60,7 +60,7 @@ class TaskFactory(factory.Factory):
     date_frame_definition = factory.SubFactory(DateFrameDefinitionFactory)
     reminder_date = factory.LazyAttribute(lambda task: task.due_date - timedelta(days=random.randint(1, 2)))
     renewal_interval = FuzzyAttribute(lambda: timedelta(days=random.randint(1, 7)))
-    note = factory.Faker('text')
+    note = factory.Faker("text")
     created_at = FuzzyAttribute(lambda: datetime.now())
     sub_tasks = factory.List([])
 
@@ -70,7 +70,7 @@ class SubTaskFactory(factory.Factory):
         model = SubTask
 
     id = FuzzyAttribute(lambda: uuid.uuid4())
-    name = factory.Faker('name')
+    name = factory.Faker("name")
     task_id = FuzzyAttribute(lambda: TaskFactory().id)
     created_at = FuzzyAttribute(lambda: datetime.now())
     is_completed = FuzzyAttribute(lambda: bool(random.randint(0, 1)))

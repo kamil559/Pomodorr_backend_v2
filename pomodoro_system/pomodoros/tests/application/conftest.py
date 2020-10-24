@@ -10,7 +10,7 @@ from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
-from pomodoros.application.use_cases.begin_pomodoro import (BeginPomodoro, BeginPomodoroOutputBoundary)
+from pomodoros.application.use_cases.begin_pomodoro import BeginPomodoro, BeginPomodoroOutputBoundary
 from pomodoros.application.use_cases.complete_task import CompleteTaskOutputBoundary, CompleteTask
 from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoroOutputBoundary, FinishPomodoro
 from pomodoros.application.use_cases.pause_pomodoro import PausePomodoro, PausePomodoroOutputBoundary
@@ -43,8 +43,10 @@ def pomodoros_repository() -> PomodoroRepository:
 
 @pytest.fixture()
 def populated_pomodoros_repository(started_pomodoro: Pomodoro, paused_pomodoro: Pomodoro) -> PomodoroRepository:
-    other_pomodoros = [PomodoroFactory(task_id=started_pomodoro.task_id),
-                       PomodoroFactory(task_id=started_pomodoro.task_id)]
+    other_pomodoros = [
+        PomodoroFactory(task_id=started_pomodoro.task_id),
+        PomodoroFactory(task_id=started_pomodoro.task_id),
+    ]
     return InMemoryPomodorosRepository(initial_data=[started_pomodoro, paused_pomodoro] + other_pomodoros)
 
 
@@ -75,11 +77,16 @@ def populated_recent_pomodoros_query(recent_pomodoros_list: List[Pomodoro]) -> G
 
 
 @pytest.fixture()
-def begin_pomodoro_use_case(begin_pomodoro_output_boundary, pomodoros_repository, populated_tasks_repository,
-                            populated_recent_pomodoros_query) -> BeginPomodoro:
-    return BeginPomodoro(output_boundary=begin_pomodoro_output_boundary, pomodoros_repository=pomodoros_repository,
-                         tasks_repository=populated_tasks_repository,
-                         recent_pomodoros_query=populated_recent_pomodoros_query)
+def begin_pomodoro_use_case(
+        begin_pomodoro_output_boundary, pomodoros_repository, populated_tasks_repository,
+        populated_recent_pomodoros_query
+) -> BeginPomodoro:
+    return BeginPomodoro(
+        output_boundary=begin_pomodoro_output_boundary,
+        pomodoros_repository=pomodoros_repository,
+        tasks_repository=populated_tasks_repository,
+        recent_pomodoros_query=populated_recent_pomodoros_query,
+    )
 
 
 @pytest.fixture()
@@ -93,13 +100,20 @@ def finish_pomodoro_output_boundary() -> Mock:
 
 
 @pytest.fixture()
-def finish_pomodoro_use_case(finish_pomodoro_output_boundary, populated_pomodoros_repository,
-                             populated_tasks_repository, users_repository,
-                             populated_recent_pomodoros_query) -> FinishPomodoro:
-    return FinishPomodoro(output_boundary=finish_pomodoro_output_boundary,
-                          pomodoro_repository=populated_pomodoros_repository,
-                          task_repository=populated_tasks_repository, user_repository=users_repository,
-                          recent_pomodoros_query=populated_recent_pomodoros_query)
+def finish_pomodoro_use_case(
+        finish_pomodoro_output_boundary,
+        populated_pomodoros_repository,
+        populated_tasks_repository,
+        users_repository,
+        populated_recent_pomodoros_query,
+) -> FinishPomodoro:
+    return FinishPomodoro(
+        output_boundary=finish_pomodoro_output_boundary,
+        pomodoro_repository=populated_pomodoros_repository,
+        task_repository=populated_tasks_repository,
+        user_repository=users_repository,
+        recent_pomodoros_query=populated_recent_pomodoros_query,
+    )
 
 
 @pytest.fixture()
@@ -118,11 +132,14 @@ def pause_pomodoro_output_boundary() -> Mock:
 
 
 @pytest.fixture()
-def pause_pomodoro_use_case(pause_pomodoro_output_boundary, populated_pomodoros_repository,
-                            populated_tasks_repository) -> PausePomodoro:
-    return PausePomodoro(output_boundary=pause_pomodoro_output_boundary,
-                         pomodoros_repository=populated_pomodoros_repository,
-                         tasks_repository=populated_tasks_repository)
+def pause_pomodoro_use_case(
+        pause_pomodoro_output_boundary, populated_pomodoros_repository, populated_tasks_repository
+) -> PausePomodoro:
+    return PausePomodoro(
+        output_boundary=pause_pomodoro_output_boundary,
+        pomodoros_repository=populated_pomodoros_repository,
+        tasks_repository=populated_tasks_repository,
+    )
 
 
 @pytest.fixture()
@@ -131,11 +148,14 @@ def resume_pomodoro_output_boundary() -> Mock:
 
 
 @pytest.fixture()
-def resume_pomodoro_use_case(resume_pomodoro_output_boundary, populated_pomodoros_repository,
-                             populated_tasks_repository) -> ResumePomodoro:
-    return ResumePomodoro(output_boundary=resume_pomodoro_output_boundary,
-                          pomodoros_repository=populated_pomodoros_repository,
-                          tasks_repository=populated_tasks_repository)
+def resume_pomodoro_use_case(
+        resume_pomodoro_output_boundary, populated_pomodoros_repository, populated_tasks_repository
+) -> ResumePomodoro:
+    return ResumePomodoro(
+        output_boundary=resume_pomodoro_output_boundary,
+        pomodoros_repository=populated_pomodoros_repository,
+        tasks_repository=populated_tasks_repository,
+    )
 
 
 @pytest.fixture()
@@ -149,11 +169,14 @@ def pin_task_to_project_output_boundary() -> Mock:
 
 
 @pytest.fixture()
-def pin_task_to_project_use_case(pin_task_to_project_output_boundary, populated_tasks_repository,
-                                 populated_tasks_by_project_id_query) -> PinTaskToProject:
-    return PinTaskToProject(output_boundary=pin_task_to_project_output_boundary,
-                            tasks_repository=populated_tasks_repository,
-                            get_tasks_by_project_id_query=populated_tasks_by_project_id_query)
+def pin_task_to_project_use_case(
+        pin_task_to_project_output_boundary, populated_tasks_repository, populated_tasks_by_project_id_query
+) -> PinTaskToProject:
+    return PinTaskToProject(
+        output_boundary=pin_task_to_project_output_boundary,
+        tasks_repository=populated_tasks_repository,
+        get_tasks_by_project_id_query=populated_tasks_by_project_id_query,
+    )
 
 
 @pytest.fixture()
@@ -162,8 +185,11 @@ def reactivate_task_output_boundary() -> Mock:
 
 
 @pytest.fixture()
-def reactivate_task_use_case(reactivate_task_output_boundary, populated_tasks_repository,
-                             populated_tasks_by_project_id_query) -> ReactivateTask:
-    return ReactivateTask(output_boundary=reactivate_task_output_boundary,
-                          tasks_repository=populated_tasks_repository,
-                          get_tasks_by_pomodoro_id_query=populated_tasks_by_project_id_query)
+def reactivate_task_use_case(
+        reactivate_task_output_boundary, populated_tasks_repository, populated_tasks_by_project_id_query
+) -> ReactivateTask:
+    return ReactivateTask(
+        output_boundary=reactivate_task_output_boundary,
+        tasks_repository=populated_tasks_repository,
+        get_tasks_by_pomodoro_id_query=populated_tasks_by_project_id_query,
+    )

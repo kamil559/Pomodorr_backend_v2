@@ -16,11 +16,24 @@ class GetRecentPomodorosStub(GetRecentPomodoros):
 
     @staticmethod
     def _to_pomodoro_dto(pomodoro: Pomodoro) -> Pomodoro:
-        return Pomodoro(pomodoro.id, pomodoro.task_id, with_tzinfo(pomodoro.start_date), with_tzinfo(pomodoro.end_date),
-                        list(map(lambda pause: Pause(pause.id, with_tzinfo(pause.start_date),
-                                                     with_tzinfo(pause.end_date)),
-                                 pomodoro.contained_pauses)))
+        return Pomodoro(
+            pomodoro.id,
+            pomodoro.task_id,
+            with_tzinfo(pomodoro.start_date),
+            with_tzinfo(pomodoro.end_date),
+            list(
+                map(
+                    lambda pause: Pause(pause.id, with_tzinfo(pause.start_date), with_tzinfo(pause.end_date)),
+                    pomodoro.contained_pauses,
+                )
+            ),
+        )
 
     def query(self, task_id: TaskId) -> Optional[List[Pomodoro]]:
-        return list(map(lambda pomodoro: self._to_pomodoro_dto(pomodoro),
-                        filter(lambda row: row.id == task_id, self._rows))) if self._rows else []
+        return (
+            list(
+                map(lambda pomodoro: self._to_pomodoro_dto(pomodoro), filter(lambda row: row.id == task_id, self._rows))
+            )
+            if self._rows
+            else []
+        )

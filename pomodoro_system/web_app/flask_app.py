@@ -17,9 +17,9 @@ from web_app.configuration import PomodorosWeb
 def create_app() -> Flask:
     flask_app = Flask(__name__)
     flask_app.config.update(
-        TESTING=bool(os.getenv('TESTING', False)),
-        SECRET_KEY=os.getenv('SECRET_KEY'),
-        JWT_SECRET_KEY=os.getenv('JWT_SECRET_KEY')
+        TESTING=bool(os.getenv("TESTING", False)),
+        SECRET_KEY=os.getenv("SECRET_KEY"),
+        JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY"),
     )
 
     jwt = JWTManager(flask_app)  # noqa

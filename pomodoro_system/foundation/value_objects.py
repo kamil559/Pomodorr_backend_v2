@@ -9,7 +9,7 @@ PomodoroLength = timedelta
 BreakLength = timedelta
 UserId = uuid.UUID
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 @dataclass

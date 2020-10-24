@@ -7,7 +7,7 @@ from foundation.models import db
 
 
 class TaskModel(db.Entity):
-    _table_ = 'tasks'
+    _table_ = "tasks"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     project_id = Required(uuid.UUID)
@@ -31,7 +31,7 @@ class TaskModel(db.Entity):
 
 
 class SubTaskModel(db.Entity):
-    _table_ = 'sub_tasks'
+    _table_ = "sub_tasks"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     name = Required(str, max_len=128)

@@ -1,14 +1,15 @@
-import datetime
-from typing import Optional
+from datetime import timezone, datetime
+from typing import Optional, Union
 
 import pytz
+from pytz import BaseTzInfo
 
 
-def contains_utc(date: datetime.datetime) -> bool:
-    return date.tzinfo and (date.tzinfo == pytz.UTC or date.tzinfo == datetime.timezone.utc)
+def contains_utc(date: datetime) -> bool:
+    return bool(date.tzinfo and (date.tzinfo == pytz.UTC or date.tzinfo == timezone.utc))
 
 
-def to_utc(date: datetime.datetime) -> Optional[datetime.datetime]:
+def to_utc(date: datetime) -> Optional[datetime]:
     if date is None:
         return
     if contains_utc(date):
@@ -16,7 +17,7 @@ def to_utc(date: datetime.datetime) -> Optional[datetime.datetime]:
     return date.astimezone(tz=pytz.UTC)
 
 
-def with_tzinfo(date: datetime.datetime, tz=pytz.UTC):
+def with_tzinfo(date: datetime, tz: Union[BaseTzInfo, timezone] = pytz.UTC) -> datetime:
     if date is None:
         return
     return date.replace(tzinfo=tz)

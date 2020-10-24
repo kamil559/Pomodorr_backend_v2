@@ -7,7 +7,7 @@ from foundation.application.repositories.user import UserRepository
 from output_boundaries.tasks import (
     JSONCompleteTaskOutputBoundary,
     JSONReactivateTaskPresenter,
-    JSONPinTaskToProjectPresenter
+    JSONPinTaskToProjectPresenter,
 )
 from pomodoros import (
     BeginPomodoroOutputBoundary,
@@ -16,14 +16,15 @@ from pomodoros import (
     FinishPomodoroOutputBoundary,
     CompleteTaskOutputBoundary,
     ReactivateTaskOutputBoundary,
-    PinTaskToProjectOutputBoundary
+    PinTaskToProjectOutputBoundary,
 )
 from web_app.authorization.pomodoros import PomodoroProtector
 from web_app.users.repository import SQLUserRepository
 from .output_boundaries.pomodoros import (
     JSONBeginPomodoroPresenter,
     JSONPausePomodoroPresenter,
-    JSONResumePomodoroPresenter, JSONFinishPomodoroPresenter
+    JSONResumePomodoroPresenter,
+    JSONFinishPomodoroPresenter,
 )
 
 

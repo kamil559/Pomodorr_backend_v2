@@ -1,8 +1,15 @@
 from flask import make_response, jsonify
 
-from pomodoros import (BeginPomodoroOutputBoundary, BeginPomodoroOutputDto, PausePomodoroOutputBoundary,
-                       PausePomodoroOutputDto, ResumePomodoroOutputBoundary, ResumePomodoroOutputDto,
-                       FinishPomodoroOutputBoundary, FinishPomodoroOutputDto)
+from pomodoros import (
+    BeginPomodoroOutputBoundary,
+    BeginPomodoroOutputDto,
+    PausePomodoroOutputBoundary,
+    PausePomodoroOutputDto,
+    ResumePomodoroOutputBoundary,
+    ResumePomodoroOutputDto,
+    FinishPomodoroOutputBoundary,
+    FinishPomodoroOutputDto,
+)
 from serializers.pomodoros import BeginPomodoroSchema, PausePomodoroSchema, ResumePomodoroSchema, FinishPomodoroSchema
 
 

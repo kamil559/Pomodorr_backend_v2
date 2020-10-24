@@ -19,8 +19,15 @@ class TestSQLProjectRepository:
         repo = SQLProjectRepository()
 
         priority = Priority(orm_project.priority_color, PriorityLevel(orm_project.priority_level))
-        expected_entity = Project(orm_project.id, orm_project.name, priority, orm_project.ordering,
-                                  orm_project.owner_id, orm_project.created_at, None)
+        expected_entity = Project(
+            orm_project.id,
+            orm_project.name,
+            priority,
+            orm_project.ordering,
+            orm_project.owner_id,
+            orm_project.created_at,
+            None,
+        )
 
         result = repo.get(orm_project.id)
 
@@ -38,10 +45,10 @@ class TestSQLProjectRepository:
         repo = SQLProjectRepository()
 
         values_to_update = {
-            'name': 'xyz',
-            'priority': Priority('#952424', PriorityLevel(randint(0, 3))),
-            'ordering': 1,
-            'deleted_at': datetime.now().astimezone(tz=pytz.UTC)
+            "name": "xyz",
+            "priority": Priority("#952424", PriorityLevel(randint(0, 3))),
+            "ordering": 1,
+            "deleted_at": datetime.now().astimezone(tz=pytz.UTC),
         }
 
         with db_session(strict=True):
@@ -56,5 +63,6 @@ class TestSQLProjectRepository:
         with db_session:
             fetched_project = repo.get(domain_project.id)
 
-            assert [getattr(fetched_project, field) for field in values_to_update.keys()] == \
-                   [values_to_update[field] for field in values_to_update.keys()]
+            assert [getattr(fetched_project, field) for field in values_to_update.keys()] == [
+                values_to_update[field] for field in values_to_update.keys()
+            ]

@@ -4,10 +4,10 @@ from pony.orm import BindingError
 from models import db
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope="class")
 def setup_teardown_tables() -> None:
     try:
-        db.bind(provider='sqlite', filename=':memory:', create_db=True)
+        db.bind(provider="sqlite", filename=":memory:", create_db=True)
     except BindingError:
         pass
     else:

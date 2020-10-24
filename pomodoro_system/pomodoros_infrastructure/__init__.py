@@ -6,7 +6,7 @@ from pomodoros import (
     ProjectRepository,
     TaskRepository,
     GetRecentPomodoros,
-    GetTasksByProjectId
+    GetTasksByProjectId,
 )
 from .models import ProjectModel, TaskModel, SubTaskModel, PauseModel, PomodoroModel
 from .queries import SQLGetRecentPomodoros, SQLGetTasksByProjectId
@@ -14,14 +14,13 @@ from .repositories import SQLPauseRepository, SQLPomodoroRepository, SQLProjectR
 
 __all__ = [
     # injected module
-    'PomodorosInfrastructure',
-
+    "PomodorosInfrastructure",
     # orm models
-    'ProjectModel',
-    'TaskModel',
-    'SubTaskModel',
-    'PauseModel',
-    'PomodoroModel'
+    "ProjectModel",
+    "TaskModel",
+    "SubTaskModel",
+    "PauseModel",
+    "PomodoroModel",
 ]
 
 

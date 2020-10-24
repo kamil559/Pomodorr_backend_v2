@@ -18,10 +18,14 @@ class TestGetRecentPomodorosQuery:
         assert orm_pomodoro_for_today.id == result[0].id
 
     @db_session
-    def test_query_returns_task_related_pomodoros_only(self, orm_task, orm_pomodoro_for_today,
-                                                       orm_random_pomodoro_for_today,
-                                                       orm_pomodoro_for_yesterday,
-                                                       orm_random_pomodoro_for_yesterday):
+    def test_query_returns_task_related_pomodoros_only(
+            self,
+            orm_task,
+            orm_pomodoro_for_today,
+            orm_random_pomodoro_for_today,
+            orm_pomodoro_for_yesterday,
+            orm_random_pomodoro_for_yesterday,
+    ):
         query_object = SQLGetRecentPomodoros()
         result = query_object.query(orm_task.id)
 

@@ -12,7 +12,7 @@ from pomodoros_infrastructure.tests.factories import (
     ORMProjectFactory,
     ORMTaskFactory,
     ORMPomodoroFactory,
-    ORMPauseFactory
+    ORMPauseFactory,
 )
 
 

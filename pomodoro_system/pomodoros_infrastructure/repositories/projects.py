@@ -14,8 +14,15 @@ class SQLProjectRepository(ProjectRepository):
     @staticmethod
     def _to_entity(project_model: Type[ProjectModel]) -> Project:
         priority = Priority(project_model.priority_color, PriorityLevel(project_model.priority_level))
-        return Project(project_model.id, project_model.name, priority, project_model.ordering, project_model.owner_id,
-                       with_tzinfo(project_model.created_at), with_tzinfo(project_model.deleted_at))
+        return Project(
+            project_model.id,
+            project_model.name,
+            priority,
+            project_model.ordering,
+            project_model.owner_id,
+            with_tzinfo(project_model.created_at),
+            with_tzinfo(project_model.deleted_at),
+        )
 
     def get(self, project_id: ProjectId) -> Project:
         try:
@@ -31,11 +38,11 @@ class SQLProjectRepository(ProjectRepository):
 
     def save(self, project: Project) -> None:
         values_to_update = {
-            'name': project.name,
-            'priority_color': project.priority.color,
-            'priority_level': project.priority.priority_level.value,
-            'ordering': project.ordering,
-            'deleted_at': to_utc(project.deleted_at)
+            "name": project.name,
+            "priority_color": project.priority.color,
+            "priority_level": project.priority.priority_level.value,
+            "ordering": project.ordering,
+            "deleted_at": to_utc(project.deleted_at),
         }
 
         project = self._get_for_update(project.id)

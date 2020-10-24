@@ -1,7 +1,7 @@
 #!/bin/bash
 EXIT_STATUS=0
 for dirname in $(ls); do
-    if [ -d "$dirname" ] && [ -e "$dirname/setup.py" ]; then
+    if [ -d "$dirname" ] && [ -e "$dirname/__init__.py" ]; then
         mypy --ignore-missing-imports $dirname
         if [[ $? -ne 0 ]]; then
             EXIT_STATUS=1

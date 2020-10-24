@@ -12,12 +12,15 @@ from interfaces import AbstractUser
 class SQLUserRepository(UserRepository):
     @staticmethod
     def _to_entity(user_model: Type[User]) -> AbstractUser:
-        return AbstractUser(id=user_model.id, date_frame_definition=DateFrameDefinition(
-            pomodoro_length=user_model.date_frame_definition.pomodoro_length,
-            break_length=user_model.date_frame_definition.break_length,
-            longer_break_length=user_model.date_frame_definition.longer_break_length,
-            gap_between_long_breaks=user_model.date_frame_definition.gap_between_breaks
-        ))
+        return AbstractUser(
+            id=user_model.id,
+            date_frame_definition=DateFrameDefinition(
+                pomodoro_length=user_model.date_frame_definition.pomodoro_length,
+                break_length=user_model.date_frame_definition.break_length,
+                longer_break_length=user_model.date_frame_definition.longer_break_length,
+                gap_between_long_breaks=user_model.date_frame_definition.gap_between_breaks,
+            ),
+        )
 
     def get(self, user_id: UserId) -> AbstractUser:
         try:
@@ -48,18 +51,18 @@ class SQLUserRepository(UserRepository):
             )
             return User(id=user.id, date_frame_definition=orm_date_frame_definition)
 
-    def save(self, user: AbstractUser, create=False) -> None:
+    def save(self, user: AbstractUser, create: bool = False) -> None:
         if create:
             self._persist_new_orm_user(user)
         else:
             values_to_update = {
-                'date_frame_definition': {
-                    'pomodoro_length': user.date_frame_definition.pomodoro_length,
-                    'break_length': user.date_frame_definition.break_length,
-                    'longer_break_length': user.date_frame_definition.longer_break_length,
-                    'gap_between_long_breaks': user.date_frame_definition.gap_between_long_breaks
+                "date_frame_definition": {
+                    "pomodoro_length": user.date_frame_definition.pomodoro_length,
+                    "break_length": user.date_frame_definition.break_length,
+                    "longer_break_length": user.date_frame_definition.longer_break_length,
+                    "gap_between_long_breaks": user.date_frame_definition.gap_between_long_breaks,
                 }
             }
             orm_user = self._get_orm_instance(user.id)
             date_frame_definition = orm_user.date_frame_definition
-            date_frame_definition.set(**values_to_update['date_frame_definition'])
+            date_frame_definition.set(**values_to_update["date_frame_definition"])

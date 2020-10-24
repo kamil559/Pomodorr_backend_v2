@@ -21,17 +21,40 @@ class TestSQLTaskRepository:
         repo = SQLTaskRepository()
 
         priority = Priority(orm_task.priority_color, PriorityLevel(orm_task.priority_level))
-        date_frame_definition = DateFrameDefinition(orm_task.pomodoro_length, orm_task.break_length,
-                                                    orm_task.longer_break_length, orm_task.gap_between_long_breaks)
+        date_frame_definition = DateFrameDefinition(
+            orm_task.pomodoro_length,
+            orm_task.break_length,
+            orm_task.longer_break_length,
+            orm_task.gap_between_long_breaks,
+        )
 
         expected_entity = Task(
-            orm_task.id, orm_task.project_id, orm_task.name, TaskStatus(orm_task.status), priority,
-            orm_task.ordering, orm_task.due_date, orm_task.pomodoros_to_do, orm_task.pomodoros_burn_down,
-            date_frame_definition, orm_task.reminder_date, orm_task.renewal_interval, orm_task.note,
+            orm_task.id,
+            orm_task.project_id,
+            orm_task.name,
+            TaskStatus(orm_task.status),
+            priority,
+            orm_task.ordering,
+            orm_task.due_date,
+            orm_task.pomodoros_to_do,
+            orm_task.pomodoros_burn_down,
+            date_frame_definition,
+            orm_task.reminder_date,
+            orm_task.renewal_interval,
+            orm_task.note,
             orm_task.created_at,
-            sub_tasks=list(map(lambda sub_task: SubTaskModel(sub_task.id, sub_task.name, sub_task.id,
-                                                             sub_task.created_at.astimezone(tz=pytz.UTC),
-                                                             sub_task.is_completed), orm_task.sub_tasks))
+            sub_tasks=list(
+                map(
+                    lambda sub_task: SubTaskModel(
+                        sub_task.id,
+                        sub_task.name,
+                        sub_task.id,
+                        sub_task.created_at.astimezone(tz=pytz.UTC),
+                        sub_task.is_completed,
+                    ),
+                    orm_task.sub_tasks,
+                )
+            ),
         )
 
         result = repo.get(orm_task.id)
@@ -50,19 +73,20 @@ class TestSQLTaskRepository:
         repo = SQLTaskRepository()
 
         values_to_update = {
-            'project_id': orm_second_project.id,
-            'name': 'xyz',
-            'status': TaskStatus.COMPLETED,
-            'priority': Priority('#952424', PriorityLevel(randint(0, 3))),
-            'ordering': 1,
-            'due_date': (datetime.now() + timedelta(days=1)).astimezone(tz=pytz.UTC),
-            'pomodoros_to_do': 45,
-            'pomodoros_burn_down': 2,
-            'date_frame_definition': DateFrameDefinition(timedelta(minutes=20), timedelta(7),
-                                                         timedelta(minutes=13), randint(1, 5)),
-            'reminder_date': (datetime.now() + timedelta(hours=5)).astimezone(tz=pytz.UTC),
-            'renewal_interval': timedelta(days=2),
-            'note': 'Lorem ipsum'
+            "project_id": orm_second_project.id,
+            "name": "xyz",
+            "status": TaskStatus.COMPLETED,
+            "priority": Priority("#952424", PriorityLevel(randint(0, 3))),
+            "ordering": 1,
+            "due_date": (datetime.now() + timedelta(days=1)).astimezone(tz=pytz.UTC),
+            "pomodoros_to_do": 45,
+            "pomodoros_burn_down": 2,
+            "date_frame_definition": DateFrameDefinition(
+                timedelta(minutes=20), timedelta(7), timedelta(minutes=13), randint(1, 5)
+            ),
+            "reminder_date": (datetime.now() + timedelta(hours=5)).astimezone(tz=pytz.UTC),
+            "renewal_interval": timedelta(days=2),
+            "note": "Lorem ipsum",
         }
 
         with db_session(strict=True):
@@ -77,5 +101,6 @@ class TestSQLTaskRepository:
         with db_session:
             fetched_task = repo.get(domain_task.id)
 
-            assert [getattr(fetched_task, field) for field in values_to_update.keys()] == \
-                   [values_to_update[field] for field in values_to_update.keys()]
+            assert [getattr(fetched_task, field) for field in values_to_update.keys()] == [
+                values_to_update[field] for field in values_to_update.keys()
+            ]

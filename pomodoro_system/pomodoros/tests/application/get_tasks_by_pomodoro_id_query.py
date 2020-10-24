@@ -17,5 +17,6 @@ class GetTasksByProjectIdStub(GetTasksByProjectId):
         return TaskDto(task.id, task.name, task.status, task.project_id)
 
     def query(self, project_id: ProjectId) -> Optional[List[TaskDto]]:
-        return list(map(lambda task: self._to_task_dto(task),
-                        filter(lambda row: row.project_id == project_id, self._rows)))
+        return list(
+            map(lambda task: self._to_task_dto(task), filter(lambda row: row.project_id == project_id, self._rows))
+        )

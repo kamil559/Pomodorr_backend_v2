@@ -8,7 +8,7 @@ from pomodoros.domain.value_objects import FrameType
 
 
 class PomodoroModel(db.Entity):
-    _table_ = 'pomodoros'
+    _table_ = "pomodoros"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     frame_type = Required(int, default=FrameType.TYPE_POMODORO.value)
@@ -19,7 +19,7 @@ class PomodoroModel(db.Entity):
 
 
 class PauseModel(db.Entity):
-    _table_ = 'pauses'
+    _table_ = "pauses"
 
     id = PrimaryKey(uuid.UUID, auto=False)
     frame_type = Required(int, default=FrameType.TYPE_PAUSE.value)
