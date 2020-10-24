@@ -2,7 +2,7 @@ import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
-from foundation.value_objects import UserId, DateFrameDefinition
+from foundation.value_objects import DateFrameDefinition, UserId
 
 
 @dataclass

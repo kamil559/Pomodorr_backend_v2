@@ -1,16 +1,12 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from typing import Tuple
 
 import pytest
 import pytz
 from pony.orm import db_session
 
-from pomodoros_infrastructure import TaskModel, PomodoroModel, PauseModel
-from pomodoros_infrastructure.tests.factories import (
-    ORMTaskFactory,
-    ORMPomodoroFactory,
-    ORMPauseFactory,
-)
+from pomodoros_infrastructure import PauseModel, PomodoroModel, TaskModel
+from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
 
 
 @pytest.fixture()

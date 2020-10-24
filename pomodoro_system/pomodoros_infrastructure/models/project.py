@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from pony.orm import PrimaryKey, Required, Optional
+from pony.orm import Optional, PrimaryKey, Required
 
 from foundation.models import db
 

@@ -1,9 +1,6 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.finish_pomodoro import (
-    FinishPomodoroInputDto,
-    FinishPomodoroOutputDto,
-)
+from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoroInputDto, FinishPomodoroOutputDto
 
 
 def test_finish_pomodoro_use_case(

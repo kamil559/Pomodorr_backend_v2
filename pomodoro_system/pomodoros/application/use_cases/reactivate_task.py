@@ -5,7 +5,7 @@ from typing import Optional
 from foundation.value_objects import T
 from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.tasks import TaskRepository
-from pomodoros.domain.value_objects import TaskStatus, TaskId
+from pomodoros.domain.value_objects import TaskId, TaskStatus
 
 
 @dataclass

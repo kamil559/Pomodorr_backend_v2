@@ -3,9 +3,9 @@ from typing import Type
 from pony.orm import ObjectNotFound
 
 from exceptions import NotFound
-from foundation.utils import with_tzinfo, to_utc
+from foundation.utils import to_utc, with_tzinfo
 from foundation.value_objects import Priority, PriorityLevel
-from pomodoros import ProjectRepository, ProjectId
+from pomodoros import ProjectId, ProjectRepository
 from pomodoros.domain.entities import Project
 from pomodoros_infrastructure.models import ProjectModel
 

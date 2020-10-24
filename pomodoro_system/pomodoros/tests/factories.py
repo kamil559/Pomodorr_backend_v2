@@ -1,13 +1,13 @@
 import random
 import uuid
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 import factory
 from factory.fuzzy import FuzzyAttribute
 
 from foundation.tests.factories import UserFactory
 from foundation.value_objects import DateFrameDefinition, Priority
-from pomodoros.domain.entities import Task, SubTask, Project
+from pomodoros.domain.entities import Project, SubTask, Task
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskStatus

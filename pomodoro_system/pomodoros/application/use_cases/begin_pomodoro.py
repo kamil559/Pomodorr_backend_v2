@@ -9,7 +9,7 @@ from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.domain.value_objects import FrameType, TaskId, PomodoroId
+from pomodoros.domain.value_objects import FrameType, PomodoroId, TaskId
 
 
 @dataclass

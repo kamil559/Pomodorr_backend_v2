@@ -1,21 +1,16 @@
 import injector
 
 from pomodoros import (
+    GetRecentPomodoros,
+    GetTasksByProjectId,
     PauseRepository,
     PomodoroRepository,
     ProjectRepository,
     TaskRepository,
-    GetRecentPomodoros,
-    GetTasksByProjectId,
 )
-from .models import ProjectModel, TaskModel, SubTaskModel, PauseModel, PomodoroModel
+from .models import PauseModel, PomodoroModel, ProjectModel, SubTaskModel, TaskModel
 from .queries import SQLGetRecentPomodoros, SQLGetTasksByProjectId
-from .repositories import (
-    SQLPauseRepository,
-    SQLPomodoroRepository,
-    SQLProjectRepository,
-    SQLTaskRepository,
-)
+from .repositories import SQLPauseRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
 
 __all__ = [
     # injected module

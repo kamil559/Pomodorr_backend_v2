@@ -1,24 +1,19 @@
 import operator
 import uuid
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from functools import reduce
 from gettext import gettext as _
-from typing import Optional, List, Union
+from typing import List, Optional, Union
 
 from foundation.value_objects import DateFrameDefinition, UserDateFrameDefinition
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.exceptions import (
     CollidingPomodoroWasFound,
-    PomodoroErrorMarginExceeded,
     NoActionAllowedOnFinishedPomodoro,
+    PomodoroErrorMarginExceeded,
 )
-from pomodoros.domain.value_objects import (
-    FrameType,
-    AcceptablePomodoroErrorMargin,
-    TaskId,
-    PomodoroId,
-)
+from pomodoros.domain.value_objects import AcceptablePomodoroErrorMargin, FrameType, PomodoroId, TaskId
 
 
 class Pomodoro(DateFrame):

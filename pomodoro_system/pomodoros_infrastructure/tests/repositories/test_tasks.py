@@ -7,7 +7,7 @@ import pytz
 from pony.orm import db_session, flush
 
 from foundation.exceptions import NotFound
-from foundation.value_objects import Priority, DateFrameDefinition, PriorityLevel
+from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import SubTaskModel

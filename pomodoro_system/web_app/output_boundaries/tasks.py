@@ -1,18 +1,14 @@
-from flask import make_response, jsonify
+from flask import jsonify, make_response
 
 from pomodoros import (
     PausePomodoroOutputBoundary,
     PausePomodoroOutputDto,
-    ReactivateTaskOutputBoundary,
-    ReactivateTaskOutputDto,
     PinTaskToProjectOutputBoundary,
     PinTaskToProjectOutputDto,
+    ReactivateTaskOutputBoundary,
+    ReactivateTaskOutputDto,
 )
-from serializers.tasks import (
-    CompleteTaskSchema,
-    ReactivateTaskSchema,
-    PinTaskToProjectSchema,
-)
+from serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
 
 
 class JSONCompleteTaskOutputBoundary(PausePomodoroOutputBoundary):

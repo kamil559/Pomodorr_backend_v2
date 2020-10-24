@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timedelta
 
-from pony.orm import PrimaryKey, Required, Optional, LongStr, Set
+from pony.orm import LongStr, Optional, PrimaryKey, Required, Set
 
 from foundation.models import db
 

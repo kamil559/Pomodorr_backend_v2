@@ -4,12 +4,12 @@ import pytest
 from pytest_lazyfixture import lazy_fixture
 
 from pomodoros.domain.exceptions import (
-    NoActionAllowedOnCompletedTask,
     CollidingPomodoroWasFound,
     DateFrameIsAlreadyFinished,
-    StartDateGreaterThanEndDate,
-    PomodoroErrorMarginExceeded,
+    NoActionAllowedOnCompletedTask,
     NoActionAllowedOnFinishedPomodoro,
+    PomodoroErrorMarginExceeded,
+    StartDateGreaterThanEndDate,
 )
 from pomodoros.domain.value_objects import AcceptablePomodoroErrorMargin
 from pomodoros.tests.factories import PomodoroFactory

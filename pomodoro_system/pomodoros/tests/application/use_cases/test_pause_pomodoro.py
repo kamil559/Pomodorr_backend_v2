@@ -1,9 +1,6 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.pause_pomodoro import (
-    PausePomodoroInputDto,
-    PausePomodoroOutputDto,
-)
+from pomodoros.application.use_cases.pause_pomodoro import PausePomodoroInputDto, PausePomodoroOutputDto
 
 
 def test_pause_pomodoro(started_pomodoro, pause_pomodoro_output_boundary, pause_pomodoro_use_case):

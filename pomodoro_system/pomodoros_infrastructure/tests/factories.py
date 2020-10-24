@@ -8,14 +8,8 @@ from factory.fuzzy import FuzzyAttribute
 
 from foundation.models import db
 from foundation.tests.factories import ORMUserFactory, PonyFactory
-from pomodoros.domain.value_objects import TaskStatus, FrameType
-from pomodoros_infrastructure import (
-    ProjectModel,
-    TaskModel,
-    SubTaskModel,
-    PomodoroModel,
-    PauseModel,
-)
+from pomodoros.domain.value_objects import FrameType, TaskStatus
+from pomodoros_infrastructure import PauseModel, PomodoroModel, ProjectModel, SubTaskModel, TaskModel
 
 
 class ORMProjectFactory(PonyFactory):

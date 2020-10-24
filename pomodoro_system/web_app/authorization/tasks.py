@@ -4,7 +4,7 @@ from pony.orm import select
 from werkzeug.exceptions import abort
 
 from interfaces import ResourceProtector
-from pomodoros_infrastructure import TaskModel, ProjectModel
+from pomodoros_infrastructure import ProjectModel, TaskModel
 from value_objects import UserId
 
 

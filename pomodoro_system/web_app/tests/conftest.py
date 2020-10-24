@@ -11,12 +11,8 @@ from pony.orm import db_session
 from flask_app import create_app
 from foundation.models import User
 from pomodoros.domain.value_objects import TaskStatus
-from pomodoros_infrastructure import TaskModel, PomodoroModel, ProjectModel
-from pomodoros_infrastructure.tests.factories import (
-    ORMPomodoroFactory,
-    ORMPauseFactory,
-    ORMTaskFactory,
-)
+from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
+from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
 
 
 @pytest.fixture(scope="package")

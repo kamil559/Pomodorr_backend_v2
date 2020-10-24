@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import PomodoroId

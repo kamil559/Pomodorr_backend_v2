@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from pony.orm import PrimaryKey, Required, Optional, Set
+from pony.orm import Optional, PrimaryKey, Required, Set
 
 from foundation.models import db
 from pomodoros.domain.value_objects import FrameType

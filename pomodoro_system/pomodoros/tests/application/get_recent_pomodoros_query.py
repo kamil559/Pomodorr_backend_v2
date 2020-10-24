@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List, Optional
 
 from foundation.utils import with_tzinfo
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros

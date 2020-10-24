@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List
 
-from pomodoros.domain.value_objects import TaskId, TaskStatus, ProjectId
+from pomodoros.domain.value_objects import ProjectId, TaskId, TaskStatus
 
 
 @dataclass

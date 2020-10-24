@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import Optional
 
 from foundation.application.repositories.user import UserRepository
-from foundation.value_objects import UserId, DateFrameDefinition, T
+from foundation.value_objects import DateFrameDefinition, T, UserId
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository

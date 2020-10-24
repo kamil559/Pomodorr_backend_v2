@@ -4,51 +4,24 @@ from unittest.mock import Mock
 import pytest
 
 from foundation.application.repositories.user import UserRepository
+from foundation.interfaces import AbstractUser
 from foundation.tests.factories import UserFactory
-from interfaces import AbstractUser
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
-from pomodoros.application.use_cases.begin_pomodoro import (
-    BeginPomodoro,
-    BeginPomodoroOutputBoundary,
-)
-from pomodoros.application.use_cases.complete_task import (
-    CompleteTaskOutputBoundary,
-    CompleteTask,
-)
-from pomodoros.application.use_cases.finish_pomodoro import (
-    FinishPomodoroOutputBoundary,
-    FinishPomodoro,
-)
-from pomodoros.application.use_cases.pause_pomodoro import (
-    PausePomodoro,
-    PausePomodoroOutputBoundary,
-)
-from pomodoros.application.use_cases.pin_task_to_project import (
-    PinTaskToProjectOutputBoundary,
-    PinTaskToProject,
-)
-from pomodoros.application.use_cases.reactivate_task import (
-    ReactivateTaskOutputBoundary,
-    ReactivateTask,
-)
-from pomodoros.application.use_cases.resume_pomodoro import (
-    ResumePomodoroOutputBoundary,
-    ResumePomodoro,
-)
+from pomodoros.application.use_cases.begin_pomodoro import BeginPomodoro, BeginPomodoroOutputBoundary
+from pomodoros.application.use_cases.complete_task import CompleteTask, CompleteTaskOutputBoundary
+from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoro, FinishPomodoroOutputBoundary
+from pomodoros.application.use_cases.pause_pomodoro import PausePomodoro, PausePomodoroOutputBoundary
+from pomodoros.application.use_cases.pin_task_to_project import PinTaskToProject, PinTaskToProjectOutputBoundary
+from pomodoros.application.use_cases.reactivate_task import ReactivateTask, ReactivateTaskOutputBoundary
+from pomodoros.application.use_cases.resume_pomodoro import ResumePomodoro, ResumePomodoroOutputBoundary
 from pomodoros.domain.entities import Task
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.tests.application.get_recent_pomodoros_query import (
-    GetRecentPomodorosStub,
-)
-from pomodoros.tests.application.get_tasks_by_pomodoro_id_query import (
-    GetTasksByProjectIdStub,
-)
-from pomodoros.tests.application.in_memory_pomodoros_repository import (
-    InMemoryPomodorosRepository,
-)
+from pomodoros.tests.application.get_recent_pomodoros_query import GetRecentPomodorosStub
+from pomodoros.tests.application.get_tasks_by_pomodoro_id_query import GetTasksByProjectIdStub
+from pomodoros.tests.application.in_memory_pomodoros_repository import InMemoryPomodorosRepository
 from pomodoros.tests.application.in_memory_task_repository import InMemoryTaskRepository
 from pomodoros.tests.factories import PomodoroFactory
 

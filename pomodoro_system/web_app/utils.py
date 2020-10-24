@@ -1,7 +1,7 @@
-from typing import Type, Optional
+from typing import Optional, Type
 
 import marshmallow
-from flask import request, abort, make_response
+from flask import abort, make_response, request
 from marshmallow import Schema
 
 from foundation.value_objects import T

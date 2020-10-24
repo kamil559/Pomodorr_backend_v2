@@ -1,4 +1,4 @@
-from typing import List, Optional, Dict
+from typing import Dict, List, Optional
 
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.domain.entities.pomodoro import Pomodoro

@@ -1,19 +1,19 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from typing import List, Tuple
 
 import pytest
 
 from foundation.value_objects import DateFrameDefinition
-from pomodoros.domain.entities import Task, Project
+from pomodoros.domain.entities import Project, Task
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros.tests.factories import (
-    TaskFactory,
-    ProjectFactory,
-    PomodoroFactory,
     DateFrameDefinitionFactory,
     PauseFactory,
+    PomodoroFactory,
+    ProjectFactory,
+    TaskFactory,
 )
 
 

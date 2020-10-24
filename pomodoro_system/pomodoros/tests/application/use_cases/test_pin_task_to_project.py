@@ -1,7 +1,4 @@
-from pomodoros.application.use_cases.pin_task_to_project import (
-    PinTaskToProjectInputDto,
-    PinTaskToProjectOutputDto,
-)
+from pomodoros.application.use_cases.pin_task_to_project import PinTaskToProjectInputDto, PinTaskToProjectOutputDto
 from pomodoros.tests.factories import ProjectFactory
 
 

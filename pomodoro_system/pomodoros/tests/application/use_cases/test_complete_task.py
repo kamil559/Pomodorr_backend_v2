@@ -1,9 +1,6 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.complete_task import (
-    CompleteTaskInputDto,
-    CompleteTaskOutputDto,
-)
+from pomodoros.application.use_cases.complete_task import CompleteTaskInputDto, CompleteTaskOutputDto
 from pomodoros.domain.value_objects import TaskStatus
 
 
