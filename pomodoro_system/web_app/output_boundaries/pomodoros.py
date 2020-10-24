@@ -10,7 +10,12 @@ from pomodoros import (
     ResumePomodoroOutputBoundary,
     ResumePomodoroOutputDto,
 )
-from serializers.pomodoros import BeginPomodoroSchema, FinishPomodoroSchema, PausePomodoroSchema, ResumePomodoroSchema
+from web_app.serializers.pomodoros import (
+    BeginPomodoroSchema,
+    FinishPomodoroSchema,
+    PausePomodoroSchema,
+    ResumePomodoroSchema,
+)
 
 
 class JSONBeginPomodoroPresenter(BeginPomodoroOutputBoundary):

@@ -2,7 +2,7 @@ from typing import Type
 
 from pony.orm import ObjectNotFound
 
-from exceptions import NotFound
+from foundation.exceptions import NotFound
 from foundation.utils import to_utc, with_tzinfo
 from foundation.value_objects import Priority, PriorityLevel
 from pomodoros import ProjectId, ProjectRepository

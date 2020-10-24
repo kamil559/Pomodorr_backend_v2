@@ -2,11 +2,11 @@ from typing import Type
 
 from pony.orm import ObjectNotFound
 
-from application.repositories.user import UserRepository
+from foundation.application.repositories.user import UserRepository
 from foundation.exceptions import AlreadyExists, NotFound
+from foundation.interfaces import AbstractUser
 from foundation.models import User
 from foundation.value_objects import DateFrameDefinition, UserDateFrameDefinition, UserId
-from interfaces import AbstractUser
 
 
 class SQLUserRepository(UserRepository):

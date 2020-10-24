@@ -7,11 +7,11 @@ from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
 from pony.flask import Pony
 
-from blueprints.pomodoros import pomodoros_blueprint
-from blueprints.tasks import tasks_blueprint
 from foundation.value_objects import UserId
 from main import initialize_application
-from web_app.configuration import PomodorosWeb
+from .blueprints.pomodoros import pomodoros_blueprint
+from .blueprints.tasks import tasks_blueprint
+from .configuration import PomodorosWeb
 
 
 def create_app() -> Flask:

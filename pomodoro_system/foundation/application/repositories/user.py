@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
+from foundation.interfaces import AbstractUser
 from foundation.value_objects import UserId
-from interfaces import AbstractUser
 
 
 class UserRepository(ABC):

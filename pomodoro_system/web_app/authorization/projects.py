@@ -4,8 +4,8 @@ from flask import abort
 from pony.orm import select
 
 from foundation.interfaces import ResourceProtector
+from foundation.value_objects import UserId
 from pomodoros_infrastructure import ProjectModel
-from value_objects import UserId
 
 
 class ProjectProtector(ResourceProtector):
