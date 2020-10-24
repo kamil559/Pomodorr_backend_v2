@@ -7,3 +7,4 @@ omit =
     *docs*
     */__init__.py
     */conftest.py
+    .venv/*

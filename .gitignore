@@ -336,3 +336,8 @@ tags
 .ipython/
 .env
 .envs/*
+
+
+# coverage reports
+coverage_html/
+coverage_xml/

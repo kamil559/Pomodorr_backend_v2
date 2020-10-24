@@ -3,6 +3,8 @@ attrs==20.2.0
 click==7.1.2
 colorama==0.4.3; sys_platform == "win32" and python_version != "3.4"
 flask-injector==0.12.3
+flask-jwt-extended==3.24.1
+flask-login==0.4.1
 flask==1.1.1
 injector==0.17.0
 itsdangerous==1.1.0
@@ -15,6 +17,7 @@ pluggy==0.13.1
 pony==0.7.13
 psycopg2-binary==2.8.4
 py==1.9.0
+pyjwt==1.7.1
 pyparsing==2.4.7
 pytest-lazy-fixture==0.6.3
 pytest==4.6.10

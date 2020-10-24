@@ -2,19 +2,19 @@ dist: bionic
 language: python
 cache: pip
 python:
-  - "3.7"
   - "3.8"
-  - "3.9-dev"
+  - "3.9"
 jobs:
   allow_failures:
-    - python: "3.9-dev"
+    - python: "3.9"
 before_install: cd pomodoro_system
+env:
+  - APPLICATION_CONFIG=.envs/testing/.application
+  - DB_CONFIG=.envs/testing/.database
 install:
   - make install_dev
+  - pip install codecov==2.1.10
 script:
-  - flake8 ./
-  - black ./ -l 120 --check
-  - isort --apply --recursive --check-only
-  - ./run_mypy.sh
-  - ./run_pylint.sh
-  - pytest
+  - make check-linting
+  - make coverage-xml-reports
+  - codecov --token=${CODECOV_TOKEN}
