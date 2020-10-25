@@ -3,9 +3,6 @@ language: python
 cache: pip
 python:
   - "3.8"
-env:
-  - APPLICATION_CONFIG=.envs/testing/.application
-  - DB_CONFIG=.envs/testing/.database
 install:
   - pip install poetry==1.1.0
   - pip install codecov==2.1.10
