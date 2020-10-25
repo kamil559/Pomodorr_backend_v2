@@ -1,8 +1,7 @@
 import uuid
 from datetime import timedelta
 
-from foundation.value_objects import \
-    UserDateFrameDefinition as UserDateFrameDefinitionEntity
+from foundation.value_objects import UserDateFrameDefinition as UserDateFrameDefinitionEntity
 from pony.orm import Database, Optional, PrimaryKey, Required
 
 db = Database()

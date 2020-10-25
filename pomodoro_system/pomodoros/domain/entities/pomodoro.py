@@ -5,15 +5,15 @@ from functools import reduce
 from gettext import gettext as _
 from typing import List, Optional, Union
 
-from foundation.value_objects import (DateFrameDefinition,
-                                      UserDateFrameDefinition)
+from foundation.value_objects import DateFrameDefinition, UserDateFrameDefinition
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
-from pomodoros.domain.exceptions import (CollidingPomodoroWasFound,
-                                         NoActionAllowedOnFinishedPomodoro,
-                                         PomodoroErrorMarginExceeded)
-from pomodoros.domain.value_objects import (AcceptablePomodoroErrorMargin,
-                                            FrameType, PomodoroId, TaskId)
+from pomodoros.domain.exceptions import (
+    CollidingPomodoroWasFound,
+    NoActionAllowedOnFinishedPomodoro,
+    PomodoroErrorMarginExceeded,
+)
+from pomodoros.domain.value_objects import AcceptablePomodoroErrorMargin, FrameType, PomodoroId, TaskId
 
 
 class Pomodoro(DateFrame):

@@ -1,5 +1,4 @@
-from pomodoros.application.use_cases.reactivate_task import (
-    ReactivateTaskInputDto, ReactivateTaskOutputDto)
+from pomodoros.application.use_cases.reactivate_task import ReactivateTaskInputDto, ReactivateTaskOutputDto
 from pomodoros.domain.value_objects import TaskStatus
 
 

@@ -12,5 +12,5 @@ install:
   - make install_dev
 after_success: codecov --token=${CODECOV_TOKEN}
 script:
-  - make check-linting
-  - make coverage-xml-reports
+  - make check_linting
+  - make generate_coverage_xml

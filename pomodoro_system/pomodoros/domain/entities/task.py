@@ -5,12 +5,13 @@ from typing import List, Optional
 
 from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import SubTask
-from pomodoros.domain.exceptions import (NoActionAllowedOnCompletedTask,
-                                         TaskAlreadyActive,
-                                         TaskAlreadyCompleted,
-                                         TaskNameNotAvailableInNewProject)
-from pomodoros.domain.value_objects import (Ordering, PomodoroRenewalInterval,
-                                            ProjectId, TaskId, TaskStatus)
+from pomodoros.domain.exceptions import (
+    NoActionAllowedOnCompletedTask,
+    TaskAlreadyActive,
+    TaskAlreadyCompleted,
+    TaskNameNotAvailableInNewProject,
+)
+from pomodoros.domain.value_objects import Ordering, PomodoroRenewalInterval, ProjectId, TaskId, TaskStatus
 
 
 @dataclass

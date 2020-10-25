@@ -3,17 +3,21 @@ from datetime import datetime
 import pytz
 from flask import Blueprint, Response
 from flask_jwt_extended import get_current_user, jwt_required
-from pomodoros import (CompleteTask, CompleteTaskInputDto,
-                       CompleteTaskOutputBoundary, PinTaskToProject,
-                       PinTaskToProjectInputDto,
-                       PinTaskToProjectOutputBoundary, ReactivateTask,
-                       ReactivateTaskInputDto, ReactivateTaskOutputBoundary,
-                       TaskId)
+from pomodoros import (
+    CompleteTask,
+    CompleteTaskInputDto,
+    CompleteTaskOutputBoundary,
+    PinTaskToProject,
+    PinTaskToProjectInputDto,
+    PinTaskToProjectOutputBoundary,
+    ReactivateTask,
+    ReactivateTaskInputDto,
+    ReactivateTaskOutputBoundary,
+    TaskId,
+)
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
-from web_app.serializers.tasks import (CompleteTaskSchema,
-                                       PinTaskToProjectSchema,
-                                       ReactivateTaskSchema)
+from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
 from web_app.utils import get_dto_or_abort
 
 tasks_blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")

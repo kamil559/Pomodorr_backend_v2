@@ -3,19 +3,30 @@ from datetime import datetime
 import pytz
 from flask import Blueprint, Response
 from flask_jwt_extended import get_current_user, jwt_required
-from pomodoros import (BeginPomodoro, BeginPomodoroInputDto,
-                       BeginPomodoroOutputBoundary, FinishPomodoro,
-                       FinishPomodoroInputDto, FinishPomodoroOutputBoundary,
-                       PausePomodoro, PausePomodoroInputDto,
-                       PausePomodoroOutputBoundary, PomodoroId, ResumePomodoro,
-                       ResumePomodoroInputDto, ResumePomodoroOutputBoundary,
-                       TaskId)
+from pomodoros import (
+    BeginPomodoro,
+    BeginPomodoroInputDto,
+    BeginPomodoroOutputBoundary,
+    FinishPomodoro,
+    FinishPomodoroInputDto,
+    FinishPomodoroOutputBoundary,
+    PausePomodoro,
+    PausePomodoroInputDto,
+    PausePomodoroOutputBoundary,
+    PomodoroId,
+    ResumePomodoro,
+    ResumePomodoroInputDto,
+    ResumePomodoroOutputBoundary,
+    TaskId,
+)
 from web_app.authorization.pomodoros import PomodoroProtector
 from web_app.authorization.tasks import TaskProtector
-from web_app.serializers.pomodoros import (BeginPomodoroSchema,
-                                           FinishPomodoroSchema,
-                                           PausePomodoroSchema,
-                                           ResumePomodoroSchema)
+from web_app.serializers.pomodoros import (
+    BeginPomodoroSchema,
+    FinishPomodoroSchema,
+    PausePomodoroSchema,
+    ResumePomodoroSchema,
+)
 from web_app.utils import get_dto_or_abort
 
 pomodoros_blueprint = Blueprint("pomodoros", __name__, url_prefix="/pomodoros")

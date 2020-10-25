@@ -1,12 +1,20 @@
 from flask import jsonify, make_response
-from pomodoros import (BeginPomodoroOutputBoundary, BeginPomodoroOutputDto,
-                       FinishPomodoroOutputBoundary, FinishPomodoroOutputDto,
-                       PausePomodoroOutputBoundary, PausePomodoroOutputDto,
-                       ResumePomodoroOutputBoundary, ResumePomodoroOutputDto)
-from web_app.serializers.pomodoros import (BeginPomodoroSchema,
-                                           FinishPomodoroSchema,
-                                           PausePomodoroSchema,
-                                           ResumePomodoroSchema)
+from pomodoros import (
+    BeginPomodoroOutputBoundary,
+    BeginPomodoroOutputDto,
+    FinishPomodoroOutputBoundary,
+    FinishPomodoroOutputDto,
+    PausePomodoroOutputBoundary,
+    PausePomodoroOutputDto,
+    ResumePomodoroOutputBoundary,
+    ResumePomodoroOutputDto,
+)
+from web_app.serializers.pomodoros import (
+    BeginPomodoroSchema,
+    FinishPomodoroSchema,
+    PausePomodoroSchema,
+    ResumePomodoroSchema,
+)
 
 
 class JSONBeginPomodoroPresenter(BeginPomodoroOutputBoundary):

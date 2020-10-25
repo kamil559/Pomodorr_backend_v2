@@ -5,8 +5,7 @@ from random import randint
 import pytest
 import pytz
 from foundation.exceptions import NotFound
-from foundation.value_objects import (DateFrameDefinition, Priority,
-                                      PriorityLevel)
+from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import SubTaskModel

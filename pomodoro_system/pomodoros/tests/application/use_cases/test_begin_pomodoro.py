@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.begin_pomodoro import (
-    BeginPomodoroInputDto, BeginPomodoroOutputDto)
+from pomodoros.application.use_cases.begin_pomodoro import BeginPomodoroInputDto, BeginPomodoroOutputDto
 from pomodoros.domain.value_objects import FrameType
 
 

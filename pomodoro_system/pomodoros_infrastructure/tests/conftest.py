@@ -4,9 +4,7 @@ from typing import Tuple
 import pytest
 import pytz
 from pomodoros_infrastructure import PauseModel, PomodoroModel, TaskModel
-from pomodoros_infrastructure.tests.factories import (ORMPauseFactory,
-                                                      ORMPomodoroFactory,
-                                                      ORMTaskFactory)
+from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
 from pony.orm import db_session
 
 

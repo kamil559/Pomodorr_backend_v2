@@ -2,8 +2,7 @@ from typing import Type
 
 from foundation.exceptions import AlreadyExists, NotFound
 from foundation.utils import to_utc, with_tzinfo
-from foundation.value_objects import (DateFrameDefinition, Priority,
-                                      PriorityLevel)
+from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
 from pomodoros import TaskId, TaskRepository
 from pomodoros.domain.entities import SubTask, Task
 from pomodoros.domain.value_objects import TaskStatus

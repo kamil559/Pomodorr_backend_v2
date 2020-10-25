@@ -1,7 +1,6 @@
 import pytz
 from marshmallow import EXCLUDE, Schema, fields, post_load
-from pomodoros import (BeginPomodoroInputDto, FinishPomodoroInputDto,
-                       PausePomodoroInputDto, ResumePomodoroInputDto)
+from pomodoros import BeginPomodoroInputDto, FinishPomodoroInputDto, PausePomodoroInputDto, ResumePomodoroInputDto
 
 
 class BeginPomodoroSchema(Schema):

@@ -7,9 +7,13 @@ from pomodoros.domain.entities import Project, Task
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros.domain.value_objects import TaskStatus
-from pomodoros.tests.factories import (DateFrameDefinitionFactory,
-                                       PauseFactory, PomodoroFactory,
-                                       ProjectFactory, TaskFactory)
+from pomodoros.tests.factories import (
+    DateFrameDefinitionFactory,
+    PauseFactory,
+    PomodoroFactory,
+    ProjectFactory,
+    TaskFactory,
+)
 
 
 @pytest.fixture()

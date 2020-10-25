@@ -1,8 +1,10 @@
 import pytest
-from pomodoros.domain.exceptions import (NoActionAllowedOnCompletedTask,
-                                         TaskAlreadyActive,
-                                         TaskAlreadyCompleted,
-                                         TaskNameNotAvailableInNewProject)
+from pomodoros.domain.exceptions import (
+    NoActionAllowedOnCompletedTask,
+    TaskAlreadyActive,
+    TaskAlreadyCompleted,
+    TaskNameNotAvailableInNewProject,
+)
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros.tests.factories import TaskFactory
 
