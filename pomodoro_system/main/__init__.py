@@ -15,7 +15,14 @@ class Application:
 
 
 def _get_config_file_path(env_name: str) -> str:
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.environ.get(env_name)))
+    try:
+        config_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.environ.get(env_name))
+        )
+    except TypeError:  # In this case the environment variables are claimed to have been already set
+        return
+    else:
+        return config_path
 
 
 def _setup_dependencies(settings: dict) -> injector.Injector:
