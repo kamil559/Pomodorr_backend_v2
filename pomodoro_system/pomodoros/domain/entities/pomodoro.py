@@ -5,27 +5,27 @@ from functools import reduce
 from gettext import gettext as _
 from typing import List, Optional, Union
 
-from foundation.value_objects import DateFrameDefinition, UserDateFrameDefinition
+from foundation.value_objects import (DateFrameDefinition,
+                                      UserDateFrameDefinition)
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
-from pomodoros.domain.exceptions import (
-    CollidingPomodoroWasFound,
-    NoActionAllowedOnFinishedPomodoro,
-    PomodoroErrorMarginExceeded,
-)
-from pomodoros.domain.value_objects import AcceptablePomodoroErrorMargin, FrameType, PomodoroId, TaskId
+from pomodoros.domain.exceptions import (CollidingPomodoroWasFound,
+                                         NoActionAllowedOnFinishedPomodoro,
+                                         PomodoroErrorMarginExceeded)
+from pomodoros.domain.value_objects import (AcceptablePomodoroErrorMargin,
+                                            FrameType, PomodoroId, TaskId)
 
 
 class Pomodoro(DateFrame):
     frame_type = FrameType.TYPE_POMODORO
 
     def __init__(
-            self,
-            id: PomodoroId,
-            task_id: TaskId,
-            start_date: Optional[datetime] = None,
-            end_date: Optional[datetime] = None,
-            contained_pauses: Optional[List[Pause]] = None,
+        self,
+        id: PomodoroId,
+        task_id: TaskId,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        contained_pauses: Optional[List[Pause]] = None,
     ) -> None:
         super().__init__(start_date=start_date, end_date=end_date)
         self.id = id
@@ -68,9 +68,9 @@ class Pomodoro(DateFrame):
 
     @staticmethod
     def _check_for_colliding_pomodoros(
-            recent_pomodoros: Optional[List["Pomodoro"]],
-            start_date: datetime,
-            end_date: Optional[datetime] = None,
+        recent_pomodoros: Optional[List["Pomodoro"]],
+        start_date: datetime,
+        end_date: Optional[datetime] = None,
     ):
         def check_if_finished(date_frame: DateFrame) -> bool:
             return all(
@@ -97,8 +97,7 @@ class Pomodoro(DateFrame):
             return list(
                 filter(
                     lambda pomodoro: check_if_finished(pomodoro)
-                                     and (check_if_overlaps(pomodoro, start_date) or check_if_overlaps(pomodoro,
-                                                                                                       end_date)),
+                    and (check_if_overlaps(pomodoro, start_date) or check_if_overlaps(pomodoro, end_date)),
                     recent_pomodoros,
                 )
             )
@@ -112,10 +111,10 @@ class Pomodoro(DateFrame):
             raise CollidingPomodoroWasFound(_("pomodoros.domain.entities.pomodoro.colliding_pomodoro_was_found"))
 
     def begin(
-            self,
-            related_task: Task,
-            recent_pomodoros: List["Pomodoro"],
-            start_date: datetime,
+        self,
+        related_task: Task,
+        recent_pomodoros: List["Pomodoro"],
+        start_date: datetime,
     ) -> None:
         related_task.check_can_perform_actions()
         super(Pomodoro, self).run_begin_date_frame_validations(start_date)
@@ -124,11 +123,11 @@ class Pomodoro(DateFrame):
         self.start_date = start_date
 
     def finish(
-            self,
-            date_frame_definition: DateFrameDefinition,
-            related_task: Task,
-            recent_pomodoros: Optional[List["Pomodoro"]],
-            end_date: datetime,
+        self,
+        date_frame_definition: DateFrameDefinition,
+        related_task: Task,
+        recent_pomodoros: Optional[List["Pomodoro"]],
+        end_date: datetime,
     ) -> None:
         related_task.check_can_perform_actions()
         super(Pomodoro, self).run_finish_date_frame_validations(end_date)
@@ -162,17 +161,17 @@ class Pomodoro(DateFrame):
 
     def __eq__(self, other) -> bool:
         return [
-                   type(self),
-                   self.task_id,
-                   self.frame_type,
-                   self.start_date,
-                   self.end_date,
-                   list(self.contained_pauses),
-               ] == [
-                   type(other),
-                   other.id,
-                   other.frame_type,
-                   other.start_date,
-                   other.end_date,
-                   list(other.contained_pauses),
-               ]
+            type(self),
+            self.task_id,
+            self.frame_type,
+            self.start_date,
+            self.end_date,
+            list(self.contained_pauses),
+        ] == [
+            type(other),
+            other.id,
+            other.frame_type,
+            other.start_date,
+            other.end_date,
+            list(other.contained_pauses),
+        ]

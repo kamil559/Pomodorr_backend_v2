@@ -2,7 +2,6 @@ from typing import List
 from unittest.mock import Mock
 
 import pytest
-
 from foundation.application.repositories.user import UserRepository
 from foundation.interfaces import AbstractUser
 from foundation.tests.factories import UserFactory
@@ -10,19 +9,30 @@ from pomodoros.application.queries.pomodoros import GetRecentPomodoros
 from pomodoros.application.queries.tasks import GetTasksByProjectId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
-from pomodoros.application.use_cases.begin_pomodoro import BeginPomodoro, BeginPomodoroOutputBoundary
-from pomodoros.application.use_cases.complete_task import CompleteTask, CompleteTaskOutputBoundary
-from pomodoros.application.use_cases.finish_pomodoro import FinishPomodoro, FinishPomodoroOutputBoundary
-from pomodoros.application.use_cases.pause_pomodoro import PausePomodoro, PausePomodoroOutputBoundary
-from pomodoros.application.use_cases.pin_task_to_project import PinTaskToProject, PinTaskToProjectOutputBoundary
-from pomodoros.application.use_cases.reactivate_task import ReactivateTask, ReactivateTaskOutputBoundary
-from pomodoros.application.use_cases.resume_pomodoro import ResumePomodoro, ResumePomodoroOutputBoundary
+from pomodoros.application.use_cases.begin_pomodoro import (
+    BeginPomodoro, BeginPomodoroOutputBoundary)
+from pomodoros.application.use_cases.complete_task import (
+    CompleteTask, CompleteTaskOutputBoundary)
+from pomodoros.application.use_cases.finish_pomodoro import (
+    FinishPomodoro, FinishPomodoroOutputBoundary)
+from pomodoros.application.use_cases.pause_pomodoro import (
+    PausePomodoro, PausePomodoroOutputBoundary)
+from pomodoros.application.use_cases.pin_task_to_project import (
+    PinTaskToProject, PinTaskToProjectOutputBoundary)
+from pomodoros.application.use_cases.reactivate_task import (
+    ReactivateTask, ReactivateTaskOutputBoundary)
+from pomodoros.application.use_cases.resume_pomodoro import (
+    ResumePomodoro, ResumePomodoroOutputBoundary)
 from pomodoros.domain.entities import Task
 from pomodoros.domain.entities.pomodoro import Pomodoro
-from pomodoros.tests.application.get_recent_pomodoros_query import GetRecentPomodorosStub
-from pomodoros.tests.application.get_tasks_by_pomodoro_id_query import GetTasksByProjectIdStub
-from pomodoros.tests.application.in_memory_pomodoros_repository import InMemoryPomodorosRepository
-from pomodoros.tests.application.in_memory_task_repository import InMemoryTaskRepository
+from pomodoros.tests.application.get_recent_pomodoros_query import \
+    GetRecentPomodorosStub
+from pomodoros.tests.application.get_tasks_by_pomodoro_id_query import \
+    GetTasksByProjectIdStub
+from pomodoros.tests.application.in_memory_pomodoros_repository import \
+    InMemoryPomodorosRepository
+from pomodoros.tests.application.in_memory_task_repository import \
+    InMemoryTaskRepository
 from pomodoros.tests.factories import PomodoroFactory
 
 
@@ -77,17 +87,17 @@ def recent_pomodoros_list(task: Task) -> List[Pomodoro]:
 
 @pytest.fixture()
 def populated_recent_pomodoros_query(
-        recent_pomodoros_list: List[Pomodoro],
+    recent_pomodoros_list: List[Pomodoro],
 ) -> GetRecentPomodoros:
     return GetRecentPomodorosStub(return_collection=recent_pomodoros_list)
 
 
 @pytest.fixture()
 def begin_pomodoro_use_case(
-        begin_pomodoro_output_boundary,
-        pomodoros_repository,
-        populated_tasks_repository,
-        populated_recent_pomodoros_query,
+    begin_pomodoro_output_boundary,
+    pomodoros_repository,
+    populated_tasks_repository,
+    populated_recent_pomodoros_query,
 ) -> BeginPomodoro:
     return BeginPomodoro(
         output_boundary=begin_pomodoro_output_boundary,
@@ -109,11 +119,11 @@ def finish_pomodoro_output_boundary() -> Mock:
 
 @pytest.fixture()
 def finish_pomodoro_use_case(
-        finish_pomodoro_output_boundary,
-        populated_pomodoros_repository,
-        populated_tasks_repository,
-        users_repository,
-        populated_recent_pomodoros_query,
+    finish_pomodoro_output_boundary,
+    populated_pomodoros_repository,
+    populated_tasks_repository,
+    users_repository,
+    populated_recent_pomodoros_query,
 ) -> FinishPomodoro:
     return FinishPomodoro(
         output_boundary=finish_pomodoro_output_boundary,
@@ -144,9 +154,9 @@ def pause_pomodoro_output_boundary() -> Mock:
 
 @pytest.fixture()
 def pause_pomodoro_use_case(
-        pause_pomodoro_output_boundary,
-        populated_pomodoros_repository,
-        populated_tasks_repository,
+    pause_pomodoro_output_boundary,
+    populated_pomodoros_repository,
+    populated_tasks_repository,
 ) -> PausePomodoro:
     return PausePomodoro(
         output_boundary=pause_pomodoro_output_boundary,
@@ -162,9 +172,9 @@ def resume_pomodoro_output_boundary() -> Mock:
 
 @pytest.fixture()
 def resume_pomodoro_use_case(
-        resume_pomodoro_output_boundary,
-        populated_pomodoros_repository,
-        populated_tasks_repository,
+    resume_pomodoro_output_boundary,
+    populated_pomodoros_repository,
+    populated_tasks_repository,
 ) -> ResumePomodoro:
     return ResumePomodoro(
         output_boundary=resume_pomodoro_output_boundary,
@@ -175,7 +185,7 @@ def resume_pomodoro_use_case(
 
 @pytest.fixture()
 def populated_tasks_by_project_id_query(
-        populated_tasks_repository: InMemoryTaskRepository,
+    populated_tasks_repository: InMemoryTaskRepository,
 ) -> GetTasksByProjectId:
     return GetTasksByProjectIdStub(return_collection=list(populated_tasks_repository.rows.values()))
 
@@ -187,9 +197,9 @@ def pin_task_to_project_output_boundary() -> Mock:
 
 @pytest.fixture()
 def pin_task_to_project_use_case(
-        pin_task_to_project_output_boundary,
-        populated_tasks_repository,
-        populated_tasks_by_project_id_query,
+    pin_task_to_project_output_boundary,
+    populated_tasks_repository,
+    populated_tasks_by_project_id_query,
 ) -> PinTaskToProject:
     return PinTaskToProject(
         output_boundary=pin_task_to_project_output_boundary,
@@ -205,9 +215,9 @@ def reactivate_task_output_boundary() -> Mock:
 
 @pytest.fixture()
 def reactivate_task_use_case(
-        reactivate_task_output_boundary,
-        populated_tasks_repository,
-        populated_tasks_by_project_id_query,
+    reactivate_task_output_boundary,
+    populated_tasks_repository,
+    populated_tasks_by_project_id_query,
 ) -> ReactivateTask:
     return ReactivateTask(
         output_boundary=reactivate_task_output_boundary,

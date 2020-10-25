@@ -1,31 +1,24 @@
 import flask_injector
 import injector
-
 from foundation.application.repositories.user import UserRepository
-from pomodoros import (
-    BeginPomodoroOutputBoundary,
-    CompleteTaskOutputBoundary,
-    FinishPomodoroOutputBoundary,
-    PausePomodoroOutputBoundary,
-    PinTaskToProjectOutputBoundary,
-    ReactivateTaskOutputBoundary,
-    ResumePomodoroOutputBoundary,
-)
+from pomodoros import (BeginPomodoroOutputBoundary, CompleteTaskOutputBoundary,
+                       FinishPomodoroOutputBoundary,
+                       PausePomodoroOutputBoundary,
+                       PinTaskToProjectOutputBoundary,
+                       ReactivateTaskOutputBoundary,
+                       ResumePomodoroOutputBoundary)
 from web_app.authorization.pomodoros import PomodoroProtector
 from web_app.users.repository import SQLUserRepository
+
 from .authorization.projects import ProjectProtector
 from .authorization.tasks import TaskProtector
-from .output_boundaries.pomodoros import (
-    JSONBeginPomodoroPresenter,
-    JSONFinishPomodoroPresenter,
-    JSONPausePomodoroPresenter,
-    JSONResumePomodoroPresenter,
-)
-from .output_boundaries.tasks import (
-    JSONCompleteTaskOutputBoundary,
-    JSONPinTaskToProjectPresenter,
-    JSONReactivateTaskPresenter,
-)
+from .output_boundaries.pomodoros import (JSONBeginPomodoroPresenter,
+                                          JSONFinishPomodoroPresenter,
+                                          JSONPausePomodoroPresenter,
+                                          JSONResumePomodoroPresenter)
+from .output_boundaries.tasks import (JSONCompleteTaskOutputBoundary,
+                                      JSONPinTaskToProjectPresenter,
+                                      JSONReactivateTaskPresenter)
 
 
 class PomodorosWeb(injector.Module):

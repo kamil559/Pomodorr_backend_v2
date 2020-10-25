@@ -4,12 +4,11 @@ from random import randint
 
 import pytest
 import pytz
-from pony.orm import db_session, flush
-
 from foundation.exceptions import NotFound
 from foundation.value_objects import Priority, PriorityLevel
 from pomodoros.domain.entities import Project
 from pomodoros_infrastructure.repositories import SQLProjectRepository
+from pony.orm import db_session, flush
 
 
 @pytest.mark.usefixtures("setup_teardown_tables")

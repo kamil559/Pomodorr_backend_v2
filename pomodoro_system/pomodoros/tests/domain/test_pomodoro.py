@@ -1,18 +1,15 @@
 from datetime import datetime, timedelta
 
 import pytest
-from pytest_lazyfixture import lazy_fixture
-
-from pomodoros.domain.exceptions import (
-    CollidingPomodoroWasFound,
-    DateFrameIsAlreadyFinished,
-    NoActionAllowedOnCompletedTask,
-    NoActionAllowedOnFinishedPomodoro,
-    PomodoroErrorMarginExceeded,
-    StartDateGreaterThanEndDate,
-)
+from pomodoros.domain.exceptions import (CollidingPomodoroWasFound,
+                                         DateFrameIsAlreadyFinished,
+                                         NoActionAllowedOnCompletedTask,
+                                         NoActionAllowedOnFinishedPomodoro,
+                                         PomodoroErrorMarginExceeded,
+                                         StartDateGreaterThanEndDate)
 from pomodoros.domain.value_objects import AcceptablePomodoroErrorMargin
 from pomodoros.tests.factories import PomodoroFactory
+from pytest_lazyfixture import lazy_fixture
 
 
 @pytest.mark.parametrize(
@@ -60,10 +57,10 @@ def test_begin_pomodoro_along_colliding_pomodoros_fails(pomodoro, task, overlapp
     ],
 )
 def test_finish_pomodoro_successfully(
-        date_frame_definition,
-        started_pomodoro,
-        task,
-        recent_potentially_colliding_pomodoros,
+    date_frame_definition,
+    started_pomodoro,
+    task,
+    recent_potentially_colliding_pomodoros,
 ):
     now = datetime.now()
     started_pomodoro.finish(
@@ -115,7 +112,7 @@ def test_pomodoro_with_start_date_greater_than_end_date_fails(date_frame_definit
 
 def test_finish_pomodoro_with_exceeding_duration_fails(date_frame_definition, started_pomodoro, task):
     maximal_valid_end_date: datetime = (
-            started_pomodoro.start_date + date_frame_definition.pomodoro_length + AcceptablePomodoroErrorMargin
+        started_pomodoro.start_date + date_frame_definition.pomodoro_length + AcceptablePomodoroErrorMargin
     )
     exceeded_end_date = maximal_valid_end_date + timedelta(microseconds=1)
 
@@ -129,10 +126,10 @@ def test_finish_pomodoro_with_exceeding_duration_fails(date_frame_definition, st
 
 
 def test_finish_pomodoro_with_exceeding_duration_fitting_within_error_margin_succeeds(
-        date_frame_definition, started_pomodoro, task
+    date_frame_definition, started_pomodoro, task
 ):
     maximal_valid_end_date: datetime = (
-            started_pomodoro.start_date + date_frame_definition.pomodoro_length + AcceptablePomodoroErrorMargin
+        started_pomodoro.start_date + date_frame_definition.pomodoro_length + AcceptablePomodoroErrorMargin
     )
     started_pomodoro.finish(
         date_frame_definition=date_frame_definition,
@@ -145,7 +142,7 @@ def test_finish_pomodoro_with_exceeding_duration_fitting_within_error_margin_suc
 
 
 def test_finish_pomodoro_along_colliding_pomodoros_fails(
-        date_frame_definition, started_pomodoro, task, overlapping_finished_pomodoros
+    date_frame_definition, started_pomodoro, task, overlapping_finished_pomodoros
 ):
     now = datetime.now()
 

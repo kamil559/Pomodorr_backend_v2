@@ -14,6 +14,11 @@ repos:
       - id: flake8
         name: flake8
         entry: flake8
-        language: python
+        language: python3.8
         types: [ python ]
         args: [ '--config=setup.cfg' ]
+      - id: black
+        name: black
+        entry: black
+        language: python3.8
+        types: [ python ]

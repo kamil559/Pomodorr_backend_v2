@@ -1,10 +1,11 @@
 import pytest
-from pony.orm import BindingError, db_session
-
 from foundation.models import User, db
-from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
+from foundation.tests.factories import (ORMUserDateFrameDefinitionFactory,
+                                        ORMUserFactory)
 from pomodoros_infrastructure import ProjectModel, TaskModel
-from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory
+from pomodoros_infrastructure.tests.factories import (ORMProjectFactory,
+                                                      ORMTaskFactory)
+from pony.orm import BindingError, db_session
 
 
 @pytest.fixture(scope="class")

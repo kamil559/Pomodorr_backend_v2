@@ -2,9 +2,8 @@ from typing import Optional, Type
 
 import marshmallow
 from flask import abort, make_response, request
-from marshmallow import Schema
-
 from foundation.value_objects import T
+from marshmallow import Schema
 
 
 def get_dto_or_abort(schema_class: Type[Schema], context: dict) -> Optional[T]:

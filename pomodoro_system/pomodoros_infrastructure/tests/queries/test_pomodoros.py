@@ -1,9 +1,8 @@
 import uuid
 
 import pytest
-from pony.orm import db_session
-
 from pomodoros_infrastructure.queries.pomodoros import SQLGetRecentPomodoros
+from pony.orm import db_session
 
 
 @pytest.mark.usefixtures("setup_teardown_tables")
@@ -19,12 +18,12 @@ class TestGetRecentPomodorosQuery:
 
     @db_session
     def test_query_returns_task_related_pomodoros_only(
-            self,
-            orm_task,
-            orm_pomodoro_for_today,
-            orm_random_pomodoro_for_today,
-            orm_pomodoro_for_yesterday,
-            orm_random_pomodoro_for_yesterday,
+        self,
+        orm_task,
+        orm_pomodoro_for_today,
+        orm_random_pomodoro_for_today,
+        orm_pomodoro_for_yesterday,
+        orm_random_pomodoro_for_yesterday,
     ):
         query_object = SQLGetRecentPomodoros()
         result = query_object.query(orm_task.id)

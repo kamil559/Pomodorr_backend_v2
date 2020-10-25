@@ -5,10 +5,10 @@ from typing import Optional
 from flask import Flask
 from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
-from pony.flask import Pony
-
 from foundation.value_objects import UserId
 from main import initialize_application
+from pony.flask import Pony
+
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb

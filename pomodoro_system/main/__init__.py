@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 import injector
 from dotenv import load_dotenv
-
 from foundation.models import db
 from pomodoros import Pomodoros
 from pomodoros_infrastructure import PomodorosInfrastructure

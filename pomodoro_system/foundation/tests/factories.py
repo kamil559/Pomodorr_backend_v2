@@ -2,10 +2,10 @@ import uuid
 
 import factory
 from factory.fuzzy import FuzzyAttribute
-
 from foundation.interfaces import AbstractUser
 from foundation.models import User
-from foundation.models import UserDateFrameDefinition as UserDateFrameDefinitionModel
+from foundation.models import \
+    UserDateFrameDefinition as UserDateFrameDefinitionModel
 from foundation.models import db
 from foundation.value_objects import UserDateFrameDefinition
 

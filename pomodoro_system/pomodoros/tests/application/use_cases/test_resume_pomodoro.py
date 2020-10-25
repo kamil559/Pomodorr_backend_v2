@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from pomodoros.application.use_cases.resume_pomodoro import ResumePomodoroInputDto, ResumePomodoroOutputDto
+from pomodoros.application.use_cases.resume_pomodoro import (
+    ResumePomodoroInputDto, ResumePomodoroOutputDto)
 
 
 def test_resume_pomodoro_use_case(paused_pomodoro, resume_pomodoro_output_boundary, resume_pomodoro_use_case):

@@ -1,13 +1,12 @@
 from typing import Type
 
-from pony.orm import ObjectNotFound
-
 from foundation.exceptions import NotFound
 from foundation.utils import to_utc, with_tzinfo
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.value_objects import PauseId
 from pomodoros_infrastructure.models.date_frame import PauseModel
+from pony.orm import ObjectNotFound
 
 
 class SQLPauseRepository(PauseRepository):

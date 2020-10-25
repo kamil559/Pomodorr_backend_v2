@@ -3,11 +3,10 @@ from datetime import datetime, timedelta
 
 import pytest
 import pytz
-from pony.orm import db_session, flush
-
 from foundation.exceptions import NotFound
 from pomodoros.domain.entities.pause import Pause
 from pomodoros_infrastructure.repositories import SQLPauseRepository
+from pony.orm import db_session, flush
 
 
 @pytest.mark.usefixtures("setup_teardown_tables")

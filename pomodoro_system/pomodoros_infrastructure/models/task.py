@@ -1,9 +1,8 @@
 import uuid
 from datetime import datetime, timedelta
 
-from pony.orm import LongStr, Optional, PrimaryKey, Required, Set
-
 from foundation.models import db
+from pony.orm import LongStr, Optional, PrimaryKey, Required, Set
 
 
 class TaskModel(db.Entity):

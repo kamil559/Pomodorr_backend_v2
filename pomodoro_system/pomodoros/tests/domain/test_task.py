@@ -1,11 +1,8 @@
 import pytest
-
-from pomodoros.domain.exceptions import (
-    NoActionAllowedOnCompletedTask,
-    TaskAlreadyActive,
-    TaskAlreadyCompleted,
-    TaskNameNotAvailableInNewProject,
-)
+from pomodoros.domain.exceptions import (NoActionAllowedOnCompletedTask,
+                                         TaskAlreadyActive,
+                                         TaskAlreadyCompleted,
+                                         TaskNameNotAvailableInNewProject)
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros.tests.factories import TaskFactory
 
@@ -58,7 +55,7 @@ def test_reactivate_already_active_task_fails(task):
 
 
 def test_reactivate_task_of_project_containing_task_with_the_same_name_fails(
-        completed_task,
+    completed_task,
 ):
     task_with_the_same_name = TaskFactory(project_id=completed_task.project_id, name=completed_task.name)
 

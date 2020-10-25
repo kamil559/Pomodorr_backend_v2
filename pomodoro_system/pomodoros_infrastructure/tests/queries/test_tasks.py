@@ -1,9 +1,8 @@
 import uuid
 
 import pytest
-from pony.orm import db_session
-
 from pomodoros_infrastructure.queries.tasks import SQLGetTasksByProjectId
+from pony.orm import db_session
 
 
 @pytest.mark.usefixtures("setup_teardown_tables")

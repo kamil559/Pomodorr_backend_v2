@@ -1,10 +1,9 @@
 import uuid
 from datetime import datetime
 
-from pony.orm import Optional, PrimaryKey, Required, Set
-
 from foundation.models import db
 from pomodoros.domain.value_objects import FrameType
+from pony.orm import Optional, PrimaryKey, Required, Set
 
 
 class PomodoroModel(db.Entity):

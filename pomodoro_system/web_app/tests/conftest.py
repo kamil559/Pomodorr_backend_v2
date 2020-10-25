@@ -6,12 +6,13 @@ import pytz
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
-from pony.orm import db_session
-
 from foundation.models import User
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
-from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
+from pomodoros_infrastructure.tests.factories import (ORMPauseFactory,
+                                                      ORMPomodoroFactory,
+                                                      ORMTaskFactory)
+from pony.orm import db_session
 from web_app.flask_app import create_app
 
 

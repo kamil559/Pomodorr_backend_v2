@@ -2,12 +2,9 @@ from datetime import datetime, timezone
 from gettext import gettext as _
 from typing import Optional
 
-from pomodoros.domain.exceptions import (
-    DateFrameIsAlreadyFinished,
-    FutureDateProvided,
-    NaiveDateProvided,
-    StartDateGreaterThanEndDate,
-)
+from pomodoros.domain.exceptions import (DateFrameIsAlreadyFinished,
+                                         FutureDateProvided, NaiveDateProvided,
+                                         StartDateGreaterThanEndDate)
 from pomodoros.domain.value_objects import FrameType
 
 
@@ -57,12 +54,12 @@ class DateFrame:
 
     def _check_date_frame_is_already_finished(self) -> None:
         if all(
-                [
-                    self.start_date,
-                    self.start_date is not None,
-                    self.end_date,
-                    self.end_date is not None,
-                ]
+            [
+                self.start_date,
+                self.start_date is not None,
+                self.end_date,
+                self.end_date is not None,
+            ]
         ):
             raise DateFrameIsAlreadyFinished(_("pomodoros.domain.entities.date_frame.date_frame_is_already_finished"))
 

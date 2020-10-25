@@ -1,11 +1,10 @@
 import uuid
 
-from pony.orm import select
-from werkzeug.exceptions import abort
-
 from foundation.interfaces import ResourceProtector
 from foundation.value_objects import UserId
 from pomodoros_infrastructure import ProjectModel, TaskModel
+from pony.orm import select
+from werkzeug.exceptions import abort
 
 
 class TaskProtector(ResourceProtector):

@@ -1,7 +1,5 @@
 from typing import Type
 
-from pony.orm import ObjectNotFound
-
 from foundation.exceptions import AlreadyExists, NotFound
 from foundation.utils import to_utc, with_tzinfo
 from pomodoros import PomodoroId, PomodoroRepository
@@ -9,6 +7,7 @@ from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
 from pomodoros_infrastructure import PauseModel
 from pomodoros_infrastructure.models import PomodoroModel
+from pony.orm import ObjectNotFound
 
 
 class SQLPomodoroRepository(PomodoroRepository):

@@ -31,10 +31,10 @@ class ResumePomodoroOutputBoundary(ABC):
 
 class ResumePomodoro:
     def __init__(
-            self,
-            output_boundary: ResumePomodoroOutputBoundary,
-            pomodoros_repository: PomodoroRepository,
-            tasks_repository: TaskRepository,
+        self,
+        output_boundary: ResumePomodoroOutputBoundary,
+        pomodoros_repository: PomodoroRepository,
+        tasks_repository: TaskRepository,
     ) -> None:
         self.output_boundary = output_boundary
         self.pomodoros_repository = pomodoros_repository

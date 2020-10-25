@@ -30,10 +30,10 @@ class PinTaskToProjectOutputBoundary(ABC):
 
 class PinTaskToProject:
     def __init__(
-            self,
-            output_boundary: PinTaskToProjectOutputBoundary,
-            tasks_repository: TaskRepository,
-            get_tasks_by_project_id_query: GetTasksByProjectId,
+        self,
+        output_boundary: PinTaskToProjectOutputBoundary,
+        tasks_repository: TaskRepository,
+        get_tasks_by_project_id_query: GetTasksByProjectId,
     ) -> None:
         self.output_boundary = output_boundary
         self.tasks_repository = tasks_repository

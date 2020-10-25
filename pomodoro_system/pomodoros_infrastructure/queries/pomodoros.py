@@ -2,7 +2,6 @@ from datetime import datetime
 from typing import List, Type
 
 import pytz
-
 from foundation.utils import with_tzinfo
 from pomodoros import GetRecentPomodoros, TaskId
 from pomodoros.domain.entities.pause import Pause
@@ -42,8 +41,8 @@ class SQLGetRecentPomodoros(GetRecentPomodoros):
         today_date = datetime.now(tz=pytz.UTC).date()
         recent_pomodoros = PomodoroModel.select(
             lambda pomodoro: pomodoro.task_id == task_id
-                             and self._is_finished(pomodoro)
-                             and self._is_from_today(pomodoro, today_date)
+            and self._is_finished(pomodoro)
+            and self._is_from_today(pomodoro, today_date)
         )
 
         return list(map(lambda orm_pomodoro: self._to_entity(orm_pomodoro), recent_pomodoros))

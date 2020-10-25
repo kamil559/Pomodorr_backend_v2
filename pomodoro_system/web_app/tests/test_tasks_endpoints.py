@@ -1,14 +1,13 @@
 from flask import testing
-from pony.orm import db_session
-
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure.repositories import SQLTaskRepository
+from pony.orm import db_session
 
 
 class TestCompleteTaskAPI:
     @db_session
     def test_complete_task_with_valid_data(
-            self, client: testing.FlaskClient, orm_task, project_owner_authorization_token
+        self, client: testing.FlaskClient, orm_task, project_owner_authorization_token
     ):
         response = client.patch(
             f"/tasks/{orm_task.id}/complete",
@@ -28,10 +27,10 @@ class TestCompleteTaskAPI:
         assert response.status_code == 401
 
     def test_complete_task_with_random_authenticated_user(
-            self,
-            client: testing.FlaskClient,
-            orm_task,
-            random_project_owner_authorization_token,
+        self,
+        client: testing.FlaskClient,
+        orm_task,
+        random_project_owner_authorization_token,
     ):
         response = client.patch(
             f"/tasks/{orm_task.id}/complete",
@@ -45,10 +44,10 @@ class TestCompleteTaskAPI:
 class TestReactivateTaskAPI:
     @db_session
     def test_reactivate_task_with_valid_data(
-            self,
-            client: testing.FlaskClient,
-            orm_completed_task,
-            project_owner_authorization_token,
+        self,
+        client: testing.FlaskClient,
+        orm_completed_task,
+        project_owner_authorization_token,
     ):
         response = client.patch(
             f"/tasks/{orm_completed_task.id}/reactivate",
@@ -69,10 +68,10 @@ class TestReactivateTaskAPI:
         assert response.status_code == 401
 
     def test_reactivate_task_with_random_authenticated_user(
-            self,
-            client: testing.FlaskClient,
-            orm_completed_task,
-            random_project_owner_authorization_token,
+        self,
+        client: testing.FlaskClient,
+        orm_completed_task,
+        random_project_owner_authorization_token,
     ):
         response = client.patch(
             f"/tasks/{orm_completed_task.id}/reactivate",
@@ -86,11 +85,11 @@ class TestReactivateTaskAPI:
 class TestPinTaskToProjectAPI:
     @db_session
     def test_pin_task_to_project_with_valid_data(
-            self,
-            client: testing.FlaskClient,
-            orm_task,
-            orm_second_project,
-            project_owner_authorization_token,
+        self,
+        client: testing.FlaskClient,
+        orm_task,
+        orm_second_project,
+        project_owner_authorization_token,
     ):
         response = client.patch(
             f"tasks/{orm_task.id}/pin",
@@ -106,7 +105,7 @@ class TestPinTaskToProjectAPI:
         assert fetched_task.project_id == orm_second_project.id
 
     def test_pin_task_to_project_without_authorization_header(
-            self, client: testing.FlaskClient, orm_task, orm_second_project
+        self, client: testing.FlaskClient, orm_task, orm_second_project
     ):
         response = client.patch(
             f"tasks/{orm_task.id}/pin",
@@ -117,11 +116,11 @@ class TestPinTaskToProjectAPI:
         assert response.status_code == 401
 
     def test_pin_task_to_project_with_random_authenticated_user(
-            self,
-            client: testing.FlaskClient,
-            orm_task,
-            orm_second_project,
-            random_project_owner_authorization_token,
+        self,
+        client: testing.FlaskClient,
+        orm_task,
+        orm_second_project,
+        random_project_owner_authorization_token,
     ):
         response = client.patch(
             f"tasks/{orm_task.id}/pin",

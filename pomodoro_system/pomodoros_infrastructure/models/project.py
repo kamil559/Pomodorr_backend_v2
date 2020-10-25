@@ -1,9 +1,8 @@
 import uuid
 from datetime import datetime
 
-from pony.orm import Optional, PrimaryKey, Required
-
 from foundation.models import db
+from pony.orm import Optional, PrimaryKey, Required
 
 
 class ProjectModel(db.Entity):
