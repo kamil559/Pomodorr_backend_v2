@@ -1,8 +1,8 @@
 .PHONY: install_dev
 install_dev:
-	pip install -r requirements/base.txt
-	pip install -r requirements/dev.txt
-
+	pip install poetry==1.1.0
+	poetry config virtualenvs.create false
+	poetry install
 
 .PHONY: freeze-dependencies
 freeze-dependencies:

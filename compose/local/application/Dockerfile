@@ -1,19 +1,20 @@
-FROM python:3.7-slim-buster
+FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update \
   # dependencies for building Python packages
   && apt-get install -y build-essential \
+  && apt-get install make \
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
 
 # Requirements are installed here to ensure they will be cached.
-COPY ./pomodoro_system/requirements /requirements
-
-RUN pip install -r /requirements/dev.txt
+COPY ./pyproject.toml /pyproject.toml
+COPY ./Makefile /Makefile
+RUN make install_dev
 
 COPY ./compose/local/entrypoint /entrypoint
 RUN sed -i 's/\r$//g' /entrypoint

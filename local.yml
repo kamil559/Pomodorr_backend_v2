@@ -9,7 +9,7 @@ services:
       - postgres
     build:
       context: .
-      dockerfile: compose/local/application/Dockerfile
+      dockerfile: ./compose/local/application/Dockerfile
     image: pomodoro_system_local
     volumes:
       - "./pomodoro_system:/usr/src/app"
