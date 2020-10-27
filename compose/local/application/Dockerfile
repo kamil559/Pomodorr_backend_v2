@@ -25,8 +25,11 @@ RUN sed -i 's/\r$//g' /start
 RUN chmod +x /start
 
 WORKDIR usr/src/app
-
 COPY pomodoro_system/ ./
+
 ENV APPLICATION_CONFIG=".envs/local/.application"
 ENV DB_CONFIG=".envs/local/.database"
+ENV SECURITY_CONFIG=".envs/local/.security"
+ENV MAIL_CONFIG=".envs/local/.mail"
+
 ENTRYPOINT ["/entrypoint"]

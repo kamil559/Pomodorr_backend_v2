@@ -1,17 +1,30 @@
 import uuid
-from datetime import timedelta
+from datetime import datetime, timedelta
 
+from flask_security import RoleMixin, UserMixin
 from foundation.value_objects import UserDateFrameDefinition as UserDateFrameDefinitionEntity
-from pony.orm import Database, Optional, PrimaryKey, Required
+from pony.orm import Database, Optional, PrimaryKey, Required, Set
 
 db = Database()
 
 
-class User(db.Entity):
+class Role(db.Entity, RoleMixin):
+    id = PrimaryKey(uuid.UUID, auto=False)
+    name = Required(str, unique=True)
+    description = Optional(str)
+    users = Set("User")
+
+
+class User(db.Entity, UserMixin):
     _table_ = "users"
 
     id = PrimaryKey(uuid.UUID, auto=False)
+    confirmed_at = Optional(datetime)
+    email = Required(str, unique=True)
+    password = Required(str)
     date_frame_definition = Optional(lambda: UserDateFrameDefinition, lazy=False)
+    active = Required(bool, default=False)
+    roles = Set(Role)
 
 
 class UserDateFrameDefinition(db.Entity):

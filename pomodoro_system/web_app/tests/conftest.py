@@ -1,12 +1,14 @@
 import os
 from datetime import datetime
 
+import factory
 import pytest
 import pytz
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token
 from foundation.models import User
+from foundation.tests.factories import ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
@@ -61,3 +63,8 @@ def paused_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
 def orm_completed_task(orm_project: ProjectModel) -> TaskModel:
     with db_session:
         return ORMTaskFactory(project_id=orm_project.id, status=TaskStatus.COMPLETED.value)
+
+
+@pytest.fixture()
+def user_data() -> dict:
+    return factory.build(dict, FACTORY_CLASS=ORMUserFactory)

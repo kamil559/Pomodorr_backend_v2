@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timezone
 from typing import Optional, Union
 
@@ -21,3 +22,14 @@ def with_tzinfo(date: datetime, tz_info: Union[BaseTzInfo, timezone] = pytz.UTC)
     if date is None:
         return
     return date.replace(tzinfo=tz_info)
+
+
+def get_config_file_path(env_name: str) -> str:
+    if env_name is None:
+        return
+
+    config_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.environ.get(env_name))
+    )
+
+    return config_path

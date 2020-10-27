@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 import factory
 from factory.fuzzy import FuzzyAttribute
@@ -68,4 +69,8 @@ class ORMUserFactory(PonyFactory):
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
+    confirmed_at = factory.LazyFunction(datetime.now)
+    email = factory.Faker("email")
+    password = factory.Faker("password", length=36, special_chars=True, digits=True, upper_case=True, lower_case=True)
     date_frame_definition = None
+    active = False

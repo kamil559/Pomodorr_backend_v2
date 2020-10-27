@@ -19,6 +19,10 @@ pytest-lazy-fixture = "0.6.3"
 marshmallow = "3.8.0"
 Flask-Login = "0.4.1"
 Flask-JWT-Extended = "3.24.1"
+Flask-Security = "3.0.0"
+email-validator = "^1.1.1"
+Flask-Mail = "^0.9.1"
+bcrypt = "^3.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "4.6.10"

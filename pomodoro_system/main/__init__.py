@@ -3,7 +3,9 @@ from dataclasses import dataclass
 
 import injector
 from dotenv import load_dotenv
+from foundation.interfaces import AppSetupStrategy
 from foundation.models import db
+from foundation.utils import get_config_file_path
 from pomodoros import Pomodoros
 from pomodoros_infrastructure import PomodorosInfrastructure
 
@@ -14,51 +16,79 @@ class Application:
     injector: injector.Injector
 
 
-def _get_config_file_path(env_name: str) -> str:
-    try:
-        config_path = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.environ.get(env_name))
-        )
-    except TypeError:  # In this case the environment variables are claimed to have been already set
-        return
-    else:
-        return config_path
+class TestingSetupStrategy(AppSetupStrategy):
+    def load_settings(self) -> None:
+        self.settings_mapping = {
+            "database": {
+                "provider": os.getenv("DB_PROVIDER"),
+                "filename": os.getenv("DB_FILENAME"),  # optional (in case of running sqlite3 DB)
+            }
+        }
+
+    def setup(self) -> None:
+        self.load_settings()
 
 
-def _setup_dependencies(settings: dict) -> injector.Injector:
+class LocalSetupStrategy(AppSetupStrategy):
+    def load_settings(self) -> None:
+        self.settings_mapping = {
+            "database": {
+                "provider": os.getenv("DB_PROVIDER"),
+                "host": os.getenv("DB_HOST"),
+                "port": os.getenv("DB_PORT"),
+                "user": os.getenv("DB_USER"),
+                "password": os.getenv("DB_PASSWORD"),
+                "database": os.getenv("DB_NAME"),
+            }
+        }
+
+    def setup(self) -> None:
+        self.load_settings()
+
+
+class ProductionSetupStrategy(AppSetupStrategy):
+    def load_settings(self) -> None:
+        raise NotImplementedError
+
+    def setup(self) -> None:
+        #  postponed until the production setup comes in
+        raise NotImplementedError
+
+
+def _setup_dependencies() -> injector.Injector:
     return injector.Injector([Pomodoros(), PomodorosInfrastructure()], auto_bind=False)
 
 
-def _generate_db_mappings(settings: dict) -> None:
-    if bool(os.getenv("TESTING")):
-        db.bind(
-            provider=settings["database"]["provider"],
-            filename=settings["database"]["filename"],
-        )
+def load_app_settings(settings: dict) -> dict:
+    if settings["testing"]:
+        setup = TestingSetupStrategy()
+    elif settings["debug"]:
+        setup = LocalSetupStrategy()
     else:
-        db.bind(**settings["database"])
-    db.generate_mapping(create_tables=True)
+        setup = ProductionSetupStrategy()
+    setup.setup()
+    return setup.settings_mapping
 
 
 def initialize_application() -> Application:
-    app_config_file_path = _get_config_file_path("APPLICATION_CONFIG")
-    db_config_file_path = _get_config_file_path("DB_CONFIG")
-    load_dotenv(dotenv_path=app_config_file_path, override=True)
-    load_dotenv(dotenv_path=db_config_file_path, override=True)
+    load_dotenv(dotenv_path=get_config_file_path("APPLICATION_CONFIG"), override=True)
+    load_dotenv(dotenv_path=get_config_file_path("DB_CONFIG"), override=True)
+    load_dotenv(dotenv_path=get_config_file_path("SECURITY_CONFIG"), override=True)
+    load_dotenv(dotenv_path=get_config_file_path("MAIL_CONFIG"), override=True)
 
     settings = {
-        "database": {
-            "provider": os.getenv("DB_PROVIDER"),
-            "host": os.getenv("DB_HOST"),
-            "port": os.getenv("DB_PORT"),
-            "user": os.getenv("DB_USER"),
-            "password": os.getenv("DB_PASSWORD"),
-            "database": os.getenv("DB_NAME"),
-            "filename": os.getenv("DB_FILENAME"),  # optional (in case of running sqlite3 DB)
-        },
+        "testing": bool(int(os.getenv("TESTING", False))),
+        "debug": bool(int(os.getenv("DEBUG", False))),
     }
 
-    dependency_injector = _setup_dependencies(settings)
-    _generate_db_mappings(settings)
+    dependency_injector = _setup_dependencies()
+
+    additional_settings = load_app_settings(settings)
+    settings.update(additional_settings)
+
+    if not db.provider:
+        db.bind(**settings["database"])
+
+    db.generate_mapping(create_tables=True)
 
     return Application(settings, dependency_injector)

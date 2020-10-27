@@ -15,3 +15,15 @@ class ResourceProtector(ABC):
     @abstractmethod
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
         pass
+
+
+class AppSetupStrategy(ABC):
+    settings_mapping: dict
+
+    @abstractmethod
+    def load_settings(self) -> None:
+        pass
+
+    @abstractmethod
+    def setup(self) -> None:
+        pass
