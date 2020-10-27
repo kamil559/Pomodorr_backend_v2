@@ -73,4 +73,4 @@ class ORMUserFactory(PonyFactory):
     email = factory.Faker("email")
     password = factory.Faker("password", length=36, special_chars=True, digits=True, upper_case=True, lower_case=True)
     date_frame_definition = None
-    active = False
+    active = True

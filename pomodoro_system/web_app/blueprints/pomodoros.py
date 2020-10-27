@@ -2,7 +2,8 @@ from datetime import datetime
 
 import pytz
 from flask import Blueprint, Response
-from flask_jwt_extended import get_current_user, jwt_required
+from flask_login import current_user
+from flask_security import auth_token_required
 from pomodoros import (
     BeginPomodoro,
     BeginPomodoroInputDto,
@@ -33,7 +34,7 @@ pomodoros_blueprint = Blueprint("pomodoros", __name__, url_prefix="/pomodoros")
 
 
 @pomodoros_blueprint.route("/<uuid:task_id>/begin", methods=["POST"])
-@jwt_required
+@auth_token_required
 def begin_pomodoro(
     task_id: TaskId,
     begin_pomodoro_uc: BeginPomodoro,
@@ -44,15 +45,14 @@ def begin_pomodoro(
         BeginPomodoroSchema,
         {"task_id": task_id, "start_date": str(datetime.now(tz=pytz.UTC))},
     )
-    requester_id = get_current_user()
-    protector.authorize(requester_id, task_id)
+    protector.authorize(current_user.id, task_id)
 
     begin_pomodoro_uc.execute(input_dto)
     return presenter.response
 
 
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/pause", methods=["POST"])
-@jwt_required
+@auth_token_required
 def pause_pomodoro(
     pomodoro_id: PomodoroId,
     pause_pomodoro_uc: PausePomodoro,
@@ -63,15 +63,14 @@ def pause_pomodoro(
         PausePomodoroSchema,
         {"pomodoro_id": pomodoro_id, "pause_date": str(datetime.now(tz=pytz.UTC))},
     )
-    requester_id = get_current_user()
-    protector.authorize(requester_id, pomodoro_id)
+    protector.authorize(current_user.id, pomodoro_id)
 
     pause_pomodoro_uc.execute(input_dto)
     return presenter.response
 
 
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/resume", methods=["POST"])
-@jwt_required
+@auth_token_required
 def resume_pomodoro(
     pomodoro_id: PomodoroId,
     resume_pomodoro_uc: ResumePomodoro,
@@ -82,32 +81,29 @@ def resume_pomodoro(
         ResumePomodoroSchema,
         {"pomodoro_id": pomodoro_id, "resume_date": str(datetime.now(tz=pytz.UTC))},
     )
-    requester_id = get_current_user()
-    protector.authorize(requester_id, pomodoro_id)
+    protector.authorize(current_user.id, pomodoro_id)
 
     resume_pomodoro_uc.execute(input_dto)
     return presenter.response
 
 
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/finish", methods=["PATCH"])
-@jwt_required
+@auth_token_required
 def finish_pomodoro(
     pomodoro_id: PomodoroId,
     finish_pomodoro_uc: FinishPomodoro,
     presenter: FinishPomodoroOutputBoundary,
     protector: PomodoroProtector,
 ) -> Response:
-    requester_id = get_current_user()
     input_dto: FinishPomodoroInputDto = get_dto_or_abort(
         FinishPomodoroSchema,
         {
             "id": pomodoro_id,
             "end_date": str(datetime.now(tz=pytz.UTC)),
-            "owner_id": requester_id,
+            "owner_id": current_user.id,
         },
     )
-
-    protector.authorize(requester_id, pomodoro_id)
+    protector.authorize(current_user.id, pomodoro_id)
 
     finish_pomodoro_uc.execute(input_dto)
     return presenter.response

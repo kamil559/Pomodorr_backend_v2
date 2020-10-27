@@ -1,15 +1,10 @@
 import os
-import uuid
-from datetime import timedelta
-from typing import Optional
 
 from flask import Flask
 from flask_injector import FlaskInjector
-from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_security import Security
 from foundation.models import db
-from foundation.value_objects import UserId
 from main import initialize_application
 from pony.flask import Pony
 
@@ -37,27 +32,27 @@ def create_app() -> Flask:
         SECURITY_CHANGEABLE=bool(int(os.getenv("SECURITY_CHANGEABLE"))),
         SECURITY_RECOVERABLE=bool(int(os.getenv("SECURITY_RECOVERABLE"))),
         SECURITY_LOGIN_WITHOUT_CONFIRMATION=bool(int(os.getenv("SECURITY_LOGIN_WITHOUT_CONFIRMATION"))),
-        SECURITY_CONFIRM_EMAIL_WITHIN=timedelta(days=int(os.getenv("SECURITY_CONFIRM_EMAIL_WITHIN"))),
-        SECURITY_RESET_PASSWORD_WITHIN=timedelta(days=int(os.getenv("SECURITY_RESET_PASSWORD_WITHIN"))),
+        SECURITY_CONFIRM_EMAIL_WITHIN=os.getenv("SECURITY_CONFIRM_EMAIL_WITHIN"),
+        SECURITY_RESET_PASSWORD_WITHIN=os.getenv("SECURITY_RESET_PASSWORD_WITHIN"),
         SECURITY_EMAIL_SUBJECT_REGISTER=os.getenv("SECURITY_EMAIL_SUBJECT_REGISTER"),
         SECURITY_CONFIRM_SALT=os.getenv("SECURITY_CONFIRM_SALT"),
         SECURITY_RESET_SALT=os.getenv("SECURITY_RESET_SALT"),
         SECURITY_LOGIN_SALT=os.getenv("SECURITY_LOGIN_SALT"),
         SECURITY_PASSWORD_SALT=os.getenv("SECURITY_PASSWORD_SALT"),
+        SECURITY_EMAIL_SENDER=os.getenv("SECURITY_EMAIL_SENDER"),
         WTF_CSRF_ENABLED=bool(int(os.getenv("WTF_CSRF_ENABLED"))),
+        SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS=True,
         # Flask-mail configurations
         MAIL_SERVER=os.getenv("MAIL_SERVER"),
         MAIL_PORT=os.getenv("MAIL_PORT"),
-        MAIL_USE_TLS=os.getenv("MAIL_USE_TLS"),
-        MAIL_USE_SSL=os.getenv("MAIL_USE_SSL"),
+        MAIL_USE_TLS=bool(int(os.getenv("MAIL_USE_TLS"))),
+        MAIL_USE_SSL=bool(int(os.getenv("MAIL_USE_SSL"))),
         MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
         MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
         MAIL_DEFAULT_SENDER=os.getenv("MAIL_DEFAULT_SENDER"),
         MAIL_MAX_EMAILS=os.getenv("MAIL_MAX_EMAILS"),
-        MAIL_ASCII_ATTACHMENTS=os.getenv("MAIL_ASCII_ATTACHMENTS"),
+        MAIL_ASCII_ATTACHMENTS=bool(int(os.getenv("MAIL_ASCII_ATTACHMENTS"))),
     )
-
-    jwt = JWTManager(app=flask_app)
 
     flask_app.register_blueprint(pomodoros_blueprint)
     flask_app.register_blueprint(tasks_blueprint)
@@ -70,14 +65,5 @@ def create_app() -> Flask:
     Security().init_app(app=flask_app, datastore=user_data_store)
 
     Mail().init_app(app=flask_app)
-
-    @jwt.user_loader_callback_loader
-    def load_user_identity(identity: str) -> Optional[UserId]:
-        try:
-            user_id = uuid.UUID(identity)
-        except ValueError:
-            return
-        else:
-            return user_id
 
     return flask_app

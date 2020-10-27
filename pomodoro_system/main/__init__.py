@@ -89,6 +89,6 @@ def initialize_application() -> Application:
     if not db.provider:
         db.bind(**settings["database"])
 
-    db.generate_mapping(create_tables=True)
+    db.generate_mapping(create_tables=True, check_tables=True)
 
     return Application(settings, dependency_injector)

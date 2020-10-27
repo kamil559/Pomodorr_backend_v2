@@ -6,9 +6,8 @@ import pytest
 import pytz
 from flask import Flask
 from flask.testing import FlaskClient
-from flask_jwt_extended import create_access_token
 from foundation.models import User
-from foundation.tests.factories import ORMUserFactory
+from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
@@ -34,14 +33,16 @@ def client(app) -> FlaskClient:
 
 @pytest.fixture()
 def project_owner_authorization_token(app: Flask, client: FlaskClient, project_owner: User) -> str:
-    with app.app_context():
-        return f"Bearer {create_access_token(identity=str(project_owner.id))}"
+    with app.test_request_context():
+        auth_token = project_owner.get_auth_token()
+    return auth_token
 
 
 @pytest.fixture()
 def random_project_owner_authorization_token(app: Flask, client: FlaskClient, random_project_owner: User) -> str:
-    with app.app_context():
-        return f"Bearer {create_access_token(identity=str(random_project_owner.id))}"
+    with app.test_request_context():
+        auth_token = random_project_owner.get_auth_token()
+    return auth_token
 
 
 @pytest.fixture()
@@ -68,3 +69,11 @@ def orm_completed_task(orm_project: ProjectModel) -> TaskModel:
 @pytest.fixture()
 def user_data() -> dict:
     return factory.build(dict, FACTORY_CLASS=ORMUserFactory)
+
+
+@pytest.fixture()
+def unconfirmed_user():
+    with db_session:
+        user = ORMUserFactory(date_frame_definition=None, confirmed_at=None, active=False)
+        ORMUserDateFrameDefinitionFactory(user=user)
+        return user

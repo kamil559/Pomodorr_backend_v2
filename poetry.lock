@@ -273,23 +273,6 @@ Flask = "*"
 injector = ">=0.10.0"
 
 [[package]]
-name = "flask-jwt-extended"
-version = "3.24.1"
-description = "Extended JWT integration with Flask"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-Flask = ">=1.0"
-PyJWT = ">=1.6.4"
-six = "*"
-Werkzeug = ">=0.14"
-
-[package.extras]
-asymmetric_crypto = ["cryptography (>=2.3)"]
-
-[[package]]
 name = "flask-login"
 version = "0.4.1"
 description = "User session management for Flask"
@@ -325,27 +308,28 @@ blinker = "*"
 Flask = "*"
 
 [[package]]
-name = "flask-security"
-version = "3.0.0"
+name = "flask-security-too"
+version = "3.4.4"
 description = "Simple security for Flask apps."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
 
 [package.dependencies]
-Flask = ">=0.11"
+email-validator = ">=1.0.5"
+Flask = ">=1.0.2"
 Flask-BabelEx = ">=0.9.3"
-Flask-Login = ">=0.3.0"
-Flask-Mail = ">=0.7.3"
-Flask-Principal = ">=0.3.3"
-Flask-WTF = ">=0.13.1"
-itsdangerous = ">=0.21"
-passlib = ">=1.7"
+Flask-Login = ">=0.4.1"
+Flask-Mail = ">=0.9.1"
+Flask-Principal = ">=0.4.0"
+Flask-WTF = ">=0.14.2"
+itsdangerous = ">=1.1.0"
+passlib = ">=1.7.1"
 
 [package.extras]
-all = ["Flask-Sphinx-Themes (>=1.0.1)", "Sphinx (>=1.4.2)", "Flask-CLI (>=0.4.0)", "Flask-Mongoengine (>=0.7.0)", "Flask-Peewee (>=0.6.5)", "Flask-SQLAlchemy (>=1.0)", "bcrypt (>=1.0.2)", "check-manifest (>=0.25)", "coverage (>=4.0)", "isort (>=4.2.2)", "mock (>=1.3.0)", "mongoengine (>=0.10.0)", "pony (>=0.7.1)", "pydocstyle (>=1.0.0)", "pytest-cache (>=1.0)", "pytest-cov (>=2.4.0)", "pytest-flakes (>=1.0.1)", "pytest-pep8 (>=1.0.6)", "pytest-translations (>=1.0.4)", "pytest (>=3.0.5)", "sqlalchemy (>=0.8.0)", "Flask-Sphinx-Themes (>=1.0.1)", "Sphinx (>=1.4.2)", "Flask-CLI (>=0.4.0)", "Flask-Mongoengine (>=0.7.0)", "Flask-Peewee (>=0.6.5)", "Flask-SQLAlchemy (>=1.0)", "bcrypt (>=1.0.2)", "check-manifest (>=0.25)", "coverage (>=4.0)", "isort (>=4.2.2)", "mock (>=1.3.0)", "mongoengine (>=0.10.0)", "pony (>=0.7.1)", "pydocstyle (>=1.0.0)", "pytest-cache (>=1.0)", "pytest-cov (>=2.4.0)", "pytest-flakes (>=1.0.1)", "pytest-pep8 (>=1.0.6)", "pytest-translations (>=1.0.4)", "pytest (>=3.0.5)", "sqlalchemy (>=0.8.0)"]
-docs = ["Flask-Sphinx-Themes (>=1.0.1)", "Sphinx (>=1.4.2)"]
-tests = ["Flask-CLI (>=0.4.0)", "Flask-Mongoengine (>=0.7.0)", "Flask-Peewee (>=0.6.5)", "Flask-SQLAlchemy (>=1.0)", "bcrypt (>=1.0.2)", "check-manifest (>=0.25)", "coverage (>=4.0)", "isort (>=4.2.2)", "mock (>=1.3.0)", "mongoengine (>=0.10.0)", "pony (>=0.7.1)", "pydocstyle (>=1.0.0)", "pytest-cache (>=1.0)", "pytest-cov (>=2.4.0)", "pytest-flakes (>=1.0.1)", "pytest-pep8 (>=1.0.6)", "pytest-translations (>=1.0.4)", "pytest (>=3.0.5)", "sqlalchemy (>=0.8.0)"]
+all = ["Pallets-Sphinx-Themes (>=1.2.0)", "Sphinx (>=1.8.5)", "sphinx-issues (>=1.2.0)", "Flask-Mongoengine (>=0.9.5)", "peewee (>=3.11.2)", "Flask-SQLAlchemy (>=2.3)", "argon2-cffi (>=19.1.0)", "bcrypt (>=3.1.5)", "cachetools (>=3.1.0)", "check-manifest (>=0.25)", "coverage (>=4.5.4)", "cryptography (>=2.3.1)", "isort (>=4.2.2)", "mock (>=1.3.0)", "mongoengine (>=0.15.3)", "mongomock (>=3.14.0)", "msgcheck (>=2.9)", "pony (>=0.7.11)", "phonenumberslite (>=8.11.1)", "psycopg2 (>=2.8.4)", "pydocstyle (>=1.0.0)", "pymysql (>=0.9.3)", "pyqrcode (>=1.2)", "pytest (4.6.11)", "pytest-black (>=0.3.8)", "pytest-cache (>=1.0)", "pytest-cov (>=2.5.1)", "pytest-flake8 (>=1.0.6)", "pytest-mongo (>=1.2.1)", "pytest (>=3.5.1)", "sqlalchemy (>=1.2.6)", "sqlalchemy-utils (>=0.33.0)", "werkzeug (>=0.15.5)", "zxcvbn (>=4.4.28,<4.5.0)"]
+docs = ["Pallets-Sphinx-Themes (>=1.2.0)", "Sphinx (>=1.8.5)", "sphinx-issues (>=1.2.0)"]
+tests = ["Flask-Mongoengine (>=0.9.5)", "peewee (>=3.11.2)", "Flask-SQLAlchemy (>=2.3)", "argon2-cffi (>=19.1.0)", "bcrypt (>=3.1.5)", "cachetools (>=3.1.0)", "check-manifest (>=0.25)", "coverage (>=4.5.4)", "cryptography (>=2.3.1)", "isort (>=4.2.2)", "mock (>=1.3.0)", "mongoengine (>=0.15.3)", "mongomock (>=3.14.0)", "msgcheck (>=2.9)", "pony (>=0.7.11)", "phonenumberslite (>=8.11.1)", "psycopg2 (>=2.8.4)", "pydocstyle (>=1.0.0)", "pymysql (>=0.9.3)", "pyqrcode (>=1.2)", "pytest (4.6.11)", "pytest-black (>=0.3.8)", "pytest-cache (>=1.0)", "pytest-cov (>=2.5.1)", "pytest-flake8 (>=1.0.6)", "pytest-mongo (>=1.2.1)", "pytest (>=3.5.1)", "sqlalchemy (>=1.2.6)", "sqlalchemy-utils (>=0.33.0)", "werkzeug (>=0.15.5)", "zxcvbn (>=4.4.28,<4.5.0)"]
 
 [[package]]
 name = "flask-wtf"
@@ -610,19 +594,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
-name = "pyjwt"
-version = "1.7.1"
-description = "JSON Web Token implementation in Python"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.extras]
-crypto = ["cryptography (>=1.4)"]
-flake8 = ["flake8", "flake8-import-order", "pep8-naming"]
-test = ["pytest (>=4.0.1,<5.0.0)", "pytest-cov (>=2.6.0,<3.0.0)", "pytest-runner (>=4.2,<5.0.0)"]
-
-[[package]]
 name = "pylint"
 version = "2.6.0"
 description = "python code static checker"
@@ -852,7 +823,7 @@ locale = ["Babel (>=1.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "8b8ef16efc44e8e5d291d3a3d568cb1e665f351bf8519735f7a3c21d438d872a"
+content-hash = "35823b72a2aebb472351b1130ec2d8afce160316bb07a543b07c810b0388ebba"
 
 [metadata.files]
 appdirs = [
@@ -1015,9 +986,6 @@ flask-injector = [
     {file = "Flask-Injector-0.12.3.tar.gz", hash = "sha256:82f5bf1245f6fbdbd19eeea4289fe35a3417a8ce05f710847a2f96b771a8085c"},
     {file = "Flask_Injector-0.12.3-py2.py3-none-any.whl", hash = "sha256:d0a5449b7d5f67f259a97e27dfb1111b48cfa418bce29d01c3beaa3493e248e4"},
 ]
-flask-jwt-extended = [
-    {file = "Flask-JWT-Extended-3.24.1.tar.gz", hash = "sha256:0aa8ee6fa7eb3be9314e39dd199ac8e19389a95371f9d54e155c7aa635e319dd"},
-]
 flask-login = [
     {file = "Flask-Login-0.4.1.tar.gz", hash = "sha256:c815c1ac7b3e35e2081685e389a665f2c74d7e077cb93cecabaea352da4752ec"},
 ]
@@ -1027,9 +995,9 @@ flask-mail = [
 flask-principal = [
     {file = "Flask-Principal-0.4.0.tar.gz", hash = "sha256:f5d6134b5caebfdbb86f32d56d18ee44b080876a27269560a96ea35f75c99453"},
 ]
-flask-security = [
-    {file = "Flask-Security-3.0.0.tar.gz", hash = "sha256:d61daa5f5a48f89f30f50555872bdf581b2c65804668b0313345cd7beff26432"},
-    {file = "Flask_Security-3.0.0-py2.py3-none-any.whl", hash = "sha256:ef837c03558db41335c8dabd16ae4977af0a5ef0c2cdecf738e33ef5202ce489"},
+flask-security-too = [
+    {file = "Flask-Security-Too-3.4.4.tar.gz", hash = "sha256:3c52b0e0c8453a012122aad102041fd71bd1ea025f5154bbfb1d20b4c6a4477e"},
+    {file = "Flask_Security_Too-3.4.4-py2.py3-none-any.whl", hash = "sha256:12cecf666e5e76d59e079976c1348de3158579196ec65ac47f450dc5bc0020b2"},
 ]
 flask-wtf = [
     {file = "Flask-WTF-0.14.3.tar.gz", hash = "sha256:d417e3a0008b5ba583da1763e4db0f55a1269d9dd91dcc3eb3c026d3c5dbd720"},
@@ -1225,10 +1193,6 @@ pycparser = [
 pyflakes = [
     {file = "pyflakes-2.2.0-py2.py3-none-any.whl", hash = "sha256:0d94e0e05a19e57a99444b6ddcf9a6eb2e5c68d3ca1e98e90707af8152c90a92"},
     {file = "pyflakes-2.2.0.tar.gz", hash = "sha256:35b2d75ee967ea93b55750aa9edbbf72813e06a66ba54438df2cfac9e3c27fc8"},
-]
-pyjwt = [
-    {file = "PyJWT-1.7.1-py2.py3-none-any.whl", hash = "sha256:5c6eca3c2940464d106b99ba83b00c6add741c9becaec087fb7ccdefea71350e"},
-    {file = "PyJWT-1.7.1.tar.gz", hash = "sha256:8d59a976fb773f3e6a39c85636357c4f0e242707394cadadd9814f5cbaa20e96"},
 ]
 pylint = [
     {file = "pylint-2.6.0-py3-none-any.whl", hash = "sha256:bfe68f020f8a0fece830a22dd4d5dddb4ecc6137db04face4c3420a46a52239f"},
