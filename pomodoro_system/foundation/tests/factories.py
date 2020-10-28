@@ -71,6 +71,6 @@ class ORMUserFactory(PonyFactory):
     id = factory.LazyFunction(uuid.uuid4)
     confirmed_at = factory.LazyFunction(datetime.now)
     email = factory.Faker("email")
-    password = factory.Faker("password", length=36, special_chars=True, digits=True, upper_case=True, lower_case=True)
+    password = "Zaq1@WSXcde3$RFV"
     date_frame_definition = None
     active = True
