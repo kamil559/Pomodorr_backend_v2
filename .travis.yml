@@ -7,7 +7,8 @@ install:
   - pip install poetry==1.1.0
   - pip install codecov==2.1.10
   - make install_dev
-after_success: codecov --token=${CODECOV_TOKEN}
+after_success:
+  - make generate_coverage_xml
+  - codecov --token=${CODECOV_TOKEN}
 script:
   - make check_linting
-  - make generate_coverage_xml
