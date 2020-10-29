@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytz
 from flask import Response
-from flask_apispec import doc, marshal_with
+from flask_apispec import doc, marshal_with, use_kwargs
 from flask_login import current_user
 from flask_security import auth_token_required
 from pomodoros import (
@@ -21,12 +21,13 @@ from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
 from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
 from web_app.utils import RegistrableBlueprint, get_dto_or_abort
+from webargs import fields
 
 tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 
 
 @doc(
-    description="Endpoint which takes the task id (UUID string) and marks it as completed.",
+    description="Takes the task id (UUID string) and marks it as completed.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("tasks",),
 )
@@ -51,7 +52,7 @@ def complete_task(
 
 
 @doc(
-    description="Endpoint which takes the task id (UUID string) and marks it as active.",
+    description="Takes the task id (UUID string) and marks it as active.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("tasks",),
 )
@@ -73,11 +74,12 @@ def reactivate_task(
 
 
 @doc(
-    description="Endpoint which takes the task id (UUID string) pins it to the new project.",
+    description="Takes the task id (UUID string) pins it to the new project.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("tasks",),
 )
 @marshal_with(PinTaskToProjectSchema, 200)
+@use_kwargs({"new_project_id": fields.UUID(required=True)})
 @tasks_blueprint.route("/<uuid:task_id>/pin", methods=["PATCH"])
 @auth_token_required
 def pin_task_to_project(

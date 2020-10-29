@@ -11,6 +11,7 @@ from foundation.models import db
 from main import initialize_application
 from pony.flask import Pony
 
+from .authentication.docs import auth_api_definitions
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb
@@ -28,6 +29,14 @@ def register_doc(app: Flask) -> None:
         plugins=[MarshmallowPlugin()],
     )
     app.config["APISPEC_SPEC"] = api_spec
+
+    api_spec.path(**auth_api_definitions["login"]).path(**auth_api_definitions["logout"]).path(
+        **auth_api_definitions["register"]
+    ).path(**auth_api_definitions["confirm"]).path(**auth_api_definitions["reset_password"]).path(
+        **auth_api_definitions["set_new_password"]
+    ).path(
+        **auth_api_definitions["change_password"]
+    )
 
     spec = FlaskApiSpec(app)
     for blueprint_name, blueprint in app.blueprints.items():
@@ -64,8 +73,10 @@ def create_app() -> Flask:
         SECURITY_LOGIN_SALT=os.getenv("SECURITY_LOGIN_SALT"),
         SECURITY_PASSWORD_SALT=os.getenv("SECURITY_PASSWORD_SALT"),
         SECURITY_EMAIL_SENDER=os.getenv("SECURITY_EMAIL_SENDER"),
-        WTF_CSRF_ENABLED=bool(int(os.getenv("WTF_CSRF_ENABLED"))),
+        WTF_CSRF_ENABLED=False,
+        SECURITY_CSRF_PROTECT_MECHANISMS=[],
         SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS=True,
+        WTF_CSRF_CHECK_DEFAULT=False,
         # Flask-mail configurations
         MAIL_SERVER=os.getenv("MAIL_SERVER"),
         MAIL_PORT=os.getenv("MAIL_PORT"),

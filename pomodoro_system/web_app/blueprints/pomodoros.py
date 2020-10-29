@@ -35,7 +35,7 @@ pomodoros_blueprint = RegistrableBlueprint("pomodoros", __name__, url_prefix="/p
 
 
 @doc(
-    description="Endpoint which takes the task id (UUID string) and starts a pomodoro upon the task.",
+    description="Takes the task id (UUID string) and starts a pomodoro upon the task.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("pomodoros",),
 )
@@ -59,7 +59,7 @@ def begin_pomodoro(
 
 
 @doc(
-    description="Endpoint which takes the current pomodoro's id (UUID string) and pauses it.",
+    description="Takes the current pomodoro's id (UUID string) and pauses it.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("pomodoros",),
 )
@@ -83,7 +83,7 @@ def pause_pomodoro(
 
 
 @doc(
-    description="Endpoint which takes the paused pomodoro's id (UUID string) and resumes it.",
+    description="Takes the paused pomodoro's id (UUID string) and resumes it.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("pomodoros",),
 )
@@ -107,7 +107,7 @@ def resume_pomodoro(
 
 
 @doc(
-    description="Endpoint which takes the current pomodoro's id (UUID string) and finishes it.",
+    description="Takes the current pomodoro's id (UUID string) and finishes it.",
     params={"Authorization": {"in": "header", "type": "string", "required": True}},
     tags=("pomodoros",),
 )
