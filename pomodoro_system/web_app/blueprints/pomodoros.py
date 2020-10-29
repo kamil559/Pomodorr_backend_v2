@@ -1,7 +1,8 @@
 from datetime import datetime
 
 import pytz
-from flask import Blueprint, Response
+from flask import Response
+from flask_apispec import doc, marshal_with
 from flask_login import current_user
 from flask_security import auth_token_required
 from pomodoros import (
@@ -28,11 +29,17 @@ from web_app.serializers.pomodoros import (
     PausePomodoroSchema,
     ResumePomodoroSchema,
 )
-from web_app.utils import get_dto_or_abort
+from web_app.utils import RegistrableBlueprint, get_dto_or_abort
 
-pomodoros_blueprint = Blueprint("pomodoros", __name__, url_prefix="/pomodoros")
+pomodoros_blueprint = RegistrableBlueprint("pomodoros", __name__, url_prefix="/pomodoros")
 
 
+@doc(
+    description="Endpoint which takes the task id (UUID string) and starts a pomodoro upon the task.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("pomodoros",),
+)
+@marshal_with(BeginPomodoroSchema, 201)
 @pomodoros_blueprint.route("/<uuid:task_id>/begin", methods=["POST"])
 @auth_token_required
 def begin_pomodoro(
@@ -51,6 +58,12 @@ def begin_pomodoro(
     return presenter.response
 
 
+@doc(
+    description="Endpoint which takes the current pomodoro's id (UUID string) and pauses it.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("pomodoros",),
+)
+@marshal_with(PausePomodoroSchema, 200)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/pause", methods=["POST"])
 @auth_token_required
 def pause_pomodoro(
@@ -69,6 +82,12 @@ def pause_pomodoro(
     return presenter.response
 
 
+@doc(
+    description="Endpoint which takes the paused pomodoro's id (UUID string) and resumes it.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("pomodoros",),
+)
+@marshal_with(ResumePomodoroSchema, 200)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/resume", methods=["POST"])
 @auth_token_required
 def resume_pomodoro(
@@ -87,6 +106,12 @@ def resume_pomodoro(
     return presenter.response
 
 
+@doc(
+    description="Endpoint which takes the current pomodoro's id (UUID string) and finishes it.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("pomodoros",),
+)
+@marshal_with(FinishPomodoroSchema(exclude=("owner_id",)), 200)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/finish", methods=["PATCH"])
 @auth_token_required
 def finish_pomodoro(

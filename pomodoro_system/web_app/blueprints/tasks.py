@@ -1,7 +1,8 @@
 from datetime import datetime
 
 import pytz
-from flask import Blueprint, Response
+from flask import Response
+from flask_apispec import doc, marshal_with
 from flask_login import current_user
 from flask_security import auth_token_required
 from pomodoros import (
@@ -19,11 +20,17 @@ from pomodoros import (
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
 from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
-from web_app.utils import get_dto_or_abort
+from web_app.utils import RegistrableBlueprint, get_dto_or_abort
 
-tasks_blueprint = Blueprint("tasks", __name__, url_prefix="/tasks")
+tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 
 
+@doc(
+    description="Endpoint which takes the task id (UUID string) and marks it as completed.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("tasks",),
+)
+@marshal_with(CompleteTaskSchema, 200, description="{new_task_id} is returned only if a repeatable task was completed.")
 @tasks_blueprint.route("/<uuid:task_id>/complete", methods=["PATCH"])
 @auth_token_required
 def complete_task(
@@ -43,6 +50,12 @@ def complete_task(
     return presenter.response
 
 
+@doc(
+    description="Endpoint which takes the task id (UUID string) and marks it as active.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("tasks",),
+)
+@marshal_with(ReactivateTaskSchema, 200)
 @tasks_blueprint.route("/<uuid:task_id>/reactivate", methods=["PATCH"])
 @auth_token_required
 def reactivate_task(
@@ -59,6 +72,12 @@ def reactivate_task(
     return presenter.response
 
 
+@doc(
+    description="Endpoint which takes the task id (UUID string) pins it to the new project.",
+    params={"Authorization": {"in": "header", "type": "string", "required": True}},
+    tags=("tasks",),
+)
+@marshal_with(PinTaskToProjectSchema, 200)
 @tasks_blueprint.route("/<uuid:task_id>/pin", methods=["PATCH"])
 @auth_token_required
 def pin_task_to_project(

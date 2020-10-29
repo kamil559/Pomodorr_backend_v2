@@ -1,6 +1,9 @@
 import os
 
+from apispec import APISpec
+from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Flask
+from flask_apispec import FlaskApiSpec
 from flask_injector import FlaskInjector
 from flask_mail import Mail
 from flask_security import Security
@@ -12,6 +15,27 @@ from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb
 from .security import PonyORMUserDatastore
+
+
+def register_doc(app: Flask) -> None:
+    api_spec = APISpec(
+        title="Pomodoro App",
+        version="0.1.0",
+        openapi_version="2.0",
+        info={
+            "description": "The API documentation contains user-specific methods and authentication-related endpoints"
+        },
+        plugins=[MarshmallowPlugin()],
+    )
+    app.config["APISPEC_SPEC"] = api_spec
+
+    spec = FlaskApiSpec(app)
+    for blueprint_name, blueprint in app.blueprints.items():
+        if not hasattr(blueprint, "view_functions"):
+            continue
+
+        for view in blueprint.view_functions:
+            spec.register(view, blueprint=blueprint_name)
 
 
 def create_app() -> Flask:
@@ -56,6 +80,8 @@ def create_app() -> Flask:
 
     flask_app.register_blueprint(pomodoros_blueprint)
     flask_app.register_blueprint(tasks_blueprint)
+
+    register_doc(flask_app)
 
     FlaskInjector(flask_app, modules=[PomodorosWeb()], injector=pomodoro_app_context.injector)
 
