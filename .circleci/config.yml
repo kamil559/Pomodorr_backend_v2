@@ -10,8 +10,11 @@ jobs:
           - keys:
               - deps-{{ checksum "poetry.lock" }}
       - run:
+          name: Install codecov
+          command: poetry add codecov==2.1.10
+      - run:
           name: Install dependencies
-          command: poetry install codecov==2.1.10 && poetry install
+          command: poetry install
       - save_cache:
           key: deps-{{ checksum "poetry.lock" }}
           paths:
