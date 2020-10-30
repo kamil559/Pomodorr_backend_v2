@@ -41,11 +41,16 @@ def setup_database(database_settings: dict) -> None:
         db.generate_mapping(create_tables=True, check_tables=True)
 
 
+def load_env_variables():
+    if not os.getenv("EXTERNAL_BUILD", False):
+        load_dotenv(dotenv_path=get_config_file_path("APPLICATION_CONFIG"), override=True)
+        load_dotenv(dotenv_path=get_config_file_path("DB_CONFIG"), override=True)
+        load_dotenv(dotenv_path=get_config_file_path("SECURITY_CONFIG"), override=True)
+        load_dotenv(dotenv_path=get_config_file_path("MAIL_CONFIG"), override=True)
+
+
 def initialize_application() -> Application:
-    load_dotenv(dotenv_path=get_config_file_path("APPLICATION_CONFIG"), override=True)
-    load_dotenv(dotenv_path=get_config_file_path("DB_CONFIG"), override=True)
-    load_dotenv(dotenv_path=get_config_file_path("SECURITY_CONFIG"), override=True)
-    load_dotenv(dotenv_path=get_config_file_path("MAIL_CONFIG"), override=True)
+    load_env_variables()
 
     settings = {
         "testing": bool(int(os.getenv("TESTING", False))),
