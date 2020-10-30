@@ -11,13 +11,13 @@ freeze_dependencies:
 	poetry export --dev --without-hashes -o requirements/dev.txt
 
 
-.PHONY: generate_coverage_html
-generate_coverage_html:
+.PHONY: test_with_html_coverage
+test_with_html_coverage:
 	pytest --cov-report=html:coverage_html --cov=./
 
 
-.PHONY: generate_coverage_xml
-generate_coverage_xml:
+.PHONY: test_with_xml_coverage
+test_with_xml_coverage:
 	pytest --cov-report=xml:coverage_xml --cov=./
 
 
