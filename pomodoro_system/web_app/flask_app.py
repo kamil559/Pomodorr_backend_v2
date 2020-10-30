@@ -8,6 +8,7 @@ from flask_injector import FlaskInjector
 from flask_mail import Mail
 from flask_security import Security
 from foundation.models import db
+from injector import Injector
 from main import initialize_application
 from pony.flask import Pony
 
@@ -16,6 +17,30 @@ from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb
 from .security import PonyORMUserDatastore
+from .settings_loader import (
+    FlaskLocalSettingsLoader,
+    FlaskProductionSettingsLoader,
+    FlaskStagingSettingsLoader,
+    FlaskTestingSettingsLoader,
+)
+
+
+def load_flask_app_settings(existing_settings: dict) -> dict:
+    if existing_settings["testing"]:
+        setup_strategy = FlaskTestingSettingsLoader()
+    elif existing_settings["debug"]:
+        setup_strategy = FlaskLocalSettingsLoader()
+    elif existing_settings["staging"]:
+        setup_strategy = FlaskStagingSettingsLoader()
+    else:
+        setup_strategy = FlaskProductionSettingsLoader()
+    setup_strategy.setup()
+    return setup_strategy.settings_mapping
+
+
+def register_blueprints(app: Flask) -> None:
+    app.register_blueprint(pomodoros_blueprint)
+    app.register_blueprint(tasks_blueprint)
 
 
 def register_doc(app: Flask) -> None:
@@ -47,6 +72,10 @@ def register_doc(app: Flask) -> None:
             spec.register(view, blueprint=blueprint_name)
 
 
+def inject_dependencies(app: Flask, injector: Injector) -> None:
+    FlaskInjector(app, modules=[PomodorosWeb()], injector=injector)
+
+
 def create_app() -> Flask:
     flask_app = Flask(__name__)
     pomodoro_app_context = initialize_application()
@@ -54,47 +83,29 @@ def create_app() -> Flask:
     flask_app.config.update(
         DEBUG=pomodoro_app_context.settings["debug"],
         TESTING=pomodoro_app_context.settings["testing"],
+        STAGING=pomodoro_app_context.settings["staging"],
         SECRET_KEY=os.getenv("SECRET_KEY"),
-        # Flask-jwt-extended configuration
-        JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY"),
-        # Flask-security configuration
-        SECURITY_TOKEN_AUTHENTICATION_HEADER=os.getenv("SECURITY_TOKEN_AUTHENTICATION_HEADER"),
-        SECURITY_REGISTERABLE=bool(int(os.getenv("SECURITY_REGISTERABLE"))),
-        SECURITY_SEND_REGISTER_EMAIL=bool(int(os.getenv("SECURITY_SEND_REGISTER_EMAIL"))),
-        SECURITY_CONFIRMABLE=bool(int(os.getenv("SECURITY_CONFIRMABLE"))),
-        SECURITY_CHANGEABLE=bool(int(os.getenv("SECURITY_CHANGEABLE"))),
-        SECURITY_RECOVERABLE=bool(int(os.getenv("SECURITY_RECOVERABLE"))),
-        SECURITY_LOGIN_WITHOUT_CONFIRMATION=bool(int(os.getenv("SECURITY_LOGIN_WITHOUT_CONFIRMATION"))),
-        SECURITY_CONFIRM_EMAIL_WITHIN=os.getenv("SECURITY_CONFIRM_EMAIL_WITHIN"),
-        SECURITY_RESET_PASSWORD_WITHIN=os.getenv("SECURITY_RESET_PASSWORD_WITHIN"),
-        SECURITY_EMAIL_SUBJECT_REGISTER=os.getenv("SECURITY_EMAIL_SUBJECT_REGISTER"),
-        SECURITY_CONFIRM_SALT=os.getenv("SECURITY_CONFIRM_SALT"),
-        SECURITY_RESET_SALT=os.getenv("SECURITY_RESET_SALT"),
-        SECURITY_LOGIN_SALT=os.getenv("SECURITY_LOGIN_SALT"),
-        SECURITY_PASSWORD_SALT=os.getenv("SECURITY_PASSWORD_SALT"),
-        SECURITY_EMAIL_SENDER=os.getenv("SECURITY_EMAIL_SENDER"),
+        # Flask-security base configuration
+        SECURITY_REGISTERABLE=True,
+        SECURITY_SEND_REGISTER_EMAIL=True,
+        SECURITY_CONFIRMABLE=True,
+        SECURITY_CHANGEABLE=True,
+        SECURITY_RECOVERABLE=True,
         WTF_CSRF_ENABLED=False,
+        SECURITY_LOGIN_WITHOUT_CONFIRMATION=False,
         SECURITY_CSRF_PROTECT_MECHANISMS=[],
         SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS=True,
         WTF_CSRF_CHECK_DEFAULT=False,
-        # Flask-mail configurations
-        MAIL_SERVER=os.getenv("MAIL_SERVER"),
-        MAIL_PORT=os.getenv("MAIL_PORT"),
-        MAIL_USE_TLS=bool(int(os.getenv("MAIL_USE_TLS"))),
-        MAIL_USE_SSL=bool(int(os.getenv("MAIL_USE_SSL"))),
-        MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-        MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-        MAIL_DEFAULT_SENDER=os.getenv("MAIL_DEFAULT_SENDER"),
-        MAIL_MAX_EMAILS=os.getenv("MAIL_MAX_EMAILS"),
-        MAIL_ASCII_ATTACHMENTS=bool(int(os.getenv("MAIL_ASCII_ATTACHMENTS"))),
     )
 
-    flask_app.register_blueprint(pomodoros_blueprint)
-    flask_app.register_blueprint(tasks_blueprint)
+    additional_settings = load_flask_app_settings(pomodoro_app_context.settings)
+    flask_app.config.update(additional_settings["security"])
+    flask_app.config.update(additional_settings["mail"])
 
-    register_doc(flask_app)
+    register_blueprints(flask_app)
+    register_doc(flask_app)  # Needs to be done after registering the blueprints
 
-    FlaskInjector(flask_app, modules=[PomodorosWeb()], injector=pomodoro_app_context.injector)
+    inject_dependencies(flask_app, pomodoro_app_context.injector)
 
     Pony(flask_app)
 

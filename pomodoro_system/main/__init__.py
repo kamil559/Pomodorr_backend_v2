@@ -3,9 +3,9 @@ from dataclasses import dataclass
 
 import injector
 from dotenv import load_dotenv
-from foundation.interfaces import AppSetupStrategy
 from foundation.models import db
 from foundation.utils import get_config_file_path
+from main.settings_loader import LocalSetupStrategy, ProductionSetupStrategy, StagingSetupStrategy, TestingSetupStrategy
 from pomodoros import Pomodoros
 from pomodoros_infrastructure import PomodorosInfrastructure
 
@@ -16,58 +16,21 @@ class Application:
     injector: injector.Injector
 
 
-class TestingSetupStrategy(AppSetupStrategy):
-    def load_settings(self) -> None:
-        self.settings_mapping = {
-            "database": {
-                "provider": os.getenv("DB_PROVIDER"),
-                "filename": os.getenv("DB_FILENAME"),  # optional (in case of running sqlite3 DB)
-            }
-        }
-
-    def setup(self) -> None:
-        self.load_settings()
-
-
-class LocalSetupStrategy(AppSetupStrategy):
-    def load_settings(self) -> None:
-        self.settings_mapping = {
-            "database": {
-                "provider": os.getenv("DB_PROVIDER"),
-                "host": os.getenv("DB_HOST"),
-                "port": os.getenv("DB_PORT"),
-                "user": os.getenv("DB_USER"),
-                "password": os.getenv("DB_PASSWORD"),
-                "database": os.getenv("DB_NAME"),
-            }
-        }
-
-    def setup(self) -> None:
-        self.load_settings()
-
-
-class ProductionSetupStrategy(AppSetupStrategy):
-    def load_settings(self) -> None:
-        raise NotImplementedError
-
-    def setup(self) -> None:
-        #  postponed until the production setup comes in
-        raise NotImplementedError
-
-
-def _setup_dependencies() -> injector.Injector:
+def inject_dependencies() -> injector.Injector:
     return injector.Injector([Pomodoros(), PomodorosInfrastructure()], auto_bind=False)
 
 
 def load_app_settings(settings: dict) -> dict:
     if settings["testing"]:
-        setup = TestingSetupStrategy()
+        setup_strategy = TestingSetupStrategy()
     elif settings["debug"]:
-        setup = LocalSetupStrategy()
+        setup_strategy = LocalSetupStrategy()
+    elif settings["debug"]:
+        setup_strategy = StagingSetupStrategy()
     else:
-        setup = ProductionSetupStrategy()
-    setup.setup()
-    return setup.settings_mapping
+        setup_strategy = ProductionSetupStrategy()
+    setup_strategy.setup()
+    return setup_strategy.settings_mapping
 
 
 def setup_database(database_settings: dict) -> None:
@@ -87,9 +50,10 @@ def initialize_application() -> Application:
     settings = {
         "testing": bool(int(os.getenv("TESTING", False))),
         "debug": bool(int(os.getenv("DEBUG", False))),
+        "staging": bool(int(os.getenv("STAGING", False))),
     }
 
-    dependency_injector = _setup_dependencies()
+    dependency_injector = inject_dependencies()
 
     additional_settings = load_app_settings(settings)
     settings.update(additional_settings)

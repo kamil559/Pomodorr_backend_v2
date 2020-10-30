@@ -23,16 +23,16 @@ generate_coverage_xml:
 
 .PHONY: run_linters
 run_linters:
-	flake8 ./
 	black ./
 	isort ./
+	flake8 ./
 
 
 .PHONY: check_linting
 check_linting:
-	flake8 ./
 	black ./ --check
 	isort ./ --check-only
+	flake8 ./
 
 
 .PHONY: install_git_hooks
