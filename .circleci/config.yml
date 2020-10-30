@@ -25,7 +25,7 @@ jobs:
             poetry run isort ./ --check-only
             poetry run flake8 ./
       - run:
-          command: codecov --token=$CODECOV_TOKEN
+          command: poetry run codecov --token=$CODECOV_TOKEN
 
 workflows:
   version: 2
