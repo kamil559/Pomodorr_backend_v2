@@ -9,18 +9,21 @@ jobs:
       - restore_cache:
           key: deps-{{ checksum "poetry.lock" }}
       - run:
-          name: Install codecov
-          command: poetry add codecov==2.1.10
-      - run:
           name: Install dependencies
-          command: poetry install
+          command: |
+            poetry add codecov==2.1.10
+            poetry install
       - save_cache:
           key: deps-{{ checksum "poetry.lock" }}
           paths:
             - /home/circleci/.cache/pypoetry/virtualenvs
       - run:
           name: Run test suite and linting validation
-          command: make test_with_xml_coverage && make check_linting
+          command: |
+            poetry run pytest --cov-report=html:coverage_html --cov=./
+            poetry run black ./ --check
+            poetry run isort ./ --check-only
+            poetry run flake8 ./
       - run:
           command: codecov --token=$CODECOV_TOKEN
 
