@@ -57,7 +57,6 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
 
         self.task_repository.save(task)
         self.task_repository.save(new_task, create=True)
-        # todo: new_task's sub_tasks keep the task_id references pointing to the old task
 
         output_dto = CompleteTaskOutputDto(id=task.id, status=task.status, new_task_id=new_task.id)
         return output_dto
