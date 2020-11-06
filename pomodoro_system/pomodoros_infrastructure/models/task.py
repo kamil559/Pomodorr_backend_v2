@@ -26,7 +26,7 @@ class TaskModel(db.Entity):
     renewal_interval = Optional(timedelta)
     note = Optional(LongStr, lazy=False)
     created_at = Required(datetime)
-    sub_tasks = Set(lambda: SubTaskModel)
+    sub_tasks = Set(lambda: SubTaskModel, cascade_delete=True)
 
 
 class SubTaskModel(db.Entity):
@@ -35,5 +35,5 @@ class SubTaskModel(db.Entity):
     id = PrimaryKey(uuid.UUID, auto=False)
     name = Required(str, max_len=128)
     task = Required(TaskModel)
-    created_at = Required(datetime)
+    ordering = Required(int)
     is_completed = Required(bool)

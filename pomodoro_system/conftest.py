@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import pytest
 from foundation.models import User, db
 from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
@@ -52,3 +54,9 @@ def orm_second_project(project_owner: User) -> ProjectModel:
 def orm_task(orm_project: ProjectModel) -> TaskModel:
     with db_session:
         return ORMTaskFactory(project_id=orm_project.id)
+
+
+@pytest.fixture()
+def orm_task_for_yesterday():
+    with db_session:
+        return ORMTaskFactory(due_date=datetime.now() - timedelta(days=1))

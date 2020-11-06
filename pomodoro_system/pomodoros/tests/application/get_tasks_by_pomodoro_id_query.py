@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from pomodoros.application.queries.tasks import GetTasksByProjectId, TaskDto
+from pomodoros.application.queries.tasks import GetTasksByProjectId, QueryTaskDto
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import ProjectId
 
@@ -13,10 +13,10 @@ class GetTasksByProjectIdStub(GetTasksByProjectId):
             self._rows = []
 
     @staticmethod
-    def _to_task_dto(task: Task) -> TaskDto:
-        return TaskDto(task.id, task.name, task.status, task.project_id)
+    def _to_task_dto(task: Task) -> QueryTaskDto:
+        return QueryTaskDto(task.id, task.name, task.status, task.project_id)
 
-    def query(self, project_id: ProjectId) -> Optional[List[TaskDto]]:
+    def query(self, project_id: ProjectId) -> Optional[List[QueryTaskDto]]:
         return list(
             map(
                 lambda task: self._to_task_dto(task),

@@ -1,7 +1,7 @@
 import injector
 from foundation.application.repositories.user import UserRepository
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
-from pomodoros.application.queries.tasks import GetTasksByProjectId, TaskDto
+from pomodoros.application.queries.tasks import GetTasksByProjectId, QueryTaskDto
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.projects import ProjectRepository
@@ -100,7 +100,7 @@ __all__ = [
     "GetRecentPomodoros",
     "GetTasksByProjectId",
     # queries dtos
-    "TaskDto",
+    "QueryTaskDto",
 ]
 
 

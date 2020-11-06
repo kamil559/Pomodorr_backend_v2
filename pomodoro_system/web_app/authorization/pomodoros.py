@@ -1,3 +1,4 @@
+import http
 import uuid
 
 from flask import abort
@@ -14,4 +15,4 @@ class PomodoroProtector(ResourceProtector):
         owner_id = select(project.owner_id for project in ProjectModel if project.id == project_id_query.get()).get()
 
         if requester_id != owner_id:
-            abort(403)
+            abort(http.HTTPStatus.FORBIDDEN)

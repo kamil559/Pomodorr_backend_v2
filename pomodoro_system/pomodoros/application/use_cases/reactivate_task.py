@@ -41,6 +41,8 @@ class ReactivateTask:
     def execute(self, input_dto: ReactivateTaskInputDto) -> None:
         task = self.tasks_repository.get(input_dto.id)
         task_project_tasks_collection = self.get_tasks_by_pomodoro_id_query.query(task.project_id)
+        # todo: only tasks for the most recent due date have to be validated (if the task list for current due
+        #  date already contains the same task, then the validation must fail)
 
         task.reactivate(task_project_tasks_collection)
         self.tasks_repository.save(task)

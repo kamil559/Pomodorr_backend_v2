@@ -11,6 +11,15 @@ class AbstractUser:
     date_frame_definition: DateFrameDefinition
 
 
+@dataclass
+class Paginator:
+    page: int
+    page_size: int = 10
+
+    def is_usable(self) -> bool:
+        return (self.page_size is not None and self.page is not None) and self.page > 0
+
+
 class ResourceProtector(ABC):
     @abstractmethod
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:

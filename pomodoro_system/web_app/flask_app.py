@@ -12,10 +12,10 @@ from injector import Injector
 from main import initialize_application
 from pony.flask import Pony
 
-from .authentication.docs import auth_api_definitions
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb
+from .docs_definitions.auth import auth_api_definitions
 from .security import PonyORMUserDatastore
 from .settings_loader import (
     FlaskLocalSettingsLoader,
@@ -68,8 +68,13 @@ def register_doc(app: Flask) -> None:
         if not hasattr(blueprint, "view_functions"):
             continue
 
-        for view in blueprint.view_functions:
-            spec.register(view, blueprint=blueprint_name)
+        for view, endpoint, injector_bindings in blueprint.view_functions:
+            if injector_bindings:
+                spec.register(
+                    view, blueprint=blueprint_name, endpoint=endpoint, resource_class_kwargs=injector_bindings
+                )
+            else:
+                spec.register(view, blueprint=blueprint_name, endpoint=endpoint)
 
 
 def inject_dependencies(app: Flask, injector: Injector) -> None:
@@ -105,7 +110,7 @@ def create_app() -> Flask:
     register_blueprints(flask_app)
     register_doc(flask_app)  # Needs to be done after registering the blueprints
 
-    inject_dependencies(flask_app, pomodoro_app_context.injector)
+    inject_dependencies(flask_app, pomodoro_app_context.injector)  # Needs to be injected after the blueprints are set
 
     Pony(flask_app)
 

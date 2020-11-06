@@ -1,3 +1,5 @@
+auth_header_definition = {"Authorization": {"in": "header", "type": "string", "required": True}}
+
 auth_api_definitions = {
     "login": {
         "path": "/login?include_auth_token=1",

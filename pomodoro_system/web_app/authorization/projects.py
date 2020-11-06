@@ -1,3 +1,4 @@
+import http
 import uuid
 
 from flask import abort
@@ -9,7 +10,12 @@ from pony.orm import select
 
 class ProjectProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
-        owner_id = select(project.owner_id for project in ProjectModel if project.id == resource_id).get()
+        project_id, owner_id = select(
+            (project.id, project.owner_id) for project in ProjectModel if project.id == resource_id
+        ).get()
+
+        if project_id is None:
+            abort(http.HTTPStatus.NOT_FOUND)
 
         if requester_id != owner_id:
-            abort(403)
+            abort(http.HTTPStatus.FORBIDDEN)

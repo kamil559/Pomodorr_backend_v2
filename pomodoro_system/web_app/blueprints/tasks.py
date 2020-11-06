@@ -1,37 +1,166 @@
+import http
 from datetime import datetime
+from typing import Optional
 
 import pytz
-from flask import Response
+from flask import Response, jsonify, make_response, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_login import current_user
 from flask_security import auth_token_required
+from foundation.interfaces import Paginator
+from marshmallow import ValidationError
 from pomodoros import (
     CompleteTask,
     CompleteTaskInputDto,
     CompleteTaskOutputBoundary,
+    GetTasksByProjectId,
     PinTaskToProject,
     PinTaskToProjectInputDto,
     PinTaskToProjectOutputBoundary,
+    ProjectId,
     ReactivateTask,
     ReactivateTaskInputDto,
     ReactivateTaskOutputBoundary,
     TaskId,
+    TaskRepository,
 )
+from pomodoros.application.queries.tasks import GetRecentTasksByProjectId
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
-from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
-from web_app.utils import RegistrableBlueprint, get_dto_or_abort
-from webargs import fields
+from web_app.docs_definitions.auth import auth_header_definition
+from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema, TaskRestSchema
+from web_app.utils import RegistrableBlueprint, get_dto_or_abort, load_int_query_parameter
 
 tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 
 
 @doc(
-    description="Takes the task id (UUID string) and marks it as completed.",
-    params={"Authorization": {"in": "header", "type": "string", "required": True}},
-    tags=("tasks",),
+    description="Get task with specified task_id.",
+    params={**auth_header_definition},
+    tags=(tasks_blueprint.name,),
 )
-@marshal_with(CompleteTaskSchema, 200, description="{new_task_id} is returned only if a repeatable task was completed.")
+@marshal_with(TaskRestSchema(many=False), http.HTTPStatus.OK)
+@tasks_blueprint.route("/<uuid:task_id>", methods=["GET"])
+@auth_token_required
+def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: TaskProtector) -> Response:
+    task_protector.authorize(current_user.id, task_id)
+    return jsonify(TaskRestSchema(many=False).dump(task_repository.get(task_id))), http.HTTPStatus.OK
+
+
+@doc(
+    description="Get task list for a project_id specified in url.",
+    params={
+        **auth_header_definition,
+        "fetch_all": {"in": "query", "required": False},
+        "page_size": {"in": "query", "required": False},
+        "page": {"in": "query", "required": False},
+    },
+    tags=(tasks_blueprint.name,),
+)
+@marshal_with(TaskRestSchema(many=True), http.HTTPStatus.OK)
+@tasks_blueprint.route("/<uuid:project_id>/tasks", methods=["GET"])
+@auth_token_required
+def get_task_list(
+    project_id: ProjectId,
+    tasks_by_project_id_query: GetTasksByProjectId,
+    recent_tasks_by_project_id_query: GetRecentTasksByProjectId,
+):
+    fetch_all = bool(load_int_query_parameter(request.args.get("fetch_all")))
+
+    def _get_paginator() -> Optional[Paginator]:
+        page = load_int_query_parameter(request.args.get("page"))
+        page_size = load_int_query_parameter(request.args.get("page_size"))
+        prepared_paginator = Paginator(page=page, page_size=page_size or Paginator.page_size)
+
+        if prepared_paginator.is_usable():
+            return prepared_paginator
+        return None
+
+    paginator = _get_paginator()
+
+    if fetch_all:
+        result = TaskRestSchema(many=True).dump(tasks_by_project_id_query.query(project_id, paginator, True))
+    else:
+        result = TaskRestSchema(many=True).dump(recent_tasks_by_project_id_query.query(project_id, paginator, True))
+    return jsonify(result), http.HTTPStatus.OK
+
+
+@doc(
+    description="Create a new task within a project_id specified in url.",
+    params={
+        **auth_header_definition,
+    },
+    tags=(tasks_blueprint.name,),
+)
+@marshal_with(TaskRestSchema(many=False), http.HTTPStatus.CREATED)
+@use_kwargs(TaskRestSchema(many=False))
+@tasks_blueprint.route("/", methods=["POST"])
+@auth_token_required
+def create_task(project_protector: ProjectProtector, task_repository: TaskRepository):
+    try:
+        new_task = TaskRestSchema(many=False).load(request.json)
+    except ValidationError as error:
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+
+    project_protector.authorize(current_user.id, new_task.project_id)
+    task_repository.save(new_task, create=True)
+    return jsonify(TaskRestSchema(many=False).dump(new_task)), http.HTTPStatus.CREATED
+
+
+@doc(
+    description="Update the task with task_id specified in url.",
+    params={
+        **auth_header_definition,
+    },
+    tags=(tasks_blueprint.name,),
+)
+@marshal_with(TaskRestSchema(many=False, partial=True), http.HTTPStatus.OK)
+@use_kwargs(TaskRestSchema(many=False, partial=True, exclude=("project_id",)))
+@tasks_blueprint.route("/<uuid:task_id>", methods=["PATCH"])
+@auth_token_required
+def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
+    task_protector.authorize(current_user.id, task_id)
+    task = task_repository.get(task_id)
+    try:
+        updated_task = TaskRestSchema(
+            many=False, partial=True, exclude=("project_id",), context={"task_instance": task}
+        ).load(request.json)
+    except ValidationError as error:
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+    task_repository.save(updated_task)
+
+    return jsonify(TaskRestSchema(many=False).dump(updated_task)), http.HTTPStatus.OK
+
+
+@doc(
+    description="Delete the task with task_id specified in url.",
+    params={
+        **auth_header_definition,
+    },
+    tags=(tasks_blueprint.name,),
+)
+@marshal_with(
+    None, code=http.HTTPStatus.NO_CONTENT, description="The task with specified task_id in the url has been deleted."
+)
+@tasks_blueprint.route("/<uuid:task_id>", methods=["DELETE"])
+@auth_token_required
+def delete_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
+    task_protector.authorize(current_user.id, task_id)
+    task_repository.delete(task_id)
+
+    return make_response("", http.HTTPStatus.NO_CONTENT)
+
+
+@doc(
+    description="Marks the task with specified task_id complete.",
+    params={**auth_header_definition},
+    tags=(tasks_blueprint.name,),
+)
+@marshal_with(
+    CompleteTaskSchema,
+    http.HTTPStatus.OK,
+    description="{new_task_id} is returned only if a repeatable task was completed.",
+)
 @tasks_blueprint.route("/<uuid:task_id>/complete", methods=["PATCH"])
 @auth_token_required
 def complete_task(
@@ -52,11 +181,11 @@ def complete_task(
 
 
 @doc(
-    description="Takes the task id (UUID string) and marks it as active.",
-    params={"Authorization": {"in": "header", "type": "string", "required": True}},
-    tags=("tasks",),
+    description="Marks the task with specified task_id active.",
+    params={**auth_header_definition},
+    tags=(tasks_blueprint.name,),
 )
-@marshal_with(ReactivateTaskSchema, 200)
+@marshal_with(ReactivateTaskSchema, http.HTTPStatus.OK)
 @tasks_blueprint.route("/<uuid:task_id>/reactivate", methods=["PATCH"])
 @auth_token_required
 def reactivate_task(
@@ -74,12 +203,12 @@ def reactivate_task(
 
 
 @doc(
-    description="Takes the task id (UUID string) pins it to the new project.",
-    params={"Authorization": {"in": "header", "type": "string", "required": True}},
-    tags=("tasks",),
+    description="Pins the task with specified task_id to the new project.",
+    params={**auth_header_definition},
+    tags=(tasks_blueprint.name,),
 )
-@marshal_with(PinTaskToProjectSchema, 200)
-@use_kwargs({"new_project_id": fields.UUID(required=True)})
+@marshal_with(PinTaskToProjectSchema, http.HTTPStatus.OK)
+@use_kwargs(PinTaskToProjectSchema(exclude=("id",)))
 @tasks_blueprint.route("/<uuid:task_id>/pin", methods=["PATCH"])
 @auth_token_required
 def pin_task_to_project(

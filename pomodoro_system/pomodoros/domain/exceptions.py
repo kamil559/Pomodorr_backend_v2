@@ -1,6 +1,4 @@
-class ValidationError(Exception):
-    def __init__(self, message: str):
-        self.message = message
+from foundation.exceptions import ValidationError
 
 
 class InvalidProjectOwner(ValidationError):
@@ -32,14 +30,6 @@ class ProjectNameNotAvailableForUser(ValidationError):
 
 
 class CollidingPomodoroWasFound(ValidationError):
-    pass
-
-
-class FutureDateProvided(ValidationError):
-    pass
-
-
-class NaiveDateProvided(ValidationError):
     pass
 
 

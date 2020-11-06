@@ -9,3 +9,8 @@ class NotFound(RepositoryError):
 
 class AlreadyExists(RepositoryError):
     pass
+
+
+class ValidationError(Exception):
+    def __init__(self, message: str):
+        self.message = message
