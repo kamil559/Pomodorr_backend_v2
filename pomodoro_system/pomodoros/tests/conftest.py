@@ -32,6 +32,20 @@ def completed_task() -> Task:
 
 
 @pytest.fixture()
+def duplicate_active_task(completed_task):
+    return TaskFactory(name=completed_task.name, project_id=completed_task.project_id)
+
+
+@pytest.fixture()
+def duplicate_active_task_from_the_past(completed_task):
+    return TaskFactory(
+        name=completed_task.name,
+        project_id=completed_task.project_id,
+        created_at=completed_task.created_at - timedelta(days=7),
+    )
+
+
+@pytest.fixture()
 def project() -> Project:
     return ProjectFactory()
 

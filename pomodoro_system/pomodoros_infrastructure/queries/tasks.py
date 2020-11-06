@@ -51,11 +51,10 @@ class SQLGetTasksByProjectId(GetTasksByProjectId):
             sub_tasks=list(
                 map(
                     lambda sub_task: SubTask(
-                        sub_task.id,
-                        sub_task.name,
-                        sub_task.id,
-                        with_tzinfo(sub_task.created_at),
-                        sub_task.is_completed,
+                        id=sub_task.id,
+                        name=sub_task.name,
+                        ordering=sub_task.ordering,
+                        is_completed=sub_task.is_completed,
                     ),
                     task_model.sub_tasks,
                 ),
