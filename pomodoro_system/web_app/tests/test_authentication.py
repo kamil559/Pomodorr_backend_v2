@@ -17,17 +17,32 @@ def test_register(client: testing.FlaskClient, user_data: dict):
 
 def test_login(client: testing.FlaskClient, project_owner):
     response = client.post(
-        "/login?include_auth_token=1",
+        "/login",
         headers={"Content-type": "application/json"},
-        json={"email": project_owner.email, "password": project_owner.password},
+        json={"email": project_owner.email, "password": "Zaq1@WSXcde3$RFV"},
     )
 
     assert response.status_code == 200
+    assert response.json["response"]["access_token"]
+    assert response.json["response"]["refresh_token"]
+
+
+def test_refresh_access_token(client: testing.FlaskClient, project_owner):
+    login_response = client.post(
+        "/login", headers={}, json={"email": project_owner.email, "password": "Zaq1@WSXcde3$RFV"}
+    )
+
+    refresh_response = client.post(
+        "/refresh", headers={"Authorization": f'Bearer {login_response.json["response"]["refresh_token"]}'}, json={}
+    )
+
+    assert refresh_response.status_code == 200
+    assert refresh_response.json["response"]["access_token"]
 
 
 def test_cannot_login_with_unconfirmed_user(client: testing.FlaskClient, unconfirmed_user):
     response = client.post(
-        "/login?include_auth_token=1",
+        "/login",
         headers={"Content-type": "application/json"},
         json={"email": unconfirmed_user.email, "password": unconfirmed_user.password},
     )
@@ -53,26 +68,25 @@ def test_recover_password(app: Flask, client: testing.FlaskClient, project_owner
         reset_password_token = generate_reset_password_token(project_owner)
 
         change_password_response = client.post(
-            f"/reset/{reset_password_token}?include_auth_token=1",
+            f"/reset/{reset_password_token}",
             json={"password": "ZxCvFr$#2!", "password_confirm": "ZxCvFr$#2!"},
             headers={"Content-type": "application/json"},
         )
 
     assert change_password_response.status_code == 200
     assert change_password_response.json["response"]["user"]["id"] == str(project_owner.id)
-    assert change_password_response.json["response"]["user"]["authentication_token"]
 
 
 def test_change_password(app: Flask, client: testing.FlaskClient, project_owner, project_owner_authorization_token):
     change_password_response = client.post(
-        "/change?include_auth_token=1",
+        "/change",
         json={"password": "Zaq1@WSXcde3$RFV", "new_password": "ZxCvFr$#2!", "new_password_confirm": "ZxCvFr$#2!"},
         headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
     )
 
     assert change_password_response.status_code == 200
     assert change_password_response.json["response"]["user"]["id"] == str(project_owner.id)
-    assert change_password_response.json["response"]["user"]["authentication_token"]
+    assert change_password_response.json["response"]["result"]
 
 
 def test_logout(client: testing.FlaskClient, project_owner_authorization_token):

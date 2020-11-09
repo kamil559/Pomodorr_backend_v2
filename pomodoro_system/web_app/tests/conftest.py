@@ -6,6 +6,7 @@ import pytest
 import pytz
 from flask import Flask
 from flask.testing import FlaskClient
+from flask_jwt_extended import create_access_token
 from foundation.models import User
 from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
@@ -25,8 +26,6 @@ def client(app) -> FlaskClient:
     app.config.update(
         DEBUG=bool(os.getenv("DEBUG", False)),
         TESTING=bool(os.getenv("TESTING", False)),
-        SECRET_KEY=os.getenv("SECRET_KEY"),
-        JWT_SECRET_KEY=os.getenv("JWT_SECRET_KEY"),
     )
     return app.test_client()
 
@@ -34,15 +33,15 @@ def client(app) -> FlaskClient:
 @pytest.fixture()
 def project_owner_authorization_token(app: Flask, client: FlaskClient, project_owner: User) -> str:
     with app.test_request_context():
-        auth_token = project_owner.get_auth_token()
-    return auth_token
+        access_token = create_access_token(project_owner)
+    return f"Bearer {access_token}"
 
 
 @pytest.fixture()
 def random_project_owner_authorization_token(app: Flask, client: FlaskClient, random_project_owner: User) -> str:
     with app.test_request_context():
-        auth_token = random_project_owner.get_auth_token()
-    return auth_token
+        access_token = create_access_token(random_project_owner)
+    return f"Bearer {access_token}"
 
 
 @pytest.fixture()

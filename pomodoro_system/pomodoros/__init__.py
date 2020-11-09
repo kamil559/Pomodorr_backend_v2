@@ -1,7 +1,7 @@
 import injector
 from foundation.application.repositories.user import UserRepository
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
-from pomodoros.application.queries.tasks import GetRecentTasksByProjectId, QueryTaskDto
+from pomodoros.application.queries.tasks import GetRecentTasksByProjectId, GetTasksByProjectId, QueryTaskDto
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.projects import ProjectRepository
@@ -98,6 +98,7 @@ __all__ = [
     "PinTaskToProjectOutputBoundary",
     # queries
     "GetRecentPomodoros",
+    "GetTasksByProjectId",
     "GetRecentTasksByProjectId",
     # queries dtos
     "QueryTaskDto",

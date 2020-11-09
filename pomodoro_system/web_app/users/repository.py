@@ -17,7 +17,7 @@ class SQLUserRepository(UserRepository):
                 pomodoro_length=user_model.date_frame_definition.pomodoro_length,
                 break_length=user_model.date_frame_definition.break_length,
                 longer_break_length=user_model.date_frame_definition.longer_break_length,
-                gap_between_long_breaks=user_model.date_frame_definition.gap_between_breaks,
+                gap_between_long_breaks=user_model.date_frame_definition.gap_between_long_breaks,
             ),
         )
 

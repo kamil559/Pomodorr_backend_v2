@@ -1,12 +1,12 @@
 import http
 from datetime import datetime
 from typing import Optional
+from uuid import UUID
 
 import pytz
 from flask import Response, jsonify, make_response, request
 from flask_apispec import doc, marshal_with, use_kwargs
-from flask_login import current_user
-from flask_security import auth_token_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from foundation.interfaces import Paginator
 from marshmallow import ValidationError
 from pomodoros import (
@@ -41,9 +41,9 @@ tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 )
 @marshal_with(TaskRestSchema(many=False), http.HTTPStatus.OK)
 @tasks_blueprint.route("/<uuid:task_id>", methods=["GET"])
-@auth_token_required
+@jwt_required
 def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: TaskProtector) -> Response:
-    task_protector.authorize(current_user.id, task_id)
+    task_protector.authorize(UUID(get_jwt_identity()), task_id)
     return jsonify(TaskRestSchema(many=False).dump(task_repository.get(task_id))), http.HTTPStatus.OK
 
 
@@ -59,12 +59,14 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
 )
 @marshal_with(TaskRestSchema(many=True), http.HTTPStatus.OK)
 @tasks_blueprint.route("/<uuid:project_id>/tasks", methods=["GET"])
-@auth_token_required
+@jwt_required
 def get_task_list(
     project_id: ProjectId,
     tasks_by_project_id_query: GetTasksByProjectId,
+    project_protector: ProjectProtector,
     recent_tasks_by_project_id_query: GetRecentTasksByProjectId,
 ):
+    project_protector.authorize(UUID(get_jwt_identity()), project_id)
     fetch_all = bool(load_int_query_parameter(request.args.get("fetch_all")))
 
     def _get_paginator() -> Optional[Paginator]:
@@ -95,14 +97,14 @@ def get_task_list(
 @marshal_with(TaskRestSchema(many=False), http.HTTPStatus.CREATED)
 @use_kwargs(TaskRestSchema(many=False))
 @tasks_blueprint.route("/", methods=["POST"])
-@auth_token_required
+@jwt_required
 def create_task(project_protector: ProjectProtector, task_repository: TaskRepository):
     try:
         new_task = TaskRestSchema(many=False).load(request.json)
     except ValidationError as error:
         return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
 
-    project_protector.authorize(current_user.id, new_task.project_id)
+    project_protector.authorize(UUID(get_jwt_identity()), new_task.project_id)
     task_repository.save(new_task, create=True)
     return jsonify(TaskRestSchema(many=False).dump(new_task)), http.HTTPStatus.CREATED
 
@@ -117,9 +119,9 @@ def create_task(project_protector: ProjectProtector, task_repository: TaskReposi
 @marshal_with(TaskRestSchema(many=False, partial=True), http.HTTPStatus.OK)
 @use_kwargs(TaskRestSchema(many=False, partial=True, exclude=("project_id",)))
 @tasks_blueprint.route("/<uuid:task_id>", methods=["PATCH"])
-@auth_token_required
+@jwt_required
 def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
-    task_protector.authorize(current_user.id, task_id)
+    task_protector.authorize(UUID(get_jwt_identity()), task_id)
     task = task_repository.get(task_id)
     try:
         updated_task = TaskRestSchema(
@@ -143,9 +145,9 @@ def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository:
     None, code=http.HTTPStatus.NO_CONTENT, description="The task with specified task_id in the url has been deleted."
 )
 @tasks_blueprint.route("/<uuid:task_id>", methods=["DELETE"])
-@auth_token_required
+@jwt_required
 def delete_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
-    task_protector.authorize(current_user.id, task_id)
+    task_protector.authorize(UUID(get_jwt_identity()), task_id)
     task_repository.delete(task_id)
 
     return make_response("", http.HTTPStatus.NO_CONTENT)
@@ -162,7 +164,7 @@ def delete_task(task_id: TaskId, task_protector: TaskProtector, task_repository:
     description="{new_task_id} is returned only if a repeatable task was completed.",
 )
 @tasks_blueprint.route("/<uuid:task_id>/complete", methods=["PATCH"])
-@auth_token_required
+@jwt_required
 def complete_task(
     task_id: TaskId,
     complete_task_uc: CompleteTask,
@@ -174,7 +176,7 @@ def complete_task(
         {"id": task_id, "completed_at": str(datetime.now(tz=pytz.UTC))},
     )
 
-    protector.authorize(current_user.id, task_id)
+    protector.authorize(UUID(get_jwt_identity()), task_id)
 
     complete_task_uc.execute(input_dto)
     return presenter.response
@@ -187,7 +189,7 @@ def complete_task(
 )
 @marshal_with(ReactivateTaskSchema, http.HTTPStatus.OK)
 @tasks_blueprint.route("/<uuid:task_id>/reactivate", methods=["PATCH"])
-@auth_token_required
+@jwt_required
 def reactivate_task(
     task_id: TaskId,
     reactivate_task_uc: ReactivateTask,
@@ -196,7 +198,7 @@ def reactivate_task(
 ) -> Response:
     input_dto: ReactivateTaskInputDto = get_dto_or_abort(ReactivateTaskSchema, {"id": task_id})
 
-    protector.authorize(current_user.id, task_id)
+    protector.authorize(UUID(get_jwt_identity()), task_id)
 
     reactivate_task_uc.execute(input_dto)
     return presenter.response
@@ -210,7 +212,7 @@ def reactivate_task(
 @marshal_with(PinTaskToProjectSchema, http.HTTPStatus.OK)
 @use_kwargs(PinTaskToProjectSchema(exclude=("id",)))
 @tasks_blueprint.route("/<uuid:task_id>/pin", methods=["PATCH"])
-@auth_token_required
+@jwt_required
 def pin_task_to_project(
     task_id: TaskId,
     pin_task_to_project_uc: PinTaskToProject,
@@ -220,8 +222,8 @@ def pin_task_to_project(
 ) -> Response:
     input_dto: PinTaskToProjectInputDto = get_dto_or_abort(PinTaskToProjectSchema, {"id": task_id})
 
-    task_protector.authorize(current_user.id, task_id)
-    project_protector.authorize(current_user.id, input_dto.new_project_id)
+    task_protector.authorize(UUID(get_jwt_identity()), task_id)
+    project_protector.authorize(UUID(get_jwt_identity()), input_dto.new_project_id)
 
     pin_task_to_project_uc.execute(input_dto)
     return presenter.response

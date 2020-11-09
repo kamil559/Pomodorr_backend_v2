@@ -5,19 +5,23 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Flask
 from flask_apispec import FlaskApiSpec
 from flask_injector import FlaskInjector
+from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_security import Security
-from foundation.models import db
+from foundation.models import User, db
+from foundation.value_objects import UserId
 from injector import Injector
 from main import initialize_application
 from pony.flask import Pony
 
+from .authentication.endpoints import auth_blueprint
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb
 from .docs_definitions.auth import auth_api_definitions
 from .security import PonyORMUserDatastore
 from .settings_loader import (
+    FlaskBaseSettingsLoader,
     FlaskLocalSettingsLoader,
     FlaskProductionSettingsLoader,
     FlaskStagingSettingsLoader,
@@ -26,6 +30,9 @@ from .settings_loader import (
 
 
 def load_flask_app_settings(existing_settings: dict) -> dict:
+    base_settings_loader = FlaskBaseSettingsLoader()
+    base_settings_loader.setup()
+
     if existing_settings["testing"]:
         setup_strategy = FlaskTestingSettingsLoader()
     elif existing_settings["debug"]:
@@ -35,10 +42,14 @@ def load_flask_app_settings(existing_settings: dict) -> dict:
     else:
         setup_strategy = FlaskProductionSettingsLoader()
     setup_strategy.setup()
-    return setup_strategy.settings_mapping
+
+    updated_settings = {**base_settings_loader.settings_mapping, **setup_strategy.settings_mapping}
+
+    return updated_settings
 
 
 def register_blueprints(app: Flask) -> None:
+    app.register_blueprint(auth_blueprint)
     app.register_blueprint(pomodoros_blueprint)
     app.register_blueprint(tasks_blueprint)
 
@@ -55,13 +66,9 @@ def register_doc(app: Flask) -> None:
     )
     app.config["APISPEC_SPEC"] = api_spec
 
-    api_spec.path(**auth_api_definitions["login"]).path(**auth_api_definitions["logout"]).path(
-        **auth_api_definitions["register"]
-    ).path(**auth_api_definitions["confirm"]).path(**auth_api_definitions["reset_password"]).path(
-        **auth_api_definitions["set_new_password"]
-    ).path(
-        **auth_api_definitions["change_password"]
-    )
+    api_spec.path(**auth_api_definitions["logout"]).path(**auth_api_definitions["register"]).path(
+        **auth_api_definitions["confirm"]
+    ).path(**auth_api_definitions["reset_password"]).path(**auth_api_definitions["set_new_password"])
 
     spec = FlaskApiSpec(app)
     for blueprint_name, blueprint in app.blueprints.items():
@@ -90,20 +97,10 @@ def create_app() -> Flask:
         TESTING=pomodoro_app_context.settings["testing"],
         STAGING=pomodoro_app_context.settings["staging"],
         SECRET_KEY=os.getenv("SECRET_KEY"),
-        # Flask-security base configuration
-        SECURITY_REGISTERABLE=True,
-        SECURITY_SEND_REGISTER_EMAIL=True,
-        SECURITY_CONFIRMABLE=True,
-        SECURITY_CHANGEABLE=True,
-        SECURITY_RECOVERABLE=True,
-        WTF_CSRF_ENABLED=False,
-        SECURITY_LOGIN_WITHOUT_CONFIRMATION=False,
-        SECURITY_CSRF_PROTECT_MECHANISMS=[],
-        SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS=True,
-        WTF_CSRF_CHECK_DEFAULT=False,
     )
 
     additional_settings = load_flask_app_settings(pomodoro_app_context.settings)
+    flask_app.config.update(additional_settings["base_settings"])
     flask_app.config.update(additional_settings["security"])
     flask_app.config.update(additional_settings["mail"])
 
@@ -118,5 +115,15 @@ def create_app() -> Flask:
     Security().init_app(app=flask_app, datastore=user_data_store)
 
     Mail().init_app(app=flask_app)
+
+    jwt = JWTManager(app=flask_app)
+
+    @jwt.user_claims_loader
+    def user_claims_to_access_token(user: User) -> dict:
+        return {"roles": [role.name for role in user.roles]}
+
+    @jwt.user_identity_loader
+    def user_identity_lookup(user: User) -> UserId:
+        return getattr(user, "id")
 
     return flask_app
