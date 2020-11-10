@@ -10,7 +10,9 @@ from werkzeug.exceptions import abort
 
 class TaskProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
-        task_id, project_id = select((task.id, task.project_id) for task in TaskModel if task.id == resource_id).get()
+        task_id, project_id = select(
+            (task.id, task.project_id) for task in TaskModel if task.id == resource_id
+        ).get() or (None, None)
 
         if task_id is None:
             abort(http.HTTPStatus.NOT_FOUND)

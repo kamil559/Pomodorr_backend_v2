@@ -12,7 +12,7 @@ class ProjectProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
         project_id, owner_id = select(
             (project.id, project.owner_id) for project in ProjectModel if project.id == resource_id
-        ).get()
+        ).get() or (None, None)
 
         if project_id is None:
             abort(http.HTTPStatus.NOT_FOUND)

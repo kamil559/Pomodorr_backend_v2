@@ -11,9 +11,10 @@ from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure.models import TaskModel
 from pony.orm import max as maximum
 from pony.orm.core import Query  # noqa
+from web_app.mixins import PaginatedQueryMixin, SortedQueryMixin
 
 
-class SQLGetTasksByProjectId(GetTasksByProjectId):
+class SQLGetTasksByProjectId(SortedQueryMixin, PaginatedQueryMixin, GetTasksByProjectId):
     @staticmethod
     def _to_dto(task_model: Type[TaskModel]) -> QueryTaskDto:
         return QueryTaskDto(
@@ -65,20 +66,17 @@ class SQLGetTasksByProjectId(GetTasksByProjectId):
     def _apply_pagination(query: Query, paginator: Paginator):
         return query.page(paginator.page, paginator.page_size)
 
-    def query(
-        self, project_id: ProjectId, paginator: Paginator = None, return_full_entity: bool = False
-    ) -> List[QueryTaskDto]:
+    def query(self, project_id: ProjectId, return_full_entity: bool = False) -> List[QueryTaskDto]:
         project_tasks = TaskModel.select(lambda task: task.project_id == project_id)
 
-        if project_tasks and paginator:
-            project_tasks = self._apply_pagination(project_tasks, paginator)
+        project_tasks = self.get_paginated_query(self.get_sorted_query(project_tasks))
 
         if return_full_entity:
             return list(map(lambda task: self._to_full_entity(task), project_tasks))
         return list(map(lambda task: self._to_dto(task), project_tasks))
 
 
-class SQLGetRecentTasksByProjectId(GetRecentTasksByProjectId):
+class SQLGetRecentTasksByProjectId(SortedQueryMixin, PaginatedQueryMixin, GetRecentTasksByProjectId):
     @staticmethod
     def _to_query_dto(task_model: Type[TaskModel]) -> QueryTaskDto:
         return QueryTaskDto(
@@ -127,16 +125,10 @@ class SQLGetRecentTasksByProjectId(GetRecentTasksByProjectId):
         )
 
     @staticmethod
-    def _apply_pagination(query: Query, paginator: Paginator):
-        return query.page(paginator.page, paginator.page_size)
-
-    @staticmethod
     def _is_from_most_recent_due_date(task_model: Type[TaskModel], most_recent_due_date: datetime) -> bool:
         return task_model.due_date.date() == most_recent_due_date.date()
 
-    def query(
-        self, project_id: ProjectId, paginator: Paginator = None, return_full_entity: bool = False
-    ) -> List[QueryTaskDto]:
+    def query(self, project_id: ProjectId, return_full_entity: bool = False) -> List[QueryTaskDto]:
         most_recent_due_date = maximum(task.due_date for task in TaskModel if task.project_id == project_id)
         if not most_recent_due_date:
             return []
@@ -146,8 +138,7 @@ class SQLGetRecentTasksByProjectId(GetRecentTasksByProjectId):
             and self._is_from_most_recent_due_date(task, most_recent_due_date)
         )
 
-        if recent_tasks and paginator:
-            recent_tasks = self._apply_pagination(recent_tasks, paginator)
+        recent_tasks = self.get_paginated_query(self.get_sorted_query(recent_tasks))
 
         if return_full_entity:
             return list(map(lambda task: self._to_full_entity(task), recent_tasks))

@@ -1,13 +1,11 @@
 import http
 from datetime import datetime
-from typing import Optional
 from uuid import UUID
 
 import pytz
-from flask import Response, jsonify, make_response, request
+from flask import Response, g, jsonify, make_response, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from foundation.interfaces import Paginator
 from marshmallow import ValidationError
 from pomodoros import (
     CompleteTask,
@@ -25,6 +23,7 @@ from pomodoros import (
     TaskRepository,
 )
 from pomodoros.application.queries.tasks import GetRecentTasksByProjectId
+from pomodoros_infrastructure import TaskModel
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
 from web_app.docs_definitions.auth import auth_header_definition
@@ -54,6 +53,16 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
         "fetch_all": {"in": "query", "required": False},
         "page_size": {"in": "query", "required": False},
         "page": {"in": "query", "required": False},
+        "sort": {
+            "in": "query",
+            "required": False,
+            "type": "array",
+            "items": {
+                "type": "string",
+            },
+            "collectionFormat": "multi",
+            "default": ["ordering", "-created_at", "name", "pomodoros_to_do", "pomodoros_burn_down"],
+        },
     },
     tags=(tasks_blueprint.name,),
 )
@@ -66,25 +75,21 @@ def get_task_list(
     project_protector: ProjectProtector,
     recent_tasks_by_project_id_query: GetRecentTasksByProjectId,
 ):
+    g.available_sort_params_mapping = {
+        "ordering": TaskModel.ordering,
+        "created_at": TaskModel.created_at,
+        "name": TaskModel.name,
+        "pomodoros_to_do": TaskModel.pomodoros_to_do,
+        "pomodoros_burn_down": TaskModel.pomodoros_burn_down,
+    }
     project_protector.authorize(UUID(get_jwt_identity()), project_id)
     fetch_all = bool(load_int_query_parameter(request.args.get("fetch_all")))
 
-    def _get_paginator() -> Optional[Paginator]:
-        page = load_int_query_parameter(request.args.get("page"))
-        page_size = load_int_query_parameter(request.args.get("page_size"))
-        prepared_paginator = Paginator(page=page, page_size=page_size or Paginator.page_size)
-
-        if prepared_paginator.is_usable():
-            return prepared_paginator
-        return None
-
-    paginator = _get_paginator()
-
     if fetch_all:
-        result = TaskRestSchema(many=True).dump(tasks_by_project_id_query.query(project_id, paginator, True))
+        result = tasks_by_project_id_query.query(project_id, return_full_entity=True)
     else:
-        result = TaskRestSchema(many=True).dump(recent_tasks_by_project_id_query.query(project_id, paginator, True))
-    return jsonify(result), http.HTTPStatus.OK
+        result = recent_tasks_by_project_id_query.query(project_id, return_full_entity=True)
+    return jsonify(TaskRestSchema(many=True).dump(result)), http.HTTPStatus.OK
 
 
 @doc(

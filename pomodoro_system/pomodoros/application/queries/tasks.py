@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List
 
-from foundation.interfaces import Paginator
 from pomodoros.domain.value_objects import ProjectId, TaskId, TaskStatus
 
 
@@ -20,15 +19,11 @@ class QueryTaskDto:
 
 class GetTasksByProjectId(ABC):
     @abstractmethod
-    def query(
-        self, project_id: ProjectId, paginator: Paginator = None, return_full_entity: bool = False
-    ) -> List[QueryTaskDto]:
+    def query(self, project_id: ProjectId, return_full_entity: bool = False) -> List[QueryTaskDto]:
         pass
 
 
 class GetRecentTasksByProjectId(ABC):
     @abstractmethod
-    def query(
-        self, project_id: ProjectId, paginator: Paginator = None, return_full_entity: bool = False
-    ) -> List[QueryTaskDto]:
+    def query(self, project_id: ProjectId, return_full_entity: bool = False) -> List[QueryTaskDto]:
         pass
