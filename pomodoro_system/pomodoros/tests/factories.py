@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import factory
 from factory.fuzzy import FuzzyAttribute
 from foundation.tests.factories import UserFactory
-from foundation.value_objects import DateFrameDefinition, Priority
+from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
 from pomodoros.domain.entities import Project, SubTask, Task
 from pomodoros.domain.entities.pause import Pause
 from pomodoros.domain.entities.pomodoro import Pomodoro
@@ -16,7 +16,7 @@ class PriorityFactory(factory.Factory):
     class Meta:
         model = Priority
 
-    priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
+    priority_level = FuzzyAttribute(lambda: PriorityLevel(random.randint(0, 3)))
     color = factory.Faker("color")
 
 

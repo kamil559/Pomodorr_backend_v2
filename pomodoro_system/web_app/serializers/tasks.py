@@ -30,8 +30,8 @@ class PrioritySchema(Schema):
     @post_load
     def to_dto(self, data: dict, **_kwargs) -> dict:
         return Priority(
-            color=data.get("color", Priority.color),
-            priority_level=PriorityLevel(data.get("priority_level", Priority.priority_level.value)),
+            color=data.get("color") or Priority.color,
+            priority_level=PriorityLevel(data.get("priority_level") or Priority.priority_level.value),
         )
 
     class Meta:
@@ -40,8 +40,8 @@ class PrioritySchema(Schema):
 
 class DateFrameDefinitionSchema(Schema):
     pomodoro_length = fields.TimeDelta(
-        required=False,
-        allow_none=True,
+        required=True,
+        allow_none=False,
         precision=fields.TimeDelta.MINUTES,
         validate=validate.Range(min=timedelta(minutes=1), max=timedelta(minutes=720)),
         minimum=1,
@@ -50,8 +50,8 @@ class DateFrameDefinitionSchema(Schema):
         description="Interval (minutes)",
     )
     break_length = fields.TimeDelta(
-        required=False,
-        allow_none=True,
+        required=True,
+        allow_none=False,
         precision=fields.TimeDelta.MINUTES,
         validate=validate.Range(min=timedelta(minutes=1), max=timedelta(minutes=720)),
         minimum=1,
@@ -60,8 +60,8 @@ class DateFrameDefinitionSchema(Schema):
         description="Interval (minutes)",
     )
     longer_break_length = fields.TimeDelta(
-        required=False,
-        allow_none=True,
+        required=True,
+        allow_none=False,
         precision=fields.TimeDelta.MINUTES,
         validate=validate.Range(min=timedelta(minutes=1), max=timedelta(minutes=720)),
         minimum=1,
@@ -70,7 +70,7 @@ class DateFrameDefinitionSchema(Schema):
         description="Interval (minutes)",
     )
     gap_between_long_breaks = fields.Integer(
-        required=False, allow_none=True, precision=fields.TimeDelta.MINUTES, validate=validate.Range(min=1), minimum=1
+        required=True, allow_none=False, precision=fields.TimeDelta.MINUTES, validate=validate.Range(min=1), minimum=1
     )
 
     @post_load
@@ -147,7 +147,7 @@ class TaskRestSchema(BaseTaskRestSchema):
                 "status": TaskStatus(TaskStatus.ACTIVE),
                 "pomodoros_burn_down": 0,
                 "date_frame_definition": data.get("date_frame_definition", None),
-                "priority": data.get("priority", Priority()),
+                "priority": data.get("priority") or Priority(),
             }
         data.update(default_values)
         return data

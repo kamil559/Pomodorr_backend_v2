@@ -3,9 +3,11 @@ from datetime import datetime, timedelta
 import pytest
 from foundation.models import User, db
 from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
+from pomodoros.tests.factories import TaskFactory
 from pomodoros_infrastructure import ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory
 from pony.orm import BindingError, db_session
+from web_app.serializers.tasks import TaskRestSchema
 
 
 @pytest.fixture(scope="class")
@@ -57,6 +59,18 @@ def orm_task(orm_project: ProjectModel) -> TaskModel:
 
 
 @pytest.fixture()
-def orm_task_for_yesterday():
+def task_data(orm_project: ProjectModel) -> dict:
+    raw_data = TaskFactory(project_id=orm_project.id)
+    return TaskRestSchema(many=False).dump(raw_data)
+
+
+@pytest.fixture()
+def orm_second_task(orm_task: TaskModel, orm_project: ProjectModel) -> TaskModel:
     with db_session:
-        return ORMTaskFactory(due_date=datetime.now() - timedelta(days=1))
+        return ORMTaskFactory(project_id=orm_project.id, due_date=orm_task.due_date)
+
+
+@pytest.fixture()
+def orm_task_for_yesterday(orm_project: ProjectModel):
+    with db_session:
+        return ORMTaskFactory(project_id=orm_project.id, due_date=datetime.now() - timedelta(days=1))

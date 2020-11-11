@@ -41,7 +41,12 @@ class SortedQueryMixin:
         if not request:
             return []
 
-        params_list = request.args.getlist("sort")
+        params_list = request.args.get("sort", [])
+        if params_list and isinstance(params_list, str):
+            params_list = params_list.split(",")
+
+        if not params_list and g:
+            params_list = getattr(g, "default_sort_params", [])
 
         valid_sort_params = list(
             filter(lambda param: param.lstrip("-").lower() in available_sort_params_mapping, params_list)
@@ -69,5 +74,5 @@ class SortedQueryMixin:
         sort_params = self.get_sort_params(available_sort_params_mapping)
 
         if sort_params:
-            return query.order_by(*sort_params)
+            return query.sort_by(*sort_params)
         return query

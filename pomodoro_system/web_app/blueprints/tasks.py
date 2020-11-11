@@ -6,6 +6,7 @@ import pytz
 from flask import Response, g, jsonify, make_response, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from foundation.exceptions import DomainValidationError
 from marshmallow import ValidationError
 from pomodoros import (
     CompleteTask,
@@ -60,8 +61,7 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
             "items": {
                 "type": "string",
             },
-            "collectionFormat": "multi",
-            "default": ["ordering", "-created_at", "name", "pomodoros_to_do", "pomodoros_burn_down"],
+            "default": ["created_at", "ordering", "name", "pomodoros_to_do", "pomodoros_burn_down"],
         },
     },
     tags=(tasks_blueprint.name,),
@@ -82,6 +82,7 @@ def get_task_list(
         "pomodoros_to_do": TaskModel.pomodoros_to_do,
         "pomodoros_burn_down": TaskModel.pomodoros_burn_down,
     }
+    g.default_sort_params = ["created_at"]
     project_protector.authorize(UUID(get_jwt_identity()), project_id)
     fetch_all = bool(load_int_query_parameter(request.args.get("fetch_all")))
 
@@ -106,10 +107,10 @@ def get_task_list(
 def create_task(project_protector: ProjectProtector, task_repository: TaskRepository):
     try:
         new_task = TaskRestSchema(many=False).load(request.json)
-    except ValidationError as error:
+        project_protector.authorize(UUID(get_jwt_identity()), new_task.project_id)
+    except (DomainValidationError, ValidationError) as error:
         return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
 
-    project_protector.authorize(UUID(get_jwt_identity()), new_task.project_id)
     task_repository.save(new_task, create=True)
     return jsonify(TaskRestSchema(many=False).dump(new_task)), http.HTTPStatus.CREATED
 
@@ -126,13 +127,13 @@ def create_task(project_protector: ProjectProtector, task_repository: TaskReposi
 @tasks_blueprint.route("/<uuid:task_id>", methods=["PATCH"])
 @jwt_required
 def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
-    task_protector.authorize(UUID(get_jwt_identity()), task_id)
-    task = task_repository.get(task_id)
     try:
+        task_protector.authorize(UUID(get_jwt_identity()), task_id)
+        task = task_repository.get(task_id)
         updated_task = TaskRestSchema(
             many=False, partial=True, exclude=("project_id",), context={"task_instance": task}
         ).load(request.json)
-    except ValidationError as error:
+    except (DomainValidationError, ValidationError) as error:
         return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
     task_repository.save(updated_task)
 
