@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from pomodoros.domain.entities import Project
+from pomodoros.domain.value_objects import ProjectId
 
 
 class ProjectRepository(ABC):
@@ -9,5 +10,9 @@ class ProjectRepository(ABC):
         pass
 
     @abstractmethod
-    def save(self, project: Project) -> None:
+    def save(self, project: Project, create: bool = False) -> None:
+        pass
+
+    @abstractmethod
+    def delete(self, project_id: ProjectId, permanently: bool = False) -> None:
         pass

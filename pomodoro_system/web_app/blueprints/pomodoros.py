@@ -1,3 +1,4 @@
+import http
 from datetime import datetime
 from uuid import UUID
 
@@ -40,7 +41,7 @@ pomodoros_blueprint = RegistrableBlueprint("pomodoros", __name__, url_prefix="/p
     params={**auth_header_definition},
     tags=("pomodoros",),
 )
-@marshal_with(BeginPomodoroSchema, 201)
+@marshal_with(BeginPomodoroSchema, http.HTTPStatus.CREATED)
 @pomodoros_blueprint.route("/<uuid:task_id>/begin", methods=["POST"])
 @jwt_required
 def begin_pomodoro(
@@ -64,7 +65,7 @@ def begin_pomodoro(
     params={**auth_header_definition},
     tags=("pomodoros",),
 )
-@marshal_with(PausePomodoroSchema, 200)
+@marshal_with(PausePomodoroSchema, http.HTTPStatus.OK)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/pause", methods=["POST"])
 @jwt_required
 def pause_pomodoro(
@@ -88,7 +89,7 @@ def pause_pomodoro(
     params={**auth_header_definition},
     tags=("pomodoros",),
 )
-@marshal_with(ResumePomodoroSchema, 200)
+@marshal_with(ResumePomodoroSchema, http.HTTPStatus.OK)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/resume", methods=["POST"])
 @jwt_required
 def resume_pomodoro(
@@ -112,7 +113,7 @@ def resume_pomodoro(
     params={**auth_header_definition},
     tags=("pomodoros",),
 )
-@marshal_with(FinishPomodoroSchema(exclude=("owner_id",)), 200)
+@marshal_with(FinishPomodoroSchema(exclude=("owner_id",)), http.HTTPStatus.OK)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/finish", methods=["PATCH"])
 @jwt_required
 def finish_pomodoro(

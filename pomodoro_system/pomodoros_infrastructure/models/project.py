@@ -16,3 +16,7 @@ class ProjectModel(db.Entity):
     owner_id = Required(uuid.UUID)
     created_at = Required(datetime)
     deleted_at = Optional(datetime)
+
+    @property
+    def is_removed(self):
+        return self.deleted_at is not None

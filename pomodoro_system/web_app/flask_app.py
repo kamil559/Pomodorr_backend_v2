@@ -16,6 +16,7 @@ from pony.flask import Pony
 
 from .authentication.endpoints import auth_blueprint
 from .blueprints.pomodoros import pomodoros_blueprint
+from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .configuration import PomodorosWeb
 from .docs_definitions.auth import auth_api_definitions
@@ -50,8 +51,9 @@ def load_flask_app_settings(existing_settings: dict) -> dict:
 
 def register_blueprints(app: Flask) -> None:
     app.register_blueprint(auth_blueprint)
-    app.register_blueprint(pomodoros_blueprint)
+    app.register_blueprint(projects_blueprint)
     app.register_blueprint(tasks_blueprint)
+    app.register_blueprint(pomodoros_blueprint)
 
 
 def register_doc(app: Flask) -> None:

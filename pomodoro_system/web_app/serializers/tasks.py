@@ -4,38 +4,12 @@ from datetime import datetime, timedelta
 import marshmallow_dataclass
 import pytz
 from foundation.utils import to_utc
-from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
+from foundation.value_objects import DateFrameDefinition, Priority
 from marshmallow import EXCLUDE, Schema, fields, post_load, pre_dump, validate
 from pomodoros import CompleteTaskInputDto, PinTaskToProjectInputDto, ReactivateTaskInputDto
 from pomodoros.domain.entities import SubTask, Task
 from pomodoros.domain.value_objects import TaskStatus
-
-
-class PrioritySchema(Schema):
-    color = fields.String(required=False, allow_none=True, default=Priority.color)
-    priority_level = fields.Integer(
-        required=False,
-        allow_none=True,
-        default=PriorityLevel.NO_PRIORITY.value,
-        validate=validate.Range(min=0, max=3),
-        minimum=0,
-        maximum=3,
-    )
-
-    @pre_dump
-    def transform_fields(self, pre_serialized_object: Priority, **_kwargs) -> dict:
-        pre_serialized_object.priority_level = pre_serialized_object.priority_level.value
-        return pre_serialized_object
-
-    @post_load
-    def to_dto(self, data: dict, **_kwargs) -> dict:
-        return Priority(
-            color=data.get("color") or Priority.color,
-            priority_level=PriorityLevel(data.get("priority_level") or Priority.priority_level.value),
-        )
-
-    class Meta:
-        unknown = EXCLUDE
+from web_app.serializers.priority import PrioritySchema
 
 
 class DateFrameDefinitionSchema(Schema):

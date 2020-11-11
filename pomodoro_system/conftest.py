@@ -53,6 +53,12 @@ def orm_second_project(project_owner: User) -> ProjectModel:
 
 
 @pytest.fixture()
+def orm_random_project() -> ProjectModel:
+    with db_session:
+        return ORMProjectFactory()
+
+
+@pytest.fixture()
 def orm_task(orm_project: ProjectModel) -> TaskModel:
     with db_session:
         return ORMTaskFactory(project_id=orm_project.id)

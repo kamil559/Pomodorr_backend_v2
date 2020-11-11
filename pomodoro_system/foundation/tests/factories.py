@@ -70,7 +70,7 @@ class ORMUserFactory(PonyFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     confirmed_at = factory.LazyFunction(datetime.now)
-    email = factory.Faker("email")
+    email = factory.Sequence(lambda user_counter: f"test_user_{user_counter}@mail.com")
     password = "Zaq1@WSXcde3$RFV"
     date_frame_definition = None
     active = True

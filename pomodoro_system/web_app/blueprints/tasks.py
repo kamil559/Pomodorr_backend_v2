@@ -51,7 +51,7 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
     description="Get task list for a project_id specified in url.",
     params={
         **auth_header_definition,
-        "fetch_all": {"in": "query", "required": False},
+        "fetch_all": {"in": "query", "required": False, "type": "integer", "enum": [0, 1]},
         "page_size": {"in": "query", "required": False},
         "page": {"in": "query", "required": False},
         "sort": {

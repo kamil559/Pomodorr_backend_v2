@@ -14,7 +14,7 @@ class Project:
     ordering: Ordering
     owner_id: UserId
     created_at: datetime
-    deleted_at: Optional[datetime]
+    deleted_at: Optional[datetime] = None
 
     @property
     def is_removed(self):
