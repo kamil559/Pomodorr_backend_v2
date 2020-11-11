@@ -158,7 +158,7 @@ def update_project(project_id: ProjectId, project_repository: ProjectRepository,
     description="Delete the project with project_id specified in url.",
     params={
         **auth_header_definition,
-        "permanently": {"in": "header", "required": False, "type": "integer", "enum": [0, 1]},
+        "permanently": {"in": "query", "required": False, "type": "integer", "enum": [0, 1]},
     },
     tags=(projects_blueprint.name,),
 )

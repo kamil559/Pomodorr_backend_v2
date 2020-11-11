@@ -5,7 +5,7 @@ from flask import testing
 from foundation.value_objects import Priority
 
 
-class TestTaskRestMethods:
+class TestTasksRestAPI:
     def test_get_task(self, client: testing.FlaskClient, project_owner_authorization_token, orm_task):
         response = client.get(f"tasks/{orm_task.id}", headers={"Authorization": project_owner_authorization_token})
 
@@ -13,9 +13,7 @@ class TestTaskRestMethods:
 
     def test_get_task_with_non_existing_task_id(self, client: testing.FlaskClient, project_owner_authorization_token):
         random_uuid = uuid.uuid4()
-        response = client.get(
-            f"tasks/{str(random_uuid)}/tasks", headers={"Authorization": project_owner_authorization_token}
-        )
+        response = client.get(f"tasks/{str(random_uuid)}", headers={"Authorization": project_owner_authorization_token})
 
         assert response.status_code == 404
 

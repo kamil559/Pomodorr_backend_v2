@@ -3,10 +3,11 @@ from datetime import datetime, timedelta
 import pytest
 from foundation.models import User, db
 from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
-from pomodoros.tests.factories import TaskFactory
+from pomodoros.tests.factories import ProjectFactory, TaskFactory
 from pomodoros_infrastructure import ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory
 from pony.orm import BindingError, db_session
+from web_app.serializers.projects import ProjectRestSchema
 from web_app.serializers.tasks import TaskRestSchema
 
 
@@ -44,6 +45,12 @@ def random_project_owner() -> User:
 def orm_project(project_owner: User) -> ProjectModel:
     with db_session:
         return ORMProjectFactory(owner_id=project_owner.id)
+
+
+@pytest.fixture()
+def project_data(project_owner: User) -> dict:
+    raw_data = ProjectFactory(owner_id=project_owner.id)
+    return ProjectRestSchema(many=False).dump(raw_data)
 
 
 @pytest.fixture()

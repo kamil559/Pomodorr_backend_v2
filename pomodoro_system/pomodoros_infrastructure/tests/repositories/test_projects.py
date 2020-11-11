@@ -1,9 +1,7 @@
 import uuid
-from datetime import datetime
 from random import randint
 
 import pytest
-import pytz
 from foundation.exceptions import NotFound
 from foundation.value_objects import Priority, PriorityLevel
 from pomodoros.domain.entities import Project
@@ -47,7 +45,6 @@ class TestSQLProjectRepository:
             "name": "xyz",
             "priority": Priority("#952424", PriorityLevel(randint(0, 3))),
             "ordering": 1,
-            "deleted_at": datetime.now().astimezone(tz=pytz.UTC),
         }
 
         with db_session(strict=True):
