@@ -72,7 +72,7 @@ class ORMPomodoroFactory(PonyFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     frame_type = FrameType.TYPE_POMODORO.value
-    task_id = FuzzyAttribute(lambda: ORMTaskFactory().id)
+    task = FuzzyAttribute(lambda: ORMTaskFactory())
     start_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC).replace(hour=12, minute=0))
     end_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC).replace(hour=12, minute=30))
     contained_pauses = factory.List([])

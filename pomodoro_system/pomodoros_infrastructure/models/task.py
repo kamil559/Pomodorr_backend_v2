@@ -9,7 +9,6 @@ class TaskModel(db.Entity):
     _table_ = "tasks"
 
     id = PrimaryKey(uuid.UUID, auto=False)
-    # project_id = Required(uuid.UUID)
     project = Required("ProjectModel")
     name = Required(str, max_len=128)
     status = Required(int)
@@ -27,7 +26,8 @@ class TaskModel(db.Entity):
     renewal_interval = Optional(timedelta)
     note = Optional(LongStr, lazy=False)
     created_at = Required(datetime)
-    sub_tasks = Set(lambda: SubTaskModel, cascade_delete=True)
+    sub_tasks = Set("SubTaskModel", cascade_delete=True)
+    pomodoros = Set("PomodoroModel", cascade_delete=True, lazy=True)
 
 
 class SubTaskModel(db.Entity):

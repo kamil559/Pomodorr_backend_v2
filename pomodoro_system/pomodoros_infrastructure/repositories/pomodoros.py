@@ -16,7 +16,7 @@ class SQLPomodoroRepository(PomodoroRepository):
     def to_domain_entity(cls, orm_pomodoro: Type[PomodoroModel]) -> Pomodoro:
         return Pomodoro(
             id=orm_pomodoro.id,
-            task_id=orm_pomodoro.task_id,
+            task_id=orm_pomodoro.task.id,
             start_date=with_tzinfo(orm_pomodoro.start_date),
             end_date=with_tzinfo(orm_pomodoro.end_date),
             contained_pauses=list(
@@ -39,7 +39,7 @@ class SQLPomodoroRepository(PomodoroRepository):
             orm_pomodoro = PomodoroModel(
                 id=pomodoro_entity.id,
                 frame_type=pomodoro_entity.frame_type.value,
-                task_id=pomodoro_entity.task_id,
+                task=pomodoro_entity.task_id,
                 start_date=to_utc(pomodoro_entity.start_date),
                 end_date=to_utc(pomodoro_entity.end_date),
             )
@@ -60,7 +60,7 @@ class SQLPomodoroRepository(PomodoroRepository):
 
     def _update_existing_orm_pomodoro(self, pomodoro_entity: Pomodoro) -> None:
         values_to_save = {
-            "task_id": pomodoro_entity.task_id,
+            "task": pomodoro_entity.task_id,
             "start_date": to_utc(pomodoro_entity.start_date),
             "end_date": to_utc(pomodoro_entity.end_date),
         }

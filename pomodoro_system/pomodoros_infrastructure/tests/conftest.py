@@ -43,7 +43,7 @@ def orm_random_pomodoro_for_today(today_date_range: Tuple[datetime, datetime]) -
 def orm_pomodoro_for_today(orm_task: TaskModel, today_date_range: Tuple[datetime, datetime]) -> PomodoroModel:
     with db_session:
         start_date, end_date = today_date_range
-        return ORMPomodoroFactory(task_id=orm_task.id, start_date=start_date, end_date=end_date)
+        return ORMPomodoroFactory(task=orm_task.id, start_date=start_date, end_date=end_date)
 
 
 @pytest.fixture()
@@ -57,7 +57,7 @@ def orm_random_pomodoro_for_yesterday(yesterday_date_range: Tuple[datetime, date
 def orm_pomodoro_for_yesterday(orm_task: TaskModel, yesterday_date_range: Tuple[datetime, datetime]) -> PomodoroModel:
     with db_session:
         start_date, end_date = yesterday_date_range
-        return ORMPomodoroFactory(task_id=orm_task.id, start_date=start_date, end_date=end_date)
+        return ORMPomodoroFactory(task=orm_task.id, start_date=start_date, end_date=end_date)
 
 
 @pytest.fixture()
