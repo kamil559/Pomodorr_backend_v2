@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Type
+from gettext import gettext as _
+from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
 from foundation.utils import to_utc, with_tzinfo
@@ -11,66 +12,77 @@ from pony.orm import ObjectNotFound
 
 
 class SQLProjectRepository(ProjectRepository):
-    @staticmethod
-    def _to_entity(project_model: Type[ProjectModel]) -> Project:
-        priority = Priority(project_model.priority_color, PriorityLevel(project_model.priority_level))
+    @classmethod
+    def to_domain_entity(cls, orm_project: Type[ProjectModel]) -> Project:
+        priority = Priority(orm_project.priority_color, PriorityLevel(orm_project.priority_level))
         return Project(
-            project_model.id,
-            project_model.name,
-            priority,
-            project_model.ordering,
-            project_model.owner_id,
-            with_tzinfo(project_model.created_at),
-            with_tzinfo(project_model.deleted_at),
+            id=orm_project.id,
+            name=orm_project.name,
+            priority=priority,
+            ordering=orm_project.ordering,
+            owner_id=orm_project.owner_id,
+            created_at=with_tzinfo(orm_project.created_at),
+            deleted_at=with_tzinfo(orm_project.deleted_at),
         )
 
-    def get(self, project_id: ProjectId) -> Project:
-        try:
-            project = ProjectModel[project_id]
-        except ObjectNotFound:
-            raise NotFound()
-        else:
-            if project.is_removed:
-                return None
-            return self._to_entity(project)
-
     @staticmethod
-    def _persist_new_project_entity(project):
-        if ProjectModel.exists(id=project.id):
-            raise AlreadyExists()
+    def _persist_new_orm_project(project_entity: Project) -> None:
+        if ProjectModel.exists(id=project_entity.id):
+            raise AlreadyExists(_("Project already exists."))
         else:
             return ProjectModel(
-                id=project.id,
-                name=project.name,
-                priority_color=getattr(project.priority, "color", None),
-                priority_level=getattr(project.priority.priority_level, "value", None),
-                ordering=project.ordering,
-                owner_id=project.owner_id,
-                created_at=project.created_at,
+                id=project_entity.id,
+                name=project_entity.name,
+                priority_color=getattr(project_entity.priority, "color", None),
+                priority_level=getattr(project_entity.priority.priority_level, "value", None),
+                ordering=project_entity.ordering,
+                owner_id=project_entity.owner_id,
+                created_at=project_entity.created_at,
                 deleted_at=None,
             )
 
     @staticmethod
-    def _get_for_update(project_id: ProjectId) -> Type[ProjectModel]:
+    def _get_for_update(project_id: ProjectId) -> Optional[Type[ProjectModel]]:
         return ProjectModel.get_for_update(id=project_id)
 
-    def save(self, project: Project, create: bool = False) -> None:
-        if create:
-            self._persist_new_project_entity(project)
-        else:
-            values_to_update = {
-                "name": project.name,
-                "priority_color": project.priority.color,
-                "priority_level": project.priority.priority_level.value,
-                "ordering": project.ordering,
-                "deleted_at": to_utc(project.deleted_at),
-            }
+    def _update_existing_orm_project(self, project_entity: Project) -> None:
+        values_to_update = {
+            "name": project_entity.name,
+            "priority_color": project_entity.priority.color,
+            "priority_level": project_entity.priority.priority_level.value,
+            "ordering": project_entity.ordering,
+        }
+        orm_project = self._get_for_update(project_entity.id)
 
-            project = self._get_for_update(project.id)
-            project.set(**values_to_update)
+        if orm_project is not None:
+            orm_project.set(**values_to_update)
+
+    def get(self, project_id: ProjectId) -> Project:
+        try:
+            orm_project = ProjectModel[project_id]
+            if orm_project.is_removed:
+                raise ObjectNotFound
+        except ObjectNotFound:
+            raise NotFound(_("Project does not exist"))
+        else:
+            return self.to_domain_entity(orm_project)
+
+    def save(self, project_entity: Project, create: bool = False) -> None:
+        if create:
+            self._persist_new_orm_project(project_entity)
+        else:
+            self._update_existing_orm_project(project_entity)
+
+    def _delete_softly(self, project_id: ProjectId) -> None:
+        orm_project = self._get_for_update(project_id)
+
+        if orm_project is not None:
+            orm_project.set(deleted_at=to_utc(datetime.now()))
 
     def delete(self, project_id: ProjectId, permanently: bool = False) -> None:
         if permanently:
-            ProjectModel[project_id].delete()
+            orm_project = ProjectModel.get(id=project_id)
+            if orm_project is not None:
+                orm_project.delete()
         else:
-            ProjectModel[project_id].set(deleted_at=to_utc(datetime.now()))
+            self._delete_softly(project_id)

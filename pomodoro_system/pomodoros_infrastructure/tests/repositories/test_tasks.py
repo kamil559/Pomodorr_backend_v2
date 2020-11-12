@@ -79,7 +79,6 @@ class TestSQLTaskRepository:
             "ordering": 1,
             "due_date": (datetime.now() + timedelta(days=1)).astimezone(tz=pytz.UTC),
             "pomodoros_to_do": 45,
-            "pomodoros_burn_down": 2,
             "date_frame_definition": DateFrameDefinition(
                 timedelta(minutes=20),
                 timedelta(7),

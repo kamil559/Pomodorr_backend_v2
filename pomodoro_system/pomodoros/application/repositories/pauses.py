@@ -10,5 +10,5 @@ class PauseRepository(ABC):
         pass
 
     @abstractmethod
-    def save(self, pause: Pause) -> None:
+    def save(self, pause: Pause, create: bool = False) -> None:
         pass
