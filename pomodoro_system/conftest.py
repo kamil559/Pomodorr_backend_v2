@@ -68,7 +68,7 @@ def orm_random_project() -> ProjectModel:
 @pytest.fixture()
 def orm_task(orm_project: ProjectModel) -> TaskModel:
     with db_session:
-        return ORMTaskFactory(project_id=orm_project.id)
+        return ORMTaskFactory(project=orm_project.id)
 
 
 @pytest.fixture()
@@ -80,10 +80,10 @@ def task_data(orm_project: ProjectModel) -> dict:
 @pytest.fixture()
 def orm_second_task(orm_task: TaskModel, orm_project: ProjectModel) -> TaskModel:
     with db_session:
-        return ORMTaskFactory(project_id=orm_project.id, due_date=orm_task.due_date)
+        return ORMTaskFactory(project=orm_project.id, due_date=orm_task.due_date)
 
 
 @pytest.fixture()
 def orm_task_for_yesterday(orm_project: ProjectModel):
     with db_session:
-        return ORMTaskFactory(project_id=orm_project.id, due_date=datetime.now() - timedelta(days=1))
+        return ORMTaskFactory(project=orm_project.id, due_date=datetime.now() - timedelta(days=1))

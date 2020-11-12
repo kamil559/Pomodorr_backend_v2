@@ -61,8 +61,8 @@ def paused_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
 
 @pytest.fixture()
 def orm_completed_task(orm_project: ProjectModel) -> TaskModel:
-    with db_session:
-        return ORMTaskFactory(project_id=orm_project.id, status=TaskStatus.COMPLETED.value)
+    with db_session():
+        return ORMTaskFactory(project=orm_project.id, status=TaskStatus.COMPLETED.value)
 
 
 @pytest.fixture()

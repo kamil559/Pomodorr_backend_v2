@@ -24,6 +24,7 @@ class ORMProjectFactory(PonyFactory):
     owner_id = factory.LazyAttribute(lambda project: ORMUserFactory().id)
     created_at = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     deleted_at = None
+    tasks = []
 
 
 class ORMSubTaskFactory(PonyFactory):
@@ -44,7 +45,7 @@ class ORMTaskFactory(PonyFactory):
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
-    project_id = FuzzyAttribute(lambda: ORMProjectFactory().id)
+    project = FuzzyAttribute(lambda: ORMProjectFactory())
     name = factory.Faker("name")
     status = TaskStatus.ACTIVE.value
     priority_color = factory.Faker("color")

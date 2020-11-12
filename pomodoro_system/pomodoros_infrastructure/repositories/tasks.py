@@ -25,7 +25,7 @@ class SQLTaskRepository(TaskRepository):
 
         return Task(
             id=orm_task.id,
-            project_id=orm_task.project_id,
+            project_id=orm_task.project.id,
             name=orm_task.name,
             status=TaskStatus(orm_task.status),
             priority=priority,
@@ -44,7 +44,7 @@ class SQLTaskRepository(TaskRepository):
                         id=sub_task.id,
                         name=sub_task.name,
                         ordering=sub_task.ordering,
-                        is_completed=sub_task.is_completed,
+                        is_completed=with_tzinfo(sub_task.is_completed),
                     ),
                     orm_task.sub_tasks,
                 )
@@ -73,7 +73,7 @@ class SQLTaskRepository(TaskRepository):
         else:
             orm_task = TaskModel(
                 id=task_entity.id,
-                project_id=task_entity.project_id,
+                project=task_entity.project_id,
                 name=task_entity.name,
                 status=task_entity.status.value,
                 priority_color=getattr(task_entity.priority, "color", None),
@@ -108,7 +108,7 @@ class SQLTaskRepository(TaskRepository):
 
     def _update_existing_orm_task(self, task_entity: Task) -> None:
         values_to_update = {
-            "project_id": task_entity.project_id,
+            "project": task_entity.project_id,
             "name": task_entity.name,
             "status": task_entity.status.value,
             "priority_color": task_entity.priority.color,

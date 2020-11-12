@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 
 from foundation.models import db
-from pony.orm import Optional, PrimaryKey, Required
+from pony.orm import Optional, PrimaryKey, Required, Set
 
 
 class ProjectModel(db.Entity):
@@ -16,6 +16,7 @@ class ProjectModel(db.Entity):
     owner_id = Required(uuid.UUID)
     created_at = Required(datetime)
     deleted_at = Optional(datetime)
+    tasks = Set("TaskModel", cascade_delete=True, lazy=True)
 
     @property
     def is_removed(self):

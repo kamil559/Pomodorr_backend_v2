@@ -9,7 +9,8 @@ class TaskModel(db.Entity):
     _table_ = "tasks"
 
     id = PrimaryKey(uuid.UUID, auto=False)
-    project_id = Required(uuid.UUID)
+    # project_id = Required(uuid.UUID)
+    project = Required("ProjectModel")
     name = Required(str, max_len=128)
     status = Required(int)
     priority_color = Required(str, max_len=7)

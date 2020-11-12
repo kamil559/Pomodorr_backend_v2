@@ -5,6 +5,7 @@ from random import randint
 import pytest
 import pytz
 from foundation.exceptions import NotFound
+from foundation.utils import with_tzinfo
 from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskStatus
@@ -28,28 +29,28 @@ class TestSQLTaskRepository:
         )
 
         expected_entity = Task(
-            orm_task.id,
-            orm_task.project_id,
-            orm_task.name,
-            TaskStatus(orm_task.status),
-            priority,
-            orm_task.ordering,
-            orm_task.due_date,
-            orm_task.pomodoros_to_do,
-            orm_task.pomodoros_burn_down,
-            date_frame_definition,
-            orm_task.reminder_date,
-            orm_task.renewal_interval,
-            orm_task.note,
-            orm_task.created_at,
+            id=orm_task.id,
+            project_id=orm_task.project.id,
+            name=orm_task.name,
+            status=TaskStatus(orm_task.status),
+            priority=priority,
+            ordering=orm_task.ordering,
+            due_date=orm_task.due_date,
+            pomodoros_to_do=orm_task.pomodoros_to_do,
+            pomodoros_burn_down=orm_task.pomodoros_burn_down,
+            date_frame_definition=date_frame_definition,
+            reminder_date=orm_task.reminder_date,
+            renewal_interval=orm_task.renewal_interval,
+            note=orm_task.note,
+            created_at=orm_task.created_at,
             sub_tasks=list(
                 map(
                     lambda sub_task: SubTaskModel(
-                        sub_task.id,
-                        sub_task.name,
-                        sub_task.id,
-                        sub_task.created_at.astimezone(tz=pytz.UTC),
-                        sub_task.is_completed,
+                        id=sub_task.id,
+                        name=sub_task.name,
+                        task=sub_task.task_id,
+                        created_at=with_tzinfo(sub_task.created_at),
+                        is_completed=sub_task.is_completed,
                     ),
                     orm_task.sub_tasks,
                 )
