@@ -15,12 +15,16 @@ class ProjectRestSchema(BaseProjectRestSchema):
     priority = fields.Nested(PrioritySchema, required=False, allow_none=True)
 
     def populate_partial_data(self, request_data: dict) -> dict:
-        project_instance = self.context["project_instance"]
-        request_data["owner_id"] = project_instance.owner_id
-        for schema_field in self.fields.keys():
-            request_data.setdefault(schema_field, getattr(project_instance, str(schema_field)))
+        pre_populated_data = {
+            "priority": request_data.get("priority") or Priority(),
+        }
 
-        return request_data
+        project_instance = self.context["project_instance"]
+        pre_populated_data["owner_id"] = project_instance.owner_id
+        for schema_field in self.fields.keys():
+            pre_populated_data.setdefault(schema_field, getattr(project_instance, str(schema_field)))
+
+        return pre_populated_data
 
     @post_load
     def populate_default_values(self, data: dict, partial: bool = False, **_kwargs) -> dict:

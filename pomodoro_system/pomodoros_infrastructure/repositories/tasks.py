@@ -88,17 +88,15 @@ class SQLTaskRepository(TaskRepository):
                 created_at=to_utc(task_entity.created_at),
             )
 
-            if task_entity.date_frame_definition:
-                orm_task.set(
-                    **{
-                        "pomodoro_length": getattr(task_entity.date_frame_definition, "pomodoro_length", None),
-                        "break_length": getattr(task_entity.date_frame_definition, "break_length", None),
-                        "longer_break_length": getattr(task_entity.date_frame_definition, "longer_break_length", None),
-                        "gap_between_long_breaks": getattr(
-                            task_entity.date_frame_definition, "gap_between_long_breaks", None
-                        ),
-                    }
-                )
+            date_frame_definition = task_entity.date_frame_definition
+            orm_task.set(
+                **{
+                    "pomodoro_length": getattr(date_frame_definition, "pomodoro_length", None),
+                    "break_length": getattr(date_frame_definition, "break_length", None),
+                    "longer_break_length": getattr(date_frame_definition, "longer_break_length", None),
+                    "gap_between_long_breaks": getattr(date_frame_definition, "gap_between_long_breaks", None),
+                }
+            )
 
             self._persist_sub_tasks(orm_task)
 

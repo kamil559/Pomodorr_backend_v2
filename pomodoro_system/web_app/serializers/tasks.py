@@ -94,7 +94,7 @@ class TaskRestSchema(BaseTaskRestSchema):
         description="Interval (days)",
     )
     status = fields.Integer()
-    sub_tasks = fields.Nested(SubTaskRestSchema(many=True))
+    sub_tasks = fields.Nested(SubTaskRestSchema(many=True), required=False, allow_none=True)
     project_id = fields.UUID(required=True, allow_none=False)
 
     @pre_dump
@@ -104,7 +104,14 @@ class TaskRestSchema(BaseTaskRestSchema):
 
     def populate_partial_data(self, request_data: dict) -> dict:
         task_instance = self.context["task_instance"]
-        request_data["project_id"] = task_instance.project_id
+        pre_populated_data = {
+            "project_id": task_instance.project_id,
+            "priority": request_data.get("priority") or Priority(),
+            "date_frame_definition": request_data.get("date_frame_definition") or None,
+            "sub_tasks": request_data.get("sub_tasks") or [],
+        }
+        request_data.update(pre_populated_data)
+
         for schema_field in self.fields.keys():
             request_data.setdefault(schema_field, getattr(task_instance, str(schema_field)))
 
