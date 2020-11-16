@@ -14,6 +14,10 @@ class AlreadyExists(RepositoryError):
     pass
 
 
-class DomainValidationError(Exception):
+class ValueValidationError(Exception):
     def __init__(self, message: Union[str, List, Dict] = None):
         self.messages = [message] if isinstance(message, (str, bytes)) else message
+
+
+class DomainValidationError(ValueValidationError):
+    pass

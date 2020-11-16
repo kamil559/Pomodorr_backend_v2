@@ -249,7 +249,7 @@ class TestTasksRestAPI:
             json=task_data,
         )
 
-        expected_priority_data = {"color": Priority.color, "priority_level": Priority.priority_level.value}
+        expected_priority_data = {"color": Priority.color.hex, "priority_level": Priority.priority_level.value}
 
         assert response.status_code == 201
         assert response.json["date_frame_definition"] is None

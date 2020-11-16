@@ -4,7 +4,7 @@ from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
 from foundation.utils import to_utc, with_tzinfo
-from foundation.value_objects import Priority, PriorityLevel
+from foundation.value_objects import Color, Priority, PriorityLevel
 from pomodoros import ProjectId, ProjectRepository
 from pomodoros.domain.entities import Project
 from pomodoros_infrastructure.models import ProjectModel
@@ -14,7 +14,9 @@ from pony.orm import ObjectNotFound
 class SQLProjectRepository(ProjectRepository):
     @classmethod
     def to_domain_entity(cls, orm_project: Type[ProjectModel]) -> Project:
-        priority = Priority(orm_project.priority_color, PriorityLevel(orm_project.priority_level))
+        priority = Priority(
+            color=Color(hex=orm_project.priority_color), priority_level=PriorityLevel(orm_project.priority_level)
+        )
         return Project(
             id=orm_project.id,
             name=orm_project.name,
@@ -30,11 +32,12 @@ class SQLProjectRepository(ProjectRepository):
         if ProjectModel.exists(id=project_entity.id):
             raise AlreadyExists(_("Project already exists."))
         else:
+            priority = project_entity.priority
             return ProjectModel(
                 id=project_entity.id,
                 name=project_entity.name,
-                priority_color=getattr(project_entity.priority, "color", None),
-                priority_level=getattr(project_entity.priority.priority_level, "value", None),
+                priority_color=getattr(priority.color, "hex", None),
+                priority_level=getattr(priority.priority_level, "value", None),
                 ordering=project_entity.ordering,
                 owner_id=project_entity.owner_id,
                 created_at=project_entity.created_at,
@@ -48,7 +51,7 @@ class SQLProjectRepository(ProjectRepository):
     def _update_existing_orm_project(self, project_entity: Project) -> None:
         values_to_update = {
             "name": project_entity.name,
-            "priority_color": project_entity.priority.color,
+            "priority_color": project_entity.priority.color.hex,
             "priority_level": project_entity.priority.priority_level.value,
             "ordering": project_entity.ordering,
         }

@@ -1,9 +1,10 @@
 from foundation.value_objects import Priority, PriorityLevel
 from marshmallow import EXCLUDE, Schema, fields, post_load, pre_dump, validate
+from web_app.serializers.fields.color import ColorField
 
 
 class PrioritySchema(Schema):
-    color = fields.String(required=False, allow_none=True, default=Priority.color)
+    color = ColorField(required=True, allow_none=False)
     priority_level = fields.Integer(
         required=False,
         allow_none=True,

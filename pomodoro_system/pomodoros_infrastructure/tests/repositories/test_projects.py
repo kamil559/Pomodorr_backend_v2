@@ -3,7 +3,7 @@ from random import randint
 
 import pytest
 from foundation.exceptions import NotFound
-from foundation.value_objects import Priority, PriorityLevel
+from foundation.value_objects import Color, Priority, PriorityLevel
 from pomodoros.domain.entities import Project
 from pomodoros_infrastructure.repositories import SQLProjectRepository
 from pony.orm import db_session, flush
@@ -15,7 +15,7 @@ class TestSQLProjectRepository:
     def test_repository_returns_mapped_entity(self, orm_project):
         repo = SQLProjectRepository()
 
-        priority = Priority(orm_project.priority_color, PriorityLevel(orm_project.priority_level))
+        priority = Priority(Color(orm_project.priority_color), PriorityLevel(orm_project.priority_level))
         expected_entity = Project(
             orm_project.id,
             orm_project.name,
@@ -43,7 +43,7 @@ class TestSQLProjectRepository:
 
         values_to_update = {
             "name": "xyz",
-            "priority": Priority("#952424", PriorityLevel(randint(0, 3))),
+            "priority": Priority(Color("#952424"), PriorityLevel(randint(0, 3))),
             "ordering": 1,
         }
 

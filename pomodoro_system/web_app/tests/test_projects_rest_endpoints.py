@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 from flask import testing
+from foundation.value_objects import Priority
 from pomodoros_infrastructure import ProjectModel
 from pony.orm import db_session
 
@@ -179,6 +180,27 @@ class TestProjectsRestAPI:
         )
 
         assert response.status_code == 201
+
+    def test_create_project_without_priority_key_saves_default_values(
+        self,
+        client: testing.FlaskClient,
+        project_owner_authorization_token,
+        project_data,
+    ):
+        project_data["priority"] = None
+
+        response = client.post(
+            "projects/",
+            headers={
+                "Authorization": project_owner_authorization_token,
+            },
+            json=project_data,
+        )
+
+        expected_priority_data = {"color": Priority.color.hex, "priority_level": Priority.priority_level.value}
+
+        assert response.status_code == 201
+        assert response.json["priority"] == expected_priority_data
 
     @db_session
     def test_create_project_saves_authenticated_user_as_owner(

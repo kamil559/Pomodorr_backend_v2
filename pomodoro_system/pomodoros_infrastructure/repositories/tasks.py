@@ -3,7 +3,7 @@ from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
 from foundation.utils import to_utc, with_tzinfo
-from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
+from foundation.value_objects import Color, DateFrameDefinition, Priority, PriorityLevel
 from pomodoros import TaskId, TaskRepository
 from pomodoros.domain.entities import SubTask, Task
 from pomodoros.domain.value_objects import TaskStatus
@@ -15,7 +15,9 @@ from pony.orm import ObjectNotFound, delete
 class SQLTaskRepository(TaskRepository):
     @classmethod
     def to_domain_entity(cls, orm_task: Type[TaskModel]) -> Task:
-        priority = Priority(color=orm_task.priority_color, priority_level=PriorityLevel(orm_task.priority_level))
+        priority = Priority(
+            color=Color(hex=orm_task.priority_color), priority_level=PriorityLevel(orm_task.priority_level)
+        )
         date_frame_definition = DateFrameDefinition(
             pomodoro_length=orm_task.pomodoro_length,
             break_length=orm_task.break_length,
@@ -71,13 +73,15 @@ class SQLTaskRepository(TaskRepository):
         if TaskModel.exists(id=task_entity.id):
             raise AlreadyExists(_("Task already exists."))
         else:
+            priority = task_entity.priority
+
             orm_task = TaskModel(
                 id=task_entity.id,
                 project=task_entity.project_id,
                 name=task_entity.name,
                 status=task_entity.status.value,
-                priority_color=getattr(task_entity.priority, "color", None),
-                priority_level=getattr(task_entity.priority.priority_level, "value", None),
+                priority_color=getattr(priority.color, "hex", None),
+                priority_level=getattr(priority.priority_level, "value", None),
                 ordering=task_entity.ordering,
                 due_date=to_utc(task_entity.due_date),
                 pomodoros_to_do=task_entity.pomodoros_to_do,
@@ -109,7 +113,7 @@ class SQLTaskRepository(TaskRepository):
             "project": task_entity.project_id,
             "name": task_entity.name,
             "status": task_entity.status.value,
-            "priority_color": task_entity.priority.color,
+            "priority_color": task_entity.priority.color.hex,
             "priority_level": task_entity.priority.priority_level.value,
             "ordering": task_entity.ordering,
             "due_date": task_entity.due_date,

@@ -6,7 +6,7 @@ import pytest
 import pytz
 from foundation.exceptions import NotFound
 from foundation.utils import with_tzinfo
-from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
+from foundation.value_objects import Color, DateFrameDefinition, Priority, PriorityLevel
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import SubTaskModel
@@ -20,7 +20,7 @@ class TestSQLTaskRepository:
     def test_repository_returns_mapped_entity(self, orm_task):
         repo = SQLTaskRepository()
 
-        priority = Priority(orm_task.priority_color, PriorityLevel(orm_task.priority_level))
+        priority = Priority(Color(orm_task.priority_color), PriorityLevel(orm_task.priority_level))
         date_frame_definition = DateFrameDefinition(
             orm_task.pomodoro_length,
             orm_task.break_length,
@@ -76,7 +76,7 @@ class TestSQLTaskRepository:
             "project_id": orm_second_project.id,
             "name": "xyz",
             "status": TaskStatus.COMPLETED,
-            "priority": Priority("#952424", PriorityLevel(randint(0, 3))),
+            "priority": Priority(Color("#952424"), PriorityLevel(randint(0, 3))),
             "ordering": 1,
             "due_date": (datetime.now() + timedelta(days=1)).astimezone(tz=pytz.UTC),
             "pomodoros_to_do": 45,
