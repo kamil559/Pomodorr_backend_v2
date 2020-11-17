@@ -83,6 +83,7 @@ BaseTaskRestSchema = marshmallow_dataclass.class_schema(Task)
 
 class TaskRestSchema(BaseTaskRestSchema):
     priority = fields.Nested(PrioritySchema, required=False, allow_none=True)
+    ordering = fields.Integer(required=True, allow_none=False, validate=validate.Range(min=1), minimum=1)
     date_frame_definition = fields.Nested(DateFrameDefinitionSchema, required=False, allow_none=True)
     renewal_interval = fields.TimeDelta(
         required=False,
