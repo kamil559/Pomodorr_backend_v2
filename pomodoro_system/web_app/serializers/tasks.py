@@ -4,11 +4,12 @@ from datetime import datetime, timedelta
 import marshmallow_dataclass
 import pytz
 from foundation.utils import to_utc
-from foundation.value_objects import DateFrameDefinition, Priority
+from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
 from marshmallow import EXCLUDE, Schema, fields, post_load, pre_dump, validate
 from pomodoros import CompleteTaskInputDto, PinTaskToProjectInputDto, ReactivateTaskInputDto
 from pomodoros.domain.entities import SubTask, Task
 from pomodoros.domain.value_objects import TaskStatus
+from pomodoros_infrastructure.queries.tasks import DueDateFilter
 from web_app.serializers.priority import PrioritySchema
 
 
@@ -130,6 +131,7 @@ class TaskRestSchema(BaseTaskRestSchema):
                 "pomodoros_burn_down": 0,
                 "date_frame_definition": data.get("date_frame_definition", None),
                 "priority": data.get("priority") or Priority(),
+                "sub_tasks": data.get("sub_tasks") or [],
             }
         data.update(default_values)
         return data
@@ -137,6 +139,67 @@ class TaskRestSchema(BaseTaskRestSchema):
     class Meta:
         unknown = EXCLUDE
         dump_only = ("id", "created_at", "status", "pomodoros_burn_down")
+
+
+class TaskFilterSchema(Schema):
+    project_id = fields.UUID(required=False, allow_none=True)
+    due_date_rule = fields.Integer(
+        required=False,
+        allow_none=True,
+        validate=validate.OneOf(
+            {
+                DueDateFilter.RECENT.value,
+                DueDateFilter.TODAY.value,
+                DueDateFilter.TOMORROW.value,
+                DueDateFilter.UPCOMING.value,
+            }
+        ),
+        enum=[
+            DueDateFilter.RECENT.value,
+            DueDateFilter.TODAY.value,
+            DueDateFilter.TOMORROW.value,
+            DueDateFilter.UPCOMING.value,
+        ],
+        description="0 = Recent tasks,\n 1 = Today tasks,\n 2 = Tomorrow tasks,\n 3 = Upcoming tasks",
+    )
+
+    priority_level = fields.Integer(
+        required=False,
+        allow_none=True,
+        validate=validate.OneOf(
+            [
+                PriorityLevel.NO_PRIORITY.value,
+                PriorityLevel.LOW_PRIORITY.value,
+                PriorityLevel.MID_PRIORITY.value,
+                PriorityLevel.HIGH_PRIORITY.value,
+            ]
+        ),
+        enum=[
+            PriorityLevel.NO_PRIORITY.value,
+            PriorityLevel.LOW_PRIORITY.value,
+            PriorityLevel.MID_PRIORITY.value,
+            PriorityLevel.HIGH_PRIORITY.value,
+        ],
+        description="0 = No priority,\n 1 = Low priority,\n 2 = Mid priority,\n 3 = High priority",
+    )
+    status = fields.Integer(
+        required=False,
+        allow_none=True,
+        validate=validate.OneOf({TaskStatus.ACTIVE.value, TaskStatus.COMPLETED.value}),
+        enum=[TaskStatus.ACTIVE.value, TaskStatus.COMPLETED.value],
+        description="0 = Active,\n 1 = Completed",
+    )
+
+    @post_load
+    def transform_due_date(self, data: dict, **_kwargs) -> dict:
+        due_date = data.pop("due_date_rule", None)
+
+        if due_date is not None:
+            data["due_date_rule"] = DueDateFilter(due_date)
+        return data
+
+    class Meta:
+        unknown = EXCLUDE
 
 
 class CompleteTaskSchema(Schema):

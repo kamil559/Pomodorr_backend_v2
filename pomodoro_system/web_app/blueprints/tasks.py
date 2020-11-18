@@ -12,24 +12,28 @@ from pomodoros import (
     CompleteTask,
     CompleteTaskInputDto,
     CompleteTaskOutputBoundary,
-    GetTasksByProjectId,
+    GetTaskListByOwnerId,
     PinTaskToProject,
     PinTaskToProjectInputDto,
     PinTaskToProjectOutputBoundary,
-    ProjectId,
     ReactivateTask,
     ReactivateTaskInputDto,
     ReactivateTaskOutputBoundary,
     TaskId,
     TaskRepository,
 )
-from pomodoros.application.queries.tasks import GetRecentTasksByProjectId
 from pomodoros_infrastructure import TaskModel
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
 from web_app.docs_definitions.auth import auth_header_definition
-from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema, TaskRestSchema
-from web_app.utils import RegistrableBlueprint, get_dto_or_abort, load_int_query_parameter
+from web_app.serializers.tasks import (
+    CompleteTaskSchema,
+    PinTaskToProjectSchema,
+    ReactivateTaskSchema,
+    TaskFilterSchema,
+    TaskRestSchema,
+)
+from web_app.utils import RegistrableBlueprint, get_dto_or_abort
 
 tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 
@@ -51,7 +55,6 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
     description="Get task list for a project_id specified in url.",
     params={
         **auth_header_definition,
-        "fetch_all": {"in": "query", "required": False, "type": "integer", "enum": [0, 1]},
         "page_size": {"in": "query", "required": False},
         "page": {"in": "query", "required": False},
         "sort": {
@@ -66,30 +69,32 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
     },
     tags=(tasks_blueprint.name,),
 )
+@use_kwargs(TaskFilterSchema, location="query")
 @marshal_with(TaskRestSchema(many=True), http.HTTPStatus.OK)
-@tasks_blueprint.route("/<uuid:project_id>/tasks", methods=["GET"])
+@tasks_blueprint.route("/", methods=["GET"])
 @jwt_required
 def get_task_list(
-    project_id: ProjectId,
-    tasks_by_project_id_query: GetTasksByProjectId,
-    project_protector: ProjectProtector,
-    recent_tasks_by_project_id_query: GetRecentTasksByProjectId,
-):
-    g.available_sort_params_mapping = {
+    get_task_list_by_owner_id_query: GetTaskListByOwnerId,
+) -> Response:
+    current_user = UUID(get_jwt_identity())
+    g.sort_fields = {
         "ordering": TaskModel.ordering,
         "created_at": TaskModel.created_at,
         "name": TaskModel.name,
         "pomodoros_to_do": TaskModel.pomodoros_to_do,
         "pomodoros_burn_down": TaskModel.pomodoros_burn_down,
     }
-    g.default_sort_params = ["created_at"]
-    project_protector.authorize(UUID(get_jwt_identity()), project_id)
-    fetch_all = bool(load_int_query_parameter(request.args.get("fetch_all")))
+    g.default_sort_fields = ["created_at"]
 
-    if fetch_all:
-        result = tasks_by_project_id_query.query(project_id, return_full_entity=True)
-    else:
-        result = recent_tasks_by_project_id_query.query(project_id, return_full_entity=True)
+    try:
+        filter_fields = TaskFilterSchema().load(request.args)
+    except ValidationError as error:
+        filter_fields = error.valid_data
+
+    result = get_task_list_by_owner_id_query.query(
+        owner_id=current_user, return_full_entity=True, filter_fields=filter_fields
+    )
+
     return jsonify(TaskRestSchema(many=True).dump(result)), http.HTTPStatus.OK
 
 
@@ -104,7 +109,7 @@ def get_task_list(
 @use_kwargs(TaskRestSchema(many=False))
 @tasks_blueprint.route("/", methods=["POST"])
 @jwt_required
-def create_task(project_protector: ProjectProtector, task_repository: TaskRepository):
+def create_task(project_protector: ProjectProtector, task_repository: TaskRepository) -> Response:
     try:
         new_task = TaskRestSchema(many=False).load(request.json)
         project_protector.authorize(UUID(get_jwt_identity()), new_task.project_id)
@@ -126,7 +131,7 @@ def create_task(project_protector: ProjectProtector, task_repository: TaskReposi
 @use_kwargs(TaskRestSchema(many=False, partial=True, exclude=("project_id",)))
 @tasks_blueprint.route("/<uuid:task_id>", methods=["PATCH"])
 @jwt_required
-def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
+def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository) -> Response:
     try:
         task_protector.authorize(UUID(get_jwt_identity()), task_id)
         task = task_repository.get(task_id)
@@ -152,7 +157,7 @@ def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository:
 )
 @tasks_blueprint.route("/<uuid:task_id>", methods=["DELETE"])
 @jwt_required
-def delete_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository):
+def delete_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository) -> Response:
     task_protector.authorize(UUID(get_jwt_identity()), task_id)
     task_repository.delete(task_id)
 

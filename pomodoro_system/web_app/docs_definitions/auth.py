@@ -4,6 +4,7 @@ auth_header_definition = {
         "type": "string",
         "required": True,
         "description": "The access token needs to be preceded with 'Bearer' string.",
+        "default": "Bearer ",
     }
 }
 

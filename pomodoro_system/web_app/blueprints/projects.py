@@ -73,12 +73,12 @@ def get_project(
 def get_project_list(
     projects_by_owner_id_query: GetProjectsByOwnerId,
 ):
-    g.available_sort_params_mapping = {
+    g.sort_fields = {
         "name": ProjectModel.name,
         "ordering": ProjectModel.ordering,
         "created_at": ProjectModel.created_at,
     }
-    g.default_sort_params = ["created_at"]
+    g.default_sort_fields = ["created_at"]
     request_user_id = UUID(get_jwt_identity())
     return jsonify(
         ProjectRestSchema(

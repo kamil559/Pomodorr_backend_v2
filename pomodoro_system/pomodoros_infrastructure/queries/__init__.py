@@ -1,4 +1,4 @@
-__all__ = ["SQLGetRecentPomodoros", "SQLGetTasksByProjectId"]
+__all__ = ["SQLGetRecentPomodoros", "SQLGetTaskListByOwnerId", "SQLGetRecentTasksByProjectId"]
 
 from .pomodoros import SQLGetRecentPomodoros
-from .tasks import SQLGetTasksByProjectId
+from .tasks import SQLGetRecentTasksByProjectId, SQLGetTaskListByOwnerId

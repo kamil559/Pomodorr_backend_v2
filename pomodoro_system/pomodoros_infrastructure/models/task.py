@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timedelta
 
 from foundation.models import db
+from pomodoros.domain.value_objects import TaskStatus
 from pony.orm import LongStr, Optional, PrimaryKey, Required, Set
 
 
@@ -28,6 +29,10 @@ class TaskModel(db.Entity):
     created_at = Required(datetime)
     sub_tasks = Set("SubTaskModel", cascade_delete=True)
     pomodoros = Set("PomodoroModel", cascade_delete=True, lazy=True)
+
+    @property
+    def is_active(self) -> bool:
+        return self.status == TaskStatus.ACTIVE.value
 
 
 class SubTaskModel(db.Entity):
