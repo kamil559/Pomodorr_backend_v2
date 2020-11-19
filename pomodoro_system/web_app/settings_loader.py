@@ -24,6 +24,8 @@ class FlaskBaseSettingsLoader(AppSetupStrategy):
                 "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=30),
                 "JWT_HEADER_NAME": "Authorization",
                 "JWT_HEADER_TYPE": "Bearer",
+                "JWT_BLACKLIST_ENABLED": True,
+                "JWT_BLACKLIST_TOKEN_CHECKS": ["access", "refresh"],
             }
         }
 
