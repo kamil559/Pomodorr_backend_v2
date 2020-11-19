@@ -1,8 +1,10 @@
+import http
 import os
+from gettext import gettext as _
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask import Flask
+from flask import Flask, jsonify
 from flask_apispec import FlaskApiSpec
 from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
@@ -122,10 +124,43 @@ def create_app() -> Flask:
 
     @jwt.user_claims_loader
     def user_claims_to_access_token(user: User) -> dict:
-        return {"roles": [role.name for role in user.roles]}
+        return {"roles": [str(role.id) for role in user.roles]}
 
     @jwt.user_identity_loader
     def user_identity_lookup(user: User) -> UserId:
         return getattr(user, "id")
+
+    @flask_app.errorhandler(http.HTTPStatus.UNAUTHORIZED)
+    def unauthorized_handler(error):
+        return (
+            jsonify({"msg": str(error) or _("You may not access the requested resource unless you log in.")}),
+            http.HTTPStatus.UNAUTHORIZED,
+        )
+
+    @flask_app.errorhandler(http.HTTPStatus.FORBIDDEN)
+    def forbidden_handler(error):
+        return (
+            jsonify({"msg": str(error) or _("You don't have the permission to access the requested resource.")}),
+            http.HTTPStatus.FORBIDDEN,
+        )
+
+    @flask_app.errorhandler(http.HTTPStatus.NOT_FOUND)
+    def not_found_handler(error):
+        return jsonify({"msg": str(error) or _("The requested URL was not found.")}), http.HTTPStatus.NOT_FOUND
+
+    @flask_app.errorhandler(http.HTTPStatus.INTERNAL_SERVER_ERROR)
+    def internal_server_error_handler(error):
+        return (
+            jsonify(
+                {
+                    "msg": str(error)
+                    or _(
+                        "Something went wrong. "
+                        "Should the issue remain for a longer period, please contact the administrator."
+                    )
+                }
+            ),
+            http.HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
 
     return flask_app
