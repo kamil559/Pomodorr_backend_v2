@@ -6,7 +6,7 @@ from foundation.application.repositories.user import UserRepository
 from foundation.interfaces import AbstractUser
 from foundation.tests.factories import UserFactory
 from pomodoros.application.queries.pomodoros import GetRecentPomodoros
-from pomodoros.application.queries.tasks import GetTasksByProjectId
+from pomodoros.application.queries.tasks import GetTaskListByOwnerId
 from pomodoros.application.repositories.pomodoros import PomodoroRepository
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.application.use_cases.begin_pomodoro import BeginPomodoro, BeginPomodoroOutputBoundary
@@ -193,14 +193,14 @@ def resume_pomodoro_use_case(
 @pytest.fixture()
 def populated_tasks_by_project_id_query(
     populated_tasks_repository: InMemoryTaskRepository,
-) -> GetTasksByProjectId:
+) -> GetTaskListByOwnerId:
     return GetRecentTasksByProjectIdStub(return_collection=list(populated_tasks_repository.rows.values()))
 
 
 @pytest.fixture()
 def populated_tasks_by_project_id_query_with_duplicates(
     populated_tasks_repository_with_duplicates: InMemoryTaskRepository,
-) -> GetTasksByProjectId:
+) -> GetTaskListByOwnerId:
     return GetRecentTasksByProjectIdStub(
         return_collection=list(populated_tasks_repository_with_duplicates.rows.values())
     )
@@ -209,7 +209,7 @@ def populated_tasks_by_project_id_query_with_duplicates(
 @pytest.fixture()
 def populated_tasks_by_project_id_query_with_duplicates_in_the_past(
     populated_tasks_repository_with_duplicates_in_the_past: InMemoryTaskRepository,
-) -> GetTasksByProjectId:
+) -> GetTaskListByOwnerId:
     return GetRecentTasksByProjectIdStub(
         return_collection=list(populated_tasks_repository_with_duplicates_in_the_past.rows.values())
     )

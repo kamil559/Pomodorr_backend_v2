@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from typing import Optional, Type
 
 import marshmallow
@@ -14,6 +15,16 @@ def get_dto_or_abort(schema_class: Type[Schema], context: dict) -> Optional[T]:
         return schema.load({**request_json, **context})
     except marshmallow.ValidationError as e:
         abort(make_response(e.messages, 400))
+
+
+def load_date_query_parameter(query_parameter: str) -> Optional[date]:
+    if query_parameter:
+        try:
+            date_from_str = datetime.fromisoformat(query_parameter)
+        except ValueError:
+            return None
+        else:
+            return date_from_str
 
 
 def load_int_query_parameter(query_parameter: str) -> Optional[int]:

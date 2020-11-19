@@ -4,7 +4,7 @@ from typing import Tuple
 import pytest
 import pytz
 from pomodoros_infrastructure import PauseModel, PomodoroModel, TaskModel
-from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
+from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory
 from pony.orm import db_session
 
 
@@ -18,12 +18,6 @@ def yesterday_date_range() -> Tuple[datetime, datetime]:
 def today_date_range() -> Tuple[datetime, datetime]:
     today = datetime.now(tz=pytz.UTC)
     return today.replace(hour=10, minute=00), today.replace(hour=10, minute=25)
-
-
-@pytest.fixture()
-def orm_random_task() -> TaskModel:
-    with db_session:
-        return ORMTaskFactory()
 
 
 @pytest.fixture()

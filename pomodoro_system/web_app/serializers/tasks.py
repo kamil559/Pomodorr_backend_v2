@@ -142,7 +142,7 @@ class TaskRestSchema(BaseTaskRestSchema):
 
 
 class TaskFilterSchema(Schema):
-    project_id = fields.UUID(required=False, allow_none=True)
+    project = fields.UUID(required=False, allow_none=True)
     due_date_rule = fields.Integer(
         required=False,
         allow_none=True,

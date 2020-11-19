@@ -51,7 +51,7 @@ class ORMTaskFactory(PonyFactory):
     priority_color = factory.Faker("color")
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
     ordering = factory.Sequence(lambda number: number)
-    due_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC) + timedelta(days=random.randint(1, 7)))
+    due_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     pomodoros_to_do = FuzzyAttribute(lambda: random.randint(0, 15))
     pomodoros_burn_down = factory.LazyAttribute(lambda task: random.randint(0, task.pomodoros_to_do))
     pomodoro_length = FuzzyAttribute(lambda: timedelta(minutes=random.randint(25, 40)))

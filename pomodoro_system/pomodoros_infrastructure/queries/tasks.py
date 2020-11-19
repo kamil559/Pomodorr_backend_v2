@@ -71,8 +71,11 @@ class SQLGetTaskListByOwnerId(FilteredQueryMixin, PaginatedQueryMixin, SortedQue
         return TaskModel.select(lambda task: self._is_owner(task.project.owner_id, owner_id))
 
     def _get_recent_task_list(self, owner_id: UserId) -> Query:
+        today = datetime.utcnow()
         most_recent_due_date = maximum(
-            task.due_date for task in TaskModel if self._is_owner(task.project.owner_id, owner_id)
+            task.due_date
+            for task in TaskModel
+            if self._is_owner(task.project.owner_id, owner_id) and task.due_date.date() <= today.date()
         )
 
         if not most_recent_due_date:

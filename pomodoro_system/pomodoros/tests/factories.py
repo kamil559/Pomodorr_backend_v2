@@ -52,7 +52,7 @@ class TaskFactory(factory.Factory):
     name = factory.Faker("name")
     status = TaskStatus.ACTIVE
     priority = factory.SubFactory(PriorityFactory)
-    ordering = factory.Sequence(lambda number: number)
+    ordering = factory.Sequence(lambda number: number + 1)
     due_date = FuzzyAttribute(lambda: datetime.now() + timedelta(days=random.randint(1, 7)))
     pomodoros_to_do = FuzzyAttribute(lambda: random.randint(0, 15))
     pomodoros_burn_down = factory.LazyAttribute(lambda task: random.randint(0, task.pomodoros_to_do))
