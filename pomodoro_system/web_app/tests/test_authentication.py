@@ -1,7 +1,7 @@
 from flask import Flask, testing
 from flask_security.confirmable import generate_confirmation_token
 from flask_security.recoverable import generate_reset_password_token
-from foundation.models import User
+from foundation.models import User, UserDateFrameDefinitionModel
 from pony.orm import db_session
 
 
@@ -13,6 +13,22 @@ def test_register(client: testing.FlaskClient, user_data: dict):
     )
 
     assert response.status_code == 200
+
+
+@db_session
+def test_register_creates_user_date_frame_definition_after_user_insert(client: testing.FlaskClient, user_data: dict):
+    response = client.post(
+        "/register",
+        headers={"Content-type": "application/json"},
+        json={"email": user_data["email"], "password": user_data["password"]},
+    )
+
+    assert response.status_code == 200
+
+    new_user_id = response.json["response"]["user"]["id"]
+    user_date_frame_definition = UserDateFrameDefinitionModel.select().filter(user=new_user_id).get()
+
+    assert user_date_frame_definition is not None
 
 
 def test_login(client: testing.FlaskClient, project_owner):

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 import pytest
 from foundation.models import User, db
-from foundation.tests.factories import ORMUserDateFrameDefinitionFactory, ORMUserFactory
+from foundation.tests.factories import ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros.tests.factories import ProjectFactory, TaskFactory
 from pomodoros_infrastructure import ProjectModel, TaskModel
@@ -29,16 +29,14 @@ def setup_teardown_tables() -> None:
 @pytest.fixture()
 def project_owner() -> User:
     with db_session:
-        user = ORMUserFactory(date_frame_definition=None)
-        ORMUserDateFrameDefinitionFactory(user=user)
+        user = ORMUserFactory()
         return user
 
 
 @pytest.fixture()
 def random_project_owner() -> User:
     with db_session:
-        user = ORMUserFactory(date_frame_definition=None)
-        ORMUserDateFrameDefinitionFactory(user=user)
+        user = ORMUserFactory()
         return user
 
 

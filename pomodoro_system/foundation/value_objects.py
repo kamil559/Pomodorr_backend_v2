@@ -31,6 +31,15 @@ class UserDateFrameDefinition(DateFrameDefinition):
     longer_break_length = timedelta(minutes=15)
     gap_between_long_breaks = 3
 
+    @property
+    def as_dict(self) -> dict:
+        return {
+            "pomodoro_length": self.pomodoro_length,
+            "break_length": self.break_length,
+            "longer_break_length": self.longer_break_length,
+            "gap_between_long_breaks": self.gap_between_long_breaks,
+        }
+
 
 class PriorityLevel(Enum):
     NO_PRIORITY = 0
