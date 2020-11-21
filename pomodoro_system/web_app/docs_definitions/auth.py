@@ -9,22 +9,6 @@ auth_header_definition = {
 }
 
 auth_api_definitions = {
-    "logout": {
-        "path": "/logout",
-        "operations": {
-            "get": {
-                "description": "Endpoint for changing password.",
-                "parameters": [
-                    {"in": "header", "name": "Authorization", "required": True, "type": "string"},
-                ],
-                "responses": {
-                    "302": {"description": "The user has been logged out and redirected to /."},
-                    "404": {"description": "The redirect page does not exist."},
-                },
-                "tags": ["auth"],
-            }
-        },
-    },
     "register": {
         "path": "/register",
         "operations": {

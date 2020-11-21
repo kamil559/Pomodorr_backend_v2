@@ -15,6 +15,7 @@ from web_app.users.repository import SQLUserRepository
 
 from .authorization.projects import ProjectProtector
 from .authorization.tasks import TaskProtector
+from .authorization.token import TokenProtector
 from .output_boundaries.pomodoros import (
     JSONBeginPomodoroPresenter,
     JSONFinishPomodoroPresenter,
@@ -79,3 +80,7 @@ class PomodorosWeb(injector.Module):
     @injector.provider
     def project_protector(self) -> ProjectProtector:
         return ProjectProtector()
+
+    @injector.provider
+    def token_protector(self) -> TokenProtector:
+        return TokenProtector()

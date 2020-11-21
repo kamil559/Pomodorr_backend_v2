@@ -1,20 +1,25 @@
 import http
+import uuid
 from gettext import gettext as _
 
-from flask import current_app, request
+from flask import Response, current_app, jsonify, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt_identity,
+    get_raw_jwt,
     jwt_refresh_token_required,
     jwt_required,
 )
 from flask_security import ChangePasswordForm, LoginForm
 from flask_security.changeable import change_user_password
 from flask_security.utils import json_error_response, login_user, suppress_form_csrf
-from marshmallow import Schema, fields
+from marshmallow import Schema, ValidationError, fields
+from web_app.authentication.helpers import add_token_to_database, get_token, get_user_tokens, update_token
+from web_app.authorization.token import TokenProtector
 from web_app.docs_definitions.auth import auth_header_definition
+from web_app.serializers.token import TokenSchema
 from web_app.utils import RegistrableBlueprint
 from werkzeug.datastructures import MultiDict
 from werkzeug.local import LocalProxy
@@ -67,7 +72,7 @@ class ChangePasswordResponseSchema(Schema):
 @marshal_with(LoginResponseSchema, http.HTTPStatus.OK)
 @use_kwargs(LoginSchema)
 @auth_blueprint.route("/login", methods=["POST"])
-def login():
+def login() -> Response:
     form = LoginForm(MultiDict(request.get_json()), meta=suppress_form_csrf())
 
     if form.validate_on_submit():
@@ -83,16 +88,40 @@ def login():
         code = http.HTTPStatus.OK
         payload = {}
 
+        access_token = create_access_token(user)
+        refresh_token = create_refresh_token(user)
+
+        add_token_to_database(access_token)
+        add_token_to_database(refresh_token)
+
         if user:
             payload.update(
                 {
                     "user": user.get_security_payload(),
-                    "access_token": create_access_token(user),
-                    "refresh_token": create_refresh_token(user),
+                    "access_token": access_token,
+                    "refresh_token": refresh_token,
                 }
             )
 
     return _security._render_json(payload, code, headers=None, user=user)
+
+
+@doc(
+    description="Logout by revoking the unexpired token.",
+    params={**auth_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(None, http.HTTPStatus.OK, description="The token has been revoked ")
+@auth_blueprint.route("/logout", methods=["GET"])
+@jwt_required
+def logout() -> Response:
+    raw_token = get_raw_jwt()
+    jti = raw_token.get("jti")
+
+    token = get_token(jti=jti)
+    update_token(token, {"revoked": True})
+
+    return _security._render_json({"msg": _("You've been logged out.")}, http.HTTPStatus.OK, headers=None, user=None)
 
 
 @doc(
@@ -104,7 +133,7 @@ def login():
 @use_kwargs(ChangePasswordSchema(only=("password", "new_password", "new_password_confirm")))
 @auth_blueprint.route("/change", methods=["POST"])
 @jwt_required
-def change_password():
+def change_password() -> Response:
     form = ChangePasswordForm(MultiDict(request.get_json()), meta=suppress_form_csrf())
     user = _security.datastore.get_user(get_jwt_identity())
 
@@ -136,10 +165,46 @@ def change_password():
     tags=(auth_blueprint.name,),
 )
 @marshal_with(LoginSchema(only=("access_token",)), http.HTTPStatus.OK)
-@use_kwargs({"refresh_token": fields.String(required=True, allow_none=False)})
 @auth_blueprint.route("/refresh", methods=["POST"])
 @jwt_refresh_token_required
-def refresh():
+def refresh() -> Response:
     user = _security.datastore.get_user(get_jwt_identity())
-    payload = {"access_token": create_access_token(user)}
-    return _security._render_json(payload, http.HTTPStatus.OK, headers=None, user=user)
+
+    access_token = create_access_token(user)
+    add_token_to_database(access_token)
+
+    return _security._render_json({"access_token": access_token}, http.HTTPStatus.OK, headers=None, user=user)
+
+
+@doc(
+    description="Retrieve token list.",
+    params={**auth_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(TokenSchema, http.HTTPStatus.OK)
+@auth_blueprint.route("/tokens", methods=["GET"])
+@jwt_required
+def token_list() -> Response:
+    tokens = TokenSchema(many=True).dump(get_user_tokens(get_jwt_identity()))
+    return jsonify(tokens), http.HTTPStatus.OK
+
+
+@doc(
+    description="Revoke or legalize token by passing the boolean value for 'revoked' key.",
+    params={**auth_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(TokenSchema, http.HTTPStatus.OK)
+@use_kwargs(TokenSchema)
+@auth_blueprint.route("/tokens/<uuid:token_id>", methods=["PATCH"])
+@jwt_required
+def revoke_or_legalize_token(token_id: uuid.UUID, token_protector: TokenProtector) -> Response:
+    token_protector.authorize(uuid.UUID(get_jwt_identity()), token_id)
+    try:
+        token_data = TokenSchema(partial=True).load(request.json)
+    except ValidationError as error:
+        jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+    else:
+        token = get_token(id=token_id)
+        updated_token = update_token(token, token_data)
+        return jsonify(TokenSchema().dump(updated_token)), http.HTTPStatus.OK

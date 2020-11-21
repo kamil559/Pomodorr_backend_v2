@@ -1,17 +1,20 @@
 import os
 from datetime import datetime
+from typing import Type
 
 import pytest
 import pytz
 from flask import Flask
 from flask.testing import FlaskClient
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jti
 from foundation.models import User
 from foundation.tests.factories import ORMUserDataFactory, ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
 from pony.orm import db_session
+from web_app.authentication.helpers import add_token_to_database
+from web_app.authentication.models.token import Token
 from web_app.flask_app import create_app
 
 
@@ -30,16 +33,33 @@ def client(app) -> FlaskClient:
 
 
 @pytest.fixture()
-def project_owner_authorization_token(app: Flask, client: FlaskClient, project_owner: User) -> str:
-    with app.test_request_context():
+def project_owner_access_token(app: Flask, project_owner: User) -> Type[Token]:
+    with db_session, app.test_request_context():
         access_token = create_access_token(project_owner)
+        add_token_to_database(access_token)
+    return access_token
+
+
+@pytest.fixture()
+def project_owner_revoked_token(app: Flask, project_owner_access_token) -> Type[Token]:
+    with db_session, app.test_request_context():
+        jti = get_jti(project_owner_access_token)
+        return Token.select().filter(jti=jti).get()
+
+
+@pytest.fixture()
+def project_owner_authorization_token(app: Flask, project_owner: User) -> str:
+    with db_session, app.test_request_context():
+        access_token = create_access_token(project_owner)
+        add_token_to_database(access_token)
     return f"Bearer {access_token}"
 
 
 @pytest.fixture()
-def random_project_owner_authorization_token(app: Flask, client: FlaskClient, random_project_owner: User) -> str:
-    with app.test_request_context():
+def random_project_owner_authorization_token(app: Flask, random_project_owner: User) -> str:
+    with db_session, app.test_request_context():
         access_token = create_access_token(random_project_owner)
+        add_token_to_database(access_token)
     return f"Bearer {access_token}"
 
 

@@ -10,6 +10,7 @@ from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_security import Security
+from foundation.exceptions import NotFound
 from foundation.models import User, db
 from foundation.value_objects import UserId
 from injector import Injector
@@ -17,6 +18,7 @@ from main import initialize_application
 from pony.flask import Pony
 
 from .authentication.endpoints import auth_blueprint
+from .authentication.helpers import is_token_revoked
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint
@@ -70,9 +72,9 @@ def register_doc(app: Flask) -> None:
     )
     app.config["APISPEC_SPEC"] = api_spec
 
-    api_spec.path(**auth_api_definitions["logout"]).path(**auth_api_definitions["register"]).path(
-        **auth_api_definitions["confirm"]
-    ).path(**auth_api_definitions["reset_password"]).path(**auth_api_definitions["set_new_password"])
+    api_spec.path(**auth_api_definitions["register"]).path(**auth_api_definitions["confirm"]).path(
+        **auth_api_definitions["reset_password"]
+    ).path(**auth_api_definitions["set_new_password"])
 
     spec = FlaskApiSpec(app)
     for blueprint_name, blueprint in app.blueprints.items():
@@ -130,6 +132,10 @@ def create_app() -> Flask:
     def user_identity_lookup(user: User) -> UserId:
         return getattr(user, "id")
 
+    @jwt.token_in_blacklist_loader
+    def check_if_token_revoked(decrypted_token) -> bool:
+        return is_token_revoked(decrypted_token)
+
     @flask_app.errorhandler(http.HTTPStatus.UNAUTHORIZED)
     def unauthorized_handler(error):
         return (
@@ -161,6 +167,13 @@ def create_app() -> Flask:
                 }
             ),
             http.HTTPStatus.INTERNAL_SERVER_ERROR,
+        )
+
+    @flask_app.errorhandler(NotFound)
+    def repo_not_found_handler(error):
+        return (
+            jsonify({"msg": str(error) or _("The requested resource was not found in the database.")}),
+            http.HTTPStatus.NOT_FOUND,
         )
 
     return flask_app
