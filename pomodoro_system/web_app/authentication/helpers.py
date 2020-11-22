@@ -1,6 +1,6 @@
 from datetime import datetime
 from gettext import gettext as _
-from typing import Optional, Type
+from typing import List, Optional, Type
 
 import pytz
 from flask import current_app, request
@@ -54,8 +54,16 @@ def get_token(**filter_kwargs) -> Optional[Type[Token]]:
         raise NotFound(_("The token was not found."))
 
 
-def get_user_tokens(user_identity):
-    return Token.select().filter(user_identity=user_identity).sort_by(desc(Token.expires))
+def get_user_tokens(user_identity, **additional_filters) -> List[Token]:
+    return Token.select().filter(user_identity=user_identity, **additional_filters).sort_by(desc(Token.expires))
+
+
+def revoke_all_tokens(user_identity):
+    user_active_tokens = get_user_tokens(user_identity, revoked=False)
+
+    # PonyORM does not support bulk update
+    for token in user_active_tokens:
+        token.revoked = True
 
 
 def update_token(token: Type[Token], token_data: dict) -> Optional[Type[Token]]:

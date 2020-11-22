@@ -2,12 +2,12 @@ import http
 import uuid
 from gettext import gettext as _
 
+from flask import abort
 from foundation.exceptions import DomainValidationError
 from foundation.interfaces import ResourceProtector
 from foundation.value_objects import UserId
 from pomodoros_infrastructure import TaskModel
 from pony.orm import select
-from werkzeug.exceptions import abort
 
 
 class TaskProtector(ResourceProtector):

@@ -2,12 +2,12 @@ import http
 import uuid
 from gettext import gettext as _
 
+from flask import abort
 from foundation.exceptions import DomainValidationError
 from foundation.interfaces import ResourceProtector
 from foundation.value_objects import UserId
 from pony.orm import select
 from web_app.authentication.models.token import Token
-from werkzeug.exceptions import abort
 
 
 class TokenProtector(ResourceProtector):

@@ -9,7 +9,7 @@ from pomodoros import (
     ReactivateTaskOutputBoundary,
     ReactivateTaskOutputDto,
 )
-from web_app.serializers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
+from web_app.marshallers.tasks import CompleteTaskSchema, PinTaskToProjectSchema, ReactivateTaskSchema
 
 
 class JSONCompleteTaskOutputBoundary(PausePomodoroOutputBoundary):

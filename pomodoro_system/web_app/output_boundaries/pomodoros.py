@@ -11,7 +11,7 @@ from pomodoros import (
     ResumePomodoroOutputBoundary,
     ResumePomodoroOutputDto,
 )
-from web_app.serializers.pomodoros import (
+from web_app.marshallers.pomodoros import (
     BeginPomodoroSchema,
     FinishPomodoroSchema,
     PausePomodoroSchema,

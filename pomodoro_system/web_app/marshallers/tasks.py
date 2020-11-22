@@ -10,7 +10,7 @@ from pomodoros import CompleteTaskInputDto, PinTaskToProjectInputDto, Reactivate
 from pomodoros.domain.entities import SubTask, Task
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure.queries.tasks import DueDateFilter
-from web_app.serializers.priority import PrioritySchema
+from web_app.marshallers.priority import PrioritySchema
 
 
 class DateFrameDefinitionSchema(Schema):

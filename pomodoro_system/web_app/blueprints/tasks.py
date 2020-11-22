@@ -26,7 +26,7 @@ from pomodoros_infrastructure import TaskModel
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
 from web_app.docs_definitions.auth import auth_header_definition
-from web_app.serializers.tasks import (
+from web_app.marshallers.tasks import (
     CompleteTaskSchema,
     PinTaskToProjectSchema,
     ReactivateTaskSchema,

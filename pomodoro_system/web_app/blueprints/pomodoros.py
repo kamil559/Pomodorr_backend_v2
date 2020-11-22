@@ -25,7 +25,7 @@ from pomodoros import (
 from web_app.authorization.pomodoros import PomodoroProtector
 from web_app.authorization.tasks import TaskProtector
 from web_app.docs_definitions.auth import auth_header_definition
-from web_app.serializers.pomodoros import (
+from web_app.marshallers.pomodoros import (
     BeginPomodoroSchema,
     FinishPomodoroSchema,
     PausePomodoroSchema,

@@ -1,3 +1,4 @@
+import http
 from datetime import date, datetime
 from typing import Optional, Type
 
@@ -14,7 +15,7 @@ def get_dto_or_abort(schema_class: Type[Schema], context: dict) -> Optional[T]:
         request_json = request.get_json() or {}
         return schema.load({**request_json, **context})
     except marshmallow.ValidationError as e:
-        abort(make_response(e.messages, 400))
+        abort(make_response(e.messages, http.HTTPStatus.BAD_REQUEST))
 
 
 def load_date_query_parameter(query_parameter: str) -> Optional[date]:

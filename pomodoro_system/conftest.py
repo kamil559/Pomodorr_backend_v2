@@ -8,8 +8,8 @@ from pomodoros.tests.factories import ProjectFactory, TaskFactory
 from pomodoros_infrastructure import ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMProjectFactory, ORMTaskFactory
 from pony.orm import BindingError, db_session
-from web_app.serializers.projects import ProjectRestSchema
-from web_app.serializers.tasks import TaskRestSchema
+from web_app.marshallers.projects import ProjectRestSchema
+from web_app.marshallers.tasks import TaskRestSchema
 
 
 @pytest.fixture(scope="class")

@@ -16,12 +16,14 @@ from foundation.value_objects import UserId
 from injector import Injector
 from main import initialize_application
 from pony.flask import Pony
+from pony.orm import db_session
 
 from .authentication.endpoints import auth_blueprint
 from .authentication.helpers import is_token_revoked
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint
+from .commands import create_admin
 from .configuration import PomodorosWeb
 from .docs_definitions.auth import auth_api_definitions
 from .security import PonyORMUserDatastore
@@ -90,8 +92,21 @@ def register_doc(app: Flask) -> None:
                 spec.register(view, blueprint=blueprint_name, endpoint=endpoint)
 
 
+@db_session
+def add_default_roles(app: Flask) -> None:
+    datastore = app.extensions["security"].datastore
+    if datastore.find_role("user") is None:
+        db.Role(name="user", description="Regular user role", users=[])
+    if datastore.find_role("admin") is None:
+        db.Role(name="admin", description="Administrator role", users=[])
+
+
 def inject_dependencies(app: Flask, injector: Injector) -> None:
     FlaskInjector(app, modules=[PomodorosWeb()], injector=injector)
+
+
+def add_flask_commands(flask_app: Flask) -> None:
+    flask_app.cli.add_command(create_admin)
 
 
 def create_app() -> Flask:
@@ -119,14 +134,17 @@ def create_app() -> Flask:
 
     user_data_store = PonyORMUserDatastore(db=db, user_model=db.User, role_model=db.Role)
     Security().init_app(app=flask_app, datastore=user_data_store)
+    add_default_roles(flask_app)
 
     Mail().init_app(app=flask_app)
 
     jwt = JWTManager(app=flask_app)
 
+    add_flask_commands(flask_app)
+
     @jwt.user_claims_loader
     def user_claims_to_access_token(user: User) -> dict:
-        return {"roles": [str(role.id) for role in user.roles]}
+        return {"roles": [role.name for role in user.roles]}
 
     @jwt.user_identity_loader
     def user_identity_lookup(user: User) -> UserId:

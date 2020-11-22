@@ -6,7 +6,7 @@ from foundation.utils import to_utc
 from foundation.value_objects import Priority
 from marshmallow import EXCLUDE, fields, post_load
 from pomodoros.domain.entities import Project
-from web_app.serializers.priority import PrioritySchema
+from web_app.marshallers.priority import PrioritySchema
 
 BaseProjectRestSchema = marshmallow_dataclass.class_schema(Project)
 

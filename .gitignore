@@ -336,7 +336,7 @@ tags
 .ipython/
 .env
 .envs/*
-
+.set_envs.sh
 
 # coverage reports
 coverage_html/

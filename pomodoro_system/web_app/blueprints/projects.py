@@ -11,7 +11,7 @@ from pomodoros.application.queries.projects import GetProjectsByOwnerId
 from pomodoros_infrastructure import ProjectModel
 from web_app.authorization.projects import ProjectProtector
 from web_app.docs_definitions.auth import auth_header_definition
-from web_app.serializers.projects import ProjectRestSchema
+from web_app.marshallers.projects import ProjectRestSchema
 from web_app.utils import RegistrableBlueprint, load_int_query_parameter
 
 projects_blueprint = RegistrableBlueprint("projects", __name__, url_prefix="/projects")

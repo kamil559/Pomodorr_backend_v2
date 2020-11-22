@@ -2,7 +2,7 @@ import http
 import uuid
 from gettext import gettext as _
 
-from flask import Response, current_app, jsonify, request
+from flask import Response, current_app, jsonify, make_response, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import (
     create_access_token,
@@ -15,12 +15,15 @@ from flask_jwt_extended import (
 from flask_security import ChangePasswordForm, LoginForm
 from flask_security.changeable import change_user_password
 from flask_security.utils import json_error_response, login_user, suppress_form_csrf
+from foundation.exceptions import DomainValidationError
 from marshmallow import Schema, ValidationError, fields
 from web_app.authentication.helpers import add_token_to_database, get_token, get_user_tokens, update_token
+from web_app.authentication.marshallers import TokenSchema, UserBanRecordSchema, UserUnbanSchema
+from web_app.authorization.decorators import roles_required
 from web_app.authorization.token import TokenProtector
 from web_app.docs_definitions.auth import auth_header_definition
-from web_app.serializers.token import TokenSchema
-from web_app.utils import RegistrableBlueprint
+from web_app.users.facade import UserFacade
+from web_app.utils import RegistrableBlueprint, get_dto_or_abort
 from werkzeug.datastructures import MultiDict
 from werkzeug.local import LocalProxy
 
@@ -203,8 +206,46 @@ def revoke_or_legalize_token(token_id: uuid.UUID, token_protector: TokenProtecto
     try:
         token_data = TokenSchema(partial=True).load(request.json)
     except ValidationError as error:
-        jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
     else:
         token = get_token(id=token_id)
         updated_token = update_token(token, token_data)
         return jsonify(TokenSchema().dump(updated_token)), http.HTTPStatus.OK
+
+
+@doc(
+    description="Ban user for a given period of time or permanently.",
+    params={**auth_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(UserBanRecordSchema, http.HTTPStatus.OK)
+@use_kwargs(UserBanRecordSchema)
+@auth_blueprint.route("/ban_user", methods=["POST"])
+@jwt_required
+@roles_required("admin")
+def ban_user(user_facade: UserFacade) -> Response:
+    try:
+        ban_user_input_data = get_dto_or_abort(UserBanRecordSchema, {})
+        ban_user_output_data = user_facade.ban_user(ban_user_input_data)
+    except (ValidationError, DomainValidationError) as error:
+        return make_response(jsonify(error.messages), http.HTTPStatus.BAD_REQUEST)
+    return make_response(jsonify(UserBanRecordSchema().dump(ban_user_output_data)), http.HTTPStatus.OK)
+
+
+@doc(
+    description="Unban user with user_id specified in url.",
+    params={**auth_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(UserUnbanSchema, http.HTTPStatus.OK)
+@use_kwargs(UserUnbanSchema)
+@auth_blueprint.route("/unban_user", methods=["POST"])
+@jwt_required
+@roles_required("admin")
+def unban_user(user_facade: UserFacade) -> Response:
+    try:
+        unban_user_input_data = get_dto_or_abort(UserUnbanSchema, {})
+        unban_user_output_data = user_facade.unban_user(unban_user_input_data)
+    except (ValidationError, DomainValidationError) as error:
+        return make_response(jsonify(error.messages), http.HTTPStatus.BAD_REQUEST)
+    return make_response(jsonify(UserUnbanSchema().dump(unban_user_output_data)), http.HTTPStatus.OK)

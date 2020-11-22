@@ -27,6 +27,7 @@ from .output_boundaries.tasks import (
     JSONPinTaskToProjectPresenter,
     JSONReactivateTaskPresenter,
 )
+from .users.facade import UserFacade
 
 
 class PomodorosWeb(injector.Module):
@@ -84,3 +85,7 @@ class PomodorosWeb(injector.Module):
     @injector.provider
     def token_protector(self) -> TokenProtector:
         return TokenProtector()
+
+    @injector.provider
+    def user_facade(self) -> UserFacade:
+        return UserFacade()
