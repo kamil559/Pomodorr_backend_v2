@@ -138,7 +138,7 @@ def logout() -> Response:
 @jwt_required
 def change_password() -> Response:
     form = ChangePasswordForm(MultiDict(request.get_json()), meta=suppress_form_csrf())
-    user = _security.datastore.get_user(get_jwt_identity())
+    user = _security.datastore.get_user(get_jwt_identity(), raise_if_not_found=True)
 
     if user:
         login_user(user)
@@ -171,7 +171,7 @@ def change_password() -> Response:
 @auth_blueprint.route("/refresh", methods=["POST"])
 @jwt_refresh_token_required
 def refresh() -> Response:
-    user = _security.datastore.get_user(get_jwt_identity())
+    user = _security.datastore.get_user(get_jwt_identity(), raise_if_not_found=True)
 
     access_token = create_access_token(user)
     add_token_to_database(access_token)

@@ -56,7 +56,7 @@ class UserFacade:
         return user_id == UUID(current_user_id)
 
     def ban_user(self, input_dto: BanUserInputDto) -> BanUserOutputDto:
-        user = _datastore.get_user(input_dto.user_id, consider_banned=True)
+        user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_none=True)
 
         if self.executes_self_action(user.id):
             raise DomainValidationError({"msg": _("You cannot ban yourself.")})
@@ -86,7 +86,7 @@ class UserFacade:
         )
 
     def unban_user(self, input_dto: UnbanUserInputDto) -> UnbanUserOutputDto:
-        user = _datastore.get_user(input_dto.user_id, consider_banned=True)
+        user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_none=True)
 
         if self.executes_self_action(user.id):
             raise DomainValidationError({"msg": _("You cannot unban yourself.")})

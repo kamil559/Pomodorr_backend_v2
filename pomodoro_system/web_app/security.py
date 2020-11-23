@@ -24,7 +24,7 @@ class PonyORMUserDatastore(PonyUserDatastore):
         return False
 
     @db_session
-    def get_user(self, identifier, consider_banned: bool = False):
+    def get_user(self, identifier, consider_banned: bool = False, raise_if_not_found: bool = False):
         from pony.orm.core import ObjectNotFound
 
         user = None
@@ -32,18 +32,16 @@ class PonyORMUserDatastore(PonyUserDatastore):
         try:
             user = self.user_model[identifier]
         except (ObjectNotFound, ValueError):
-            pass
-
-        for attr in get_identity_attributes():
-            # this is a nightmare, tl;dr we need to get the thing that
-            # corresponds to email (usually)
-            try:
-                user = self.user_model.get(**{attr: identifier})
-            except (TypeError, ValueError):
-                pass
-
-        if user is None:
-            raise NotFound({_("User does not exist.")})
-        else:
-            if not user.is_banned or (user.is_banned and consider_banned):
+            for attr in get_identity_attributes():
+                # this is a nightmare, tl;dr we need to get the thing that
+                # corresponds to email (usually)
+                try:
+                    user = self.user_model.get(**{attr: identifier})
+                except (TypeError, ValueError):
+                    pass
+        finally:
+            if user is not None and (not user.is_banned or (user.is_banned and consider_banned)):
                 return user
+            else:
+                if raise_if_not_found:
+                    raise NotFound({_("User does not exist.")})

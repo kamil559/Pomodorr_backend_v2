@@ -2,11 +2,15 @@ from datetime import datetime
 
 import click
 from flask import current_app
+from flask.cli import AppGroup
 from flask_security import hash_password
 from foundation.utils import to_utc
 from pony.orm import db_session
 
+user_cli = AppGroup("users")
 
+
+@user_cli.command("create_admin")
 @click.argument("email")
 @click.argument("password")
 @db_session

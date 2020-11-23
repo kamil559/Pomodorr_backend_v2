@@ -23,7 +23,7 @@ from .authentication.helpers import is_token_revoked
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint
-from .commands import create_admin
+from .commands import user_cli
 from .configuration import PomodorosWeb
 from .docs_definitions.auth import auth_api_definitions
 from .security import PonyORMUserDatastore
@@ -106,7 +106,7 @@ def inject_dependencies(app: Flask, injector: Injector) -> None:
 
 
 def add_flask_commands(flask_app: Flask) -> None:
-    flask_app.cli.add_command(create_admin)
+    flask_app.cli.add_command(user_cli)
 
 
 def create_app() -> Flask:
