@@ -68,7 +68,7 @@ class ORMUserFactory(PonyFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     confirmed_at = factory.LazyFunction(datetime.now)
-    email = factory.Sequence(lambda id: f"test_user_{id}@mail.com")
+    email = factory.LazyAttribute(lambda user: f"test_user_{str(user.id).replace('-', '_')[:13]}@mail.com")
     password = "Zaq1@WSXcde3$RFV"
     date_frame_definition = None
     active = True

@@ -47,6 +47,27 @@ def test_login(client: testing.FlaskClient, project_owner):
     assert response.json["response"]["refresh_token"]
 
 
+def test_login_fails_for_banned_user(client: testing.FlaskClient, banned_user):
+    response = client.post(
+        "/login",
+        headers={"Content-type": "application/json"},
+        json={"email": banned_user.email, "password": "Zaq1@WSXcde3$RFV"},
+    )
+
+    assert response.status_code == 400
+
+
+def test_cannot_login_with_unconfirmed_user(client: testing.FlaskClient, unconfirmed_user):
+    response = client.post(
+        "/login",
+        headers={"Content-type": "application/json"},
+        json={"email": unconfirmed_user.email, "password": unconfirmed_user.password},
+    )
+
+    assert response.status_code == 400
+    assert response.json["response"]["errors"]["email"][0] == "Email requires confirmation."
+
+
 def test_refresh_access_token(client: testing.FlaskClient, project_owner):
     login_response = client.post(
         "/login", headers={}, json={"email": project_owner.email, "password": "Zaq1@WSXcde3$RFV"}
@@ -60,15 +81,24 @@ def test_refresh_access_token(client: testing.FlaskClient, project_owner):
     assert refresh_response.json["response"]["access_token"]
 
 
-def test_cannot_login_with_unconfirmed_user(client: testing.FlaskClient, unconfirmed_user):
-    response = client.post(
-        "/login",
-        headers={"Content-type": "application/json"},
-        json={"email": unconfirmed_user.email, "password": unconfirmed_user.password},
+def test_refresh_access_token_fails_for_banned_user(
+    client: testing.FlaskClient, banned_user, banned_user_refresh_token
+):
+    refresh_response = client.post(
+        "/refresh", headers={"Authorization": f"Bearer {banned_user_refresh_token}"}, json={}
     )
 
-    assert response.status_code == 400
-    assert response.json["response"]["errors"]["email"][0] == "Email requires confirmation."
+    assert refresh_response.status_code == 401
+
+
+def test_access_token_is_revoked_for_banned_user(client: testing.FlaskClient, banned_user_access_token):
+    retrieve_tokens_response = client.get(
+        "/tokens",
+        json={},
+        headers={"Content-type": "application/json", "Authorization": f"Bearer {banned_user_access_token}"},
+    )
+
+    assert retrieve_tokens_response.status_code == 401
 
 
 def test_confirm_registration(app: Flask, client: testing.FlaskClient, unconfirmed_user):
