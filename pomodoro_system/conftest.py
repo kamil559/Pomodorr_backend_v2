@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta
 
 import pytest
+import pytz
 from foundation.models import User, db
-from foundation.tests.factories import ORMUserFactory
+from foundation.models.user import UserBanRecord
+from foundation.tests.factories import ORMUserDataFactory, ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros.tests.factories import ProjectFactory, TaskFactory
 from pomodoros_infrastructure import ProjectModel, TaskModel
@@ -27,6 +29,21 @@ def setup_teardown_tables() -> None:
 
 
 @pytest.fixture()
+def banned_user():
+    with db_session:
+        user = ORMUserFactory()
+        user.ban_records.add(
+            UserBanRecord(
+                user=user,
+                banned_until=datetime.now(tz=pytz.UTC) + timedelta(days=30),
+                is_permanent=False,
+                ban_reason="XYZ",
+            )
+        )
+    return user
+
+
+@pytest.fixture()
 def project_owner() -> User:
     with db_session:
         user = ORMUserFactory()
@@ -37,6 +54,18 @@ def project_owner() -> User:
 def random_project_owner() -> User:
     with db_session:
         user = ORMUserFactory()
+        return user
+
+
+@pytest.fixture()
+def user_data() -> dict:
+    return ORMUserDataFactory.build()
+
+
+@pytest.fixture()
+def unconfirmed_user():
+    with db_session:
+        user = ORMUserFactory(date_frame_definition=None, confirmed_at=None, active=False)
         return user
 
 

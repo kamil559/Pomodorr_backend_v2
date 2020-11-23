@@ -7,8 +7,8 @@ import pytz
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token, get_jti
+from flask_security import UserDatastore
 from foundation.models import User
-from foundation.tests.factories import ORMUserDataFactory, ORMUserFactory
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
@@ -21,6 +21,11 @@ from web_app.flask_app import create_app
 @pytest.fixture(scope="package")
 def app() -> Flask:
     return create_app()
+
+
+@pytest.fixture()
+def user_datastore(app: Flask) -> UserDatastore:
+    return app.extensions["security"].datastore
 
 
 @pytest.fixture()
@@ -82,15 +87,3 @@ def paused_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
 def orm_completed_task(orm_project: ProjectModel) -> TaskModel:
     with db_session():
         return ORMTaskFactory(project=orm_project.id, status=TaskStatus.COMPLETED.value)
-
-
-@pytest.fixture()
-def user_data() -> dict:
-    return ORMUserDataFactory.build()
-
-
-@pytest.fixture()
-def unconfirmed_user():
-    with db_session:
-        user = ORMUserFactory(date_frame_definition=None, confirmed_at=None, active=False)
-        return user
