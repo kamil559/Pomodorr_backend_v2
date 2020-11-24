@@ -7,6 +7,7 @@ import pytz
 from flask import Flask
 from flask.testing import FlaskClient
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jti
+from flask_mail import Mail
 from flask_security import UserDatastore
 from foundation.models import User
 from pomodoros.domain.value_objects import TaskStatus
@@ -26,6 +27,11 @@ def app() -> Flask:
 @pytest.fixture()
 def user_datastore(app: Flask) -> UserDatastore:
     return app.extensions["security"].datastore
+
+
+@pytest.fixture()
+def mail(app: Flask) -> Mail:
+    return app.extensions["mail"]
 
 
 @pytest.fixture()
@@ -120,7 +126,6 @@ def temporary_ban_data() -> dict:
     banned_until = datetime.now(tz=pytz.UTC) + timedelta(days=7)
     return {
         "banned_until": banned_until.isoformat(),
-        "is_permanent": False,
         "ban_reason": "Lorem ipsum",
     }
 
@@ -129,6 +134,5 @@ def temporary_ban_data() -> dict:
 def permanent_ban_data() -> dict:
     return {
         "banned_until": None,
-        "is_permanent": True,
         "ban_reason": "Lorem ipsum",
     }

@@ -2,6 +2,7 @@ import uuid
 
 from flask import Flask, testing
 from flask_jwt_extended import get_jti
+from flask_mail import Mail
 from flask_security.confirmable import generate_confirmation_token
 from flask_security.recoverable import generate_reset_password_token
 from foundation.models import User, UserDateFrameDefinitionModel
@@ -386,7 +387,6 @@ def test_ban_user_with_regular_user_authentication_token(
 def test_ban_user_with_both_banned_until_and_is_permanent_passed_bans_temporarily(
     client: testing.FlaskClient, project_owner, admin_authorization_token, temporary_ban_data
 ):
-    temporary_ban_data["is_permanent"] = True
     ban_response = client.post(
         "/ban_user",
         json={"user_id": str(project_owner.id), **temporary_ban_data},
@@ -509,3 +509,37 @@ def test_unban_non_banned_user_fails(
     with db_session:
         assert not project_owner.is_banned
         assert project_owner.current_ban_record is None
+
+
+def test_banned_user_receives_email(
+    client: testing.FlaskClient, mail: Mail, project_owner, admin_authorization_token, temporary_ban_data
+):
+    with mail.record_messages() as outbox:
+        ban_response = client.post(
+            "/ban_user",
+            json={"user_id": str(project_owner.id), **temporary_ban_data},
+            headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+        )
+
+        assert ban_response.status_code == 200
+        assert len(outbox) == 1
+        assert outbox[0].subject == "Account blocked"
+
+
+def test_unbanned_user_receives_email(
+    client: testing.FlaskClient,
+    mail: Mail,
+    admin,
+    banned_user,
+    admin_authorization_token,
+):
+    with mail.record_messages() as outbox:
+        unban_response = client.post(
+            "/unban_user",
+            json={"user_id": str(banned_user.id)},
+            headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+        )
+
+        assert unban_response.status_code == 200
+        assert len(outbox) == 1
+        assert outbox[0].subject == "Account unblocked"
