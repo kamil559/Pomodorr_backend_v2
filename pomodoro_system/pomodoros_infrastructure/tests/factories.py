@@ -21,7 +21,7 @@ class ORMProjectFactory(PonyFactory):
     priority_color = factory.Faker("color")
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
     ordering = factory.Sequence(lambda number: number)
-    owner_id = factory.LazyAttribute(lambda project: ORMUserFactory().id)
+    owner = factory.LazyAttribute(lambda project: ORMUserFactory().id)
     created_at = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     deleted_at = None
     tasks = []

@@ -13,7 +13,7 @@ from pony.orm import select
 class ProjectProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_request: bool = True) -> None:
         project_id, owner_id = select(
-            (project.id, project.owner_id)
+            (project.id, project.owner.id)
             for project in ProjectModel
             if project.id == resource_id and project.deleted_at is None
         ).get() or (None, None)

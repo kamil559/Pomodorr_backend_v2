@@ -22,7 +22,7 @@ class SQLProjectRepository(ProjectRepository):
             name=orm_project.name,
             priority=priority,
             ordering=orm_project.ordering,
-            owner_id=orm_project.owner_id,
+            owner_id=orm_project.owner.id,
             created_at=with_tzinfo(orm_project.created_at),
             deleted_at=with_tzinfo(orm_project.deleted_at),
         )
@@ -39,7 +39,7 @@ class SQLProjectRepository(ProjectRepository):
                 priority_color=getattr(priority.color, "hex", None),
                 priority_level=getattr(priority.priority_level, "value", None),
                 ordering=project_entity.ordering,
-                owner_id=project_entity.owner_id,
+                owner=project_entity.owner_id,
                 created_at=project_entity.created_at,
                 deleted_at=None,
             )

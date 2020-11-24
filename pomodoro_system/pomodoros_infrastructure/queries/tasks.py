@@ -68,40 +68,40 @@ class SQLGetTaskListByOwnerId(FilteredQueryMixin, PaginatedQueryMixin, SortedQue
         return task_owner_id == current_user_id
 
     def _get_basic_task_list(self, owner_id: UserId) -> Query:
-        return TaskModel.select(lambda task: self._is_owner(task.project.owner_id, owner_id))
+        return TaskModel.select(lambda task: self._is_owner(task.project.owner.id, owner_id))
 
     def _get_recent_task_list(self, owner_id: UserId) -> Query:
         today = datetime.utcnow()
         most_recent_due_date = maximum(
             task.due_date
             for task in TaskModel
-            if self._is_owner(task.project.owner_id, owner_id) and task.due_date.date() <= today.date()
+            if self._is_owner(task.project.owner.id, owner_id) and task.due_date.date() <= today.date()
         )
 
         if not most_recent_due_date:
             return []
 
         return TaskModel.select(
-            lambda task: self._is_owner(task.project.owner_id, owner_id)
+            lambda task: self._is_owner(task.project.owner.id, owner_id)
             and task.due_date.date() == most_recent_due_date.date()
         )
 
     def _get_task_list_for_today(self, owner_id: UserId) -> Query:
         today = datetime.utcnow()
         return TaskModel.select(
-            lambda task: self._is_owner(task.project.owner_id, owner_id) and task.due_date.date() == today.date()
+            lambda task: self._is_owner(task.project.owner.id, owner_id) and task.due_date.date() == today.date()
         )
 
     def _get_task_list_for_tomorrow(self, owner_id: UserId) -> Query:
         tomorrow = datetime.utcnow() + timedelta(days=1)
         return TaskModel.select(
-            lambda task: self._is_owner(task.project.owner_id, owner_id) and task.due_date.date() == tomorrow.date()
+            lambda task: self._is_owner(task.project.owner.id, owner_id) and task.due_date.date() == tomorrow.date()
         )
 
     def _get_upcoming_task_list(self, owner_id: UserId) -> Query:
         tomorrow = datetime.utcnow() + timedelta(days=1)
         return TaskModel.select(
-            lambda task: self._is_owner(task.project.owner_id, owner_id) and task.due_date.date() > tomorrow.date()
+            lambda task: self._is_owner(task.project.owner.id, owner_id) and task.due_date.date() > tomorrow.date()
         )
 
     def _get_task_list_for_due_date(self, owner_id: UserId, rule: DueDateFilter) -> Query:

@@ -17,13 +17,13 @@ class TestSQLProjectRepository:
 
         priority = Priority(Color(orm_project.priority_color), PriorityLevel(orm_project.priority_level))
         expected_entity = Project(
-            orm_project.id,
-            orm_project.name,
-            priority,
-            orm_project.ordering,
-            orm_project.owner_id,
-            orm_project.created_at,
-            None,
+            id=orm_project.id,
+            name=orm_project.name,
+            priority=priority,
+            ordering=orm_project.ordering,
+            owner_id=orm_project.owner.id,
+            created_at=orm_project.created_at,
+            deleted_at=None,
         )
 
         result = repo.get(orm_project.id)

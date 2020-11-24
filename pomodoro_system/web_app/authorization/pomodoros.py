@@ -13,7 +13,7 @@ from pony.orm import select
 class PomodoroProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_request: bool = True) -> None:
         pomodoro_id, owner_id = select(
-            (pomodoro.id, pomodoro.task.project.owner_id) for pomodoro in PomodoroModel if pomodoro.id == resource_id
+            (pomodoro.id, pomodoro.task.project.owner.id) for pomodoro in PomodoroModel if pomodoro.id == resource_id
         ).get() or (None, None)
 
         if pomodoro_id is None:

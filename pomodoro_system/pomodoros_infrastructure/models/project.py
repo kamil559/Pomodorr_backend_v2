@@ -13,7 +13,7 @@ class ProjectModel(db.Entity):
     priority_color = Required(str, max_len=7)
     priority_level = Required(int)
     ordering = Required(int)
-    owner_id = Required(uuid.UUID)
+    owner = Required("User")
     created_at = Required(datetime)
     deleted_at = Optional(datetime)
     tasks = Set("TaskModel", cascade_delete=True, lazy=True)

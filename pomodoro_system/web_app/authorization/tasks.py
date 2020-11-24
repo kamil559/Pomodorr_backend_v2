@@ -13,7 +13,7 @@ from pony.orm import select
 class TaskProtector(ResourceProtector):
     def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_request: bool = True) -> None:
         task_id, owner_id = select(
-            (task.id, task.project.owner_id) for task in TaskModel if task.id == resource_id
+            (task.id, task.project.owner.id) for task in TaskModel if task.id == resource_id
         ).get() or (None, None)
 
         if task_id is None:

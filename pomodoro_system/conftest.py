@@ -81,7 +81,7 @@ def unconfirmed_user():
 @pytest.fixture()
 def orm_project(project_owner: User) -> ProjectModel:
     with db_session:
-        return ORMProjectFactory(owner_id=project_owner.id)
+        return ORMProjectFactory(owner=project_owner.id)
 
 
 @pytest.fixture()
@@ -93,7 +93,7 @@ def project_data(project_owner: User) -> dict:
 @pytest.fixture()
 def orm_second_project(project_owner: User) -> ProjectModel:
     with db_session:
-        return ORMProjectFactory(owner_id=project_owner.id)
+        return ORMProjectFactory(owner=project_owner.id)
 
 
 @pytest.fixture()

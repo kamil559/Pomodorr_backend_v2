@@ -14,7 +14,7 @@ class SQLGetProjectsByOwnerId(SortedQueryMixin, PaginatedQueryMixin, GetProjects
         return SQLProjectRepository.to_domain_entity(orm_project)
 
     def query(self, owner_id: UserId) -> List[Project]:
-        orm_projects = ProjectModel.select(lambda project: not project.is_removed and project.owner_id == owner_id)
+        orm_projects = ProjectModel.select(lambda project: not project.is_removed and project.owner.id == owner_id)
 
         orm_projects = self.get_paginated_query(self.get_sorted_query(orm_projects))
 

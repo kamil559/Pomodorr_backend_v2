@@ -19,7 +19,7 @@ class ProjectRestSchema(BaseProjectRestSchema):
             "priority": request_data.get("priority") or Priority(),
         }
 
-        project_instance = self.context["project_instance"]
+        project_instance: Project = self.context["project_instance"]
         pre_populated_data["owner_id"] = project_instance.owner_id
         for schema_field in self.fields.keys():
             pre_populated_data.setdefault(schema_field, getattr(project_instance, str(schema_field)))

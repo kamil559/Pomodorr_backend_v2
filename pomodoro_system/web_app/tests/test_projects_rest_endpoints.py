@@ -222,7 +222,7 @@ class TestProjectsRestAPI:
         fetched_project = ProjectModel[response.json["id"]]
 
         assert response.status_code == 201
-        assert fetched_project.owner_id == project_owner.id
+        assert fetched_project.owner.id == project_owner.id
 
     @pytest.mark.parametrize(
         "data_key, invalid_value",

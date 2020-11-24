@@ -30,6 +30,7 @@ class User(db.Entity, UserMixin):
     active = Required(bool, default=False)
     roles = Set("Role")
     ban_records = Set("UserBanRecord", cascade_delete=True)
+    projects = Set("ProjectModel", lazy=True, cascade_delete=True)
 
     @property
     def is_banned(self) -> bool:
