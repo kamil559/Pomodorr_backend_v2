@@ -2,11 +2,11 @@ import http
 from datetime import datetime
 from uuid import UUID
 
-import pytz
 from flask import Response, g, jsonify, make_response, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from foundation.exceptions import DomainValidationError
+from foundation.utils import to_utc
 from marshmallow import ValidationError
 from pomodoros import (
     CompleteTask,
@@ -184,7 +184,7 @@ def complete_task(
 ) -> Response:
     input_dto: CompleteTaskInputDto = get_dto_or_abort(
         CompleteTaskSchema,
-        {"id": task_id, "completed_at": str(datetime.now(tz=pytz.UTC))},
+        {"id": task_id, "completed_at": str(to_utc(datetime.now()))},
     )
 
     protector.authorize(UUID(get_jwt_identity()), task_id)

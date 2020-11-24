@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime
 from gettext import gettext as _
 
-from flask import Response, current_app, jsonify, make_response, request
+from flask import Response, current_app, jsonify, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import (
     create_access_token,
@@ -230,8 +230,8 @@ def ban_user(user_facade: UserFacade) -> Response:
         ban_user_input_data = get_dto_or_abort(UserBanRecordSchema, {})
         ban_user_output_data = user_facade.ban_user(ban_user_input_data)
     except (ValidationError, DomainValidationError) as error:
-        return make_response(jsonify(error.messages), http.HTTPStatus.BAD_REQUEST)
-    return make_response(jsonify(UserBanRecordSchema().dump(ban_user_output_data)), http.HTTPStatus.OK)
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+    return jsonify(UserBanRecordSchema().dump(ban_user_output_data)), http.HTTPStatus.OK
 
 
 @doc(
@@ -251,5 +251,5 @@ def unban_user(user_facade: UserFacade) -> Response:
         )
         unban_user_output_data = user_facade.unban_user(unban_user_input_data)
     except (ValidationError, DomainValidationError) as error:
-        return make_response(jsonify(error.messages), http.HTTPStatus.BAD_REQUEST)
-    return make_response(jsonify(UserUnbanSchema().dump(unban_user_output_data)), http.HTTPStatus.OK)
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+    return jsonify(UserUnbanSchema().dump(unban_user_output_data)), http.HTTPStatus.OK

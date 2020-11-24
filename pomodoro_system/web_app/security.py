@@ -33,8 +33,6 @@ class PonyORMUserDatastore(PonyUserDatastore):
             user = self.user_model[identifier]
         except (ObjectNotFound, ValueError):
             for attr in get_identity_attributes():
-                # this is a nightmare, tl;dr we need to get the thing that
-                # corresponds to email (usually)
                 try:
                     user = self.user_model.get(**{attr: identifier})
                 except (TypeError, ValueError):

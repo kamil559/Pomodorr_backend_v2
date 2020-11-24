@@ -2,10 +2,10 @@ import http
 from datetime import datetime
 from uuid import UUID
 
-import pytz
 from flask import Response
 from flask_apispec import doc, marshal_with
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from foundation.utils import to_utc
 from pomodoros import (
     BeginPomodoro,
     BeginPomodoroInputDto,
@@ -39,7 +39,7 @@ pomodoros_blueprint = RegistrableBlueprint("pomodoros", __name__, url_prefix="/p
 @doc(
     description="Takes the task id (UUID string) and starts a pomodoro upon the task.",
     params={**auth_header_definition},
-    tags=("pomodoros",),
+    tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(BeginPomodoroSchema, http.HTTPStatus.CREATED)
 @pomodoros_blueprint.route("/<uuid:task_id>/begin", methods=["POST"])
@@ -52,7 +52,7 @@ def begin_pomodoro(
 ) -> Response:
     input_dto: BeginPomodoroInputDto = get_dto_or_abort(
         BeginPomodoroSchema,
-        {"task_id": task_id, "start_date": str(datetime.now(tz=pytz.UTC))},
+        {"task_id": task_id, "start_date": str(to_utc(datetime.now()))},
     )
     protector.authorize(UUID(get_jwt_identity()), task_id)
 
@@ -63,7 +63,7 @@ def begin_pomodoro(
 @doc(
     description="Takes the current pomodoro's id (UUID string) and pauses it.",
     params={**auth_header_definition},
-    tags=("pomodoros",),
+    tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(PausePomodoroSchema, http.HTTPStatus.OK)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/pause", methods=["POST"])
@@ -76,7 +76,7 @@ def pause_pomodoro(
 ) -> Response:
     input_dto: PausePomodoroInputDto = get_dto_or_abort(
         PausePomodoroSchema,
-        {"pomodoro_id": pomodoro_id, "pause_date": str(datetime.now(tz=pytz.UTC))},
+        {"pomodoro_id": pomodoro_id, "pause_date": str(to_utc(datetime.now()))},
     )
     protector.authorize(UUID(get_jwt_identity()), pomodoro_id)
 
@@ -87,7 +87,7 @@ def pause_pomodoro(
 @doc(
     description="Takes the paused pomodoro's id (UUID string) and resumes it.",
     params={**auth_header_definition},
-    tags=("pomodoros",),
+    tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(ResumePomodoroSchema, http.HTTPStatus.OK)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/resume", methods=["POST"])
@@ -100,7 +100,7 @@ def resume_pomodoro(
 ) -> Response:
     input_dto: ResumePomodoroInputDto = get_dto_or_abort(
         ResumePomodoroSchema,
-        {"pomodoro_id": pomodoro_id, "resume_date": str(datetime.now(tz=pytz.UTC))},
+        {"pomodoro_id": pomodoro_id, "resume_date": str(to_utc(datetime.now()))},
     )
     protector.authorize(UUID(get_jwt_identity()), pomodoro_id)
 
@@ -111,7 +111,7 @@ def resume_pomodoro(
 @doc(
     description="Takes the current pomodoro's id (UUID string) and finishes it.",
     params={**auth_header_definition},
-    tags=("pomodoros",),
+    tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(FinishPomodoroSchema(exclude=("owner_id",)), http.HTTPStatus.OK)
 @pomodoros_blueprint.route("/<uuid:pomodoro_id>/finish", methods=["PATCH"])
@@ -126,7 +126,7 @@ def finish_pomodoro(
         FinishPomodoroSchema,
         {
             "id": pomodoro_id,
-            "end_date": str(datetime.now(tz=pytz.UTC)),
+            "end_date": str(to_utc(datetime.now())),
             "owner_id": UUID(get_jwt_identity()),
         },
     )
