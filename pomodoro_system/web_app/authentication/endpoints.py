@@ -240,7 +240,7 @@ def ban_user(user_facade: UserFacade) -> Response:
     tags=(auth_blueprint.name,),
 )
 @marshal_with(UserUnbanSchema, http.HTTPStatus.OK)
-@use_kwargs(UserUnbanSchema)
+@use_kwargs(UserUnbanSchema(exclude=("manually_unbanned_at",)))
 @auth_blueprint.route("/unban_user", methods=["POST"])
 @jwt_required
 @roles_required("admin")

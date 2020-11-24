@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from datetime import datetime
 from gettext import gettext as _
+from typing import Optional, Type
 from uuid import UUID
 
 from flask import current_app
 from flask_jwt_extended import get_jwt_identity
 from foundation.exceptions import DomainValidationError
-from foundation.models.user import UserBanRecord
+from foundation.models.user import User, UserBanRecord
 from foundation.value_objects import UserId
 from pony.orm import db_session
 from web_app.authentication.helpers import revoke_all_tokens
@@ -20,7 +21,7 @@ _datastore = LocalProxy(lambda: _security.datastore)
 @dataclass()
 class BanUserInputDto:
     user_id: UserId
-    banned_until: datetime
+    banned_until: Optional[datetime]
     is_permanent: bool
     ban_reason: str
 
@@ -28,7 +29,7 @@ class BanUserInputDto:
 @dataclass
 class BanUserOutputDto:
     user_id: UserId
-    banned_until: datetime
+    banned_until: Optional[datetime]
     is_permanent: bool
     ban_reason: str
     is_active: bool
@@ -67,16 +68,17 @@ class UserFacade:
             raise DomainValidationError({"msg": _("The user is already banned.")})
 
         user.active = False
-        user.ban_records.add(
-            UserBanRecord(
-                user=user,
-                banned_until=input_dto.banned_until,
-                is_permanent=input_dto.is_permanent,
-                ban_reason=input_dto.ban_reason,
-            )
+        ban_record = UserBanRecord(
+            user=user,
+            banned_until=input_dto.banned_until,
+            is_permanent=input_dto.is_permanent,
+            ban_reason=input_dto.ban_reason,
         )
+        user.ban_records.add(ban_record)
 
         revoke_all_tokens(input_dto.user_id)
+
+        self.send_ban_email(user, ban_record)
 
         return BanUserOutputDto(
             user_id=user.id,
@@ -102,10 +104,34 @@ class UserFacade:
         ban_record.manually_unbanned = True
         ban_record.manually_unbanned_at = input_dto.manually_unbanned_at
 
+        self.send_unban_mail(user, input_dto.manually_unbanned_at)
+
         return UnbanUserOutputDto(
             user_id=user.id,
             is_active=True,
             is_banned=False,
             manually_unbanned=True,
             manually_unbanned_at=input_dto.manually_unbanned_at,
+        )
+
+    @staticmethod
+    def send_unban_mail(user, manually_unbanned_at):
+        _security._send_mail(
+            subject=_("Account unblocked"),
+            recipient=user.email,
+            template="user_unbanned",
+            email=user.email,
+            manually_unbanned_at=manually_unbanned_at,
+        )
+
+    @staticmethod
+    def send_ban_email(user: Type[User], ban_record: Type[UserBanRecord]) -> None:
+        _security._send_mail(
+            subject=_("Account blocked"),
+            recipient=user.email,
+            template="user_banned",
+            email=user.email,
+            ban_reason=ban_record.ban_reason,
+            is_permanent=ban_record.is_permanent,
+            banned_until=ban_record.banned_until,
         )

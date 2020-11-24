@@ -1,0 +1,14 @@
+<p>{{ _('Dear %(email)s!', email=email) }}</p>
+
+<p>{{ _('You have received this email because Your account has been blocked.') }}</p>
+
+{% if is_permanent %}
+<p>{{  _('Your account has been banned permanently, for further information please contact the administrator.') }}</p>
+{% else %}
+<p>{{ _('Your account has been banned temporarily and will be active again on %(banned_until) s(UTC).', banned_until=banned_until) }}</p>
+{% endif %}
+
+{% if ban_reason %}
+<p>{{ _('Account lock reason:') }}</p>
+<p>{{ ban_reason }}</p>
+{% endif %}
