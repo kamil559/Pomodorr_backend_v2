@@ -29,6 +29,15 @@ def setup_teardown_tables() -> None:
 
 
 @pytest.fixture()
+def admin(user_datastore):
+    with db_session:
+        user = ORMUserFactory()
+        admin_role = user_datastore.find_role("admin")
+        user_datastore.add_role_to_user(user, admin_role)
+    return user
+
+
+@pytest.fixture()
 def banned_user():
     with db_session:
         user = ORMUserFactory()

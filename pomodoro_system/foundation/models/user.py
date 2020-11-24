@@ -36,16 +36,22 @@ class User(db.Entity, UserMixin):
         return exists(
             ban_record
             for ban_record in self.ban_records
-            if not ban_record.manually_unbanned and ban_record.banned_until >= datetime.utcnow()
+            if (not ban_record.manually_unbanned and ban_record.banned_until >= datetime.utcnow())
+            or (ban_record.is_permanent and not ban_record.manually_unbanned)
         )
 
     @property
     def current_ban_record(self) -> typing.Optional[typing.Type["UserBanRecord"]]:
-        return max(
+        ban_record_query = (
             self.ban_records.filter(
-                lambda record: not record.manually_unbanned and record.banned_until >= datetime.utcnow()
+                lambda record: (not record.manually_unbanned and record.banned_until >= datetime.utcnow())
+                or (record.is_permanent and not record.manually_unbanned)
             )
+            or None
         )
+
+        if ban_record_query is not None:
+            return max(ban_record_query.for_update())
 
     def after_insert(self):
         user_date_frame_definition_data = {"id": uuid.uuid4(), "user": self.id}

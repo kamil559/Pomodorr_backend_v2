@@ -319,3 +319,193 @@ def test_legalize_token_with_non_authorized_user(
     )
 
     assert legalize_response.status_code == 403
+
+
+def test_ban_user_temporarily(
+    client: testing.FlaskClient, project_owner, admin_authorization_token, temporary_ban_data
+):
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(project_owner.id), **temporary_ban_data},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert ban_response.status_code == 200
+
+    with db_session:
+        assert project_owner.is_banned
+        assert not project_owner.current_ban_record.is_permanent
+
+
+def test_ban_user_permanently(
+    client: testing.FlaskClient, user_datastore, project_owner, admin_authorization_token, permanent_ban_data
+):
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(project_owner.id), **permanent_ban_data},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert ban_response.status_code == 200
+
+    with db_session:
+        assert project_owner.is_banned
+        assert project_owner.current_ban_record.is_permanent
+
+
+def test_ban_user_with_non_authenticated_user(
+    client: testing.FlaskClient, project_owner, admin_authorization_token, permanent_ban_data
+):
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(project_owner.id), **permanent_ban_data},
+        headers={"Content-type": "application/json"},
+    )
+
+    assert ban_response.status_code == 401
+    with db_session:
+        assert not project_owner.is_banned
+        assert project_owner.current_ban_record is None
+
+
+def test_ban_user_with_regular_user_authentication_token(
+    client: testing.FlaskClient, project_owner, random_project_owner_authorization_token, permanent_ban_data
+):
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(project_owner.id), **permanent_ban_data},
+        headers={"Content-type": "application/json", "Authorization": random_project_owner_authorization_token},
+    )
+
+    assert ban_response.status_code == 403
+    with db_session:
+        assert not project_owner.is_banned
+        assert project_owner.current_ban_record is None
+
+
+def test_ban_user_with_both_banned_until_and_is_permanent_passed_bans_temporarily(
+    client: testing.FlaskClient, project_owner, admin_authorization_token, temporary_ban_data
+):
+    temporary_ban_data["is_permanent"] = True
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(project_owner.id), **temporary_ban_data},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert ban_response.status_code == 200
+
+    with db_session:
+        assert project_owner.is_banned
+        assert not project_owner.current_ban_record.is_permanent
+
+
+def test_ban_self_fails(client: testing.FlaskClient, admin, admin_authorization_token, temporary_ban_data):
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(admin.id), **temporary_ban_data},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert ban_response.status_code == 400
+    with db_session:
+        assert not admin.is_banned
+        assert admin.current_ban_record is None
+
+
+def test_ban_already_banned_user_fails(
+    client: testing.FlaskClient, admin, banned_user, admin_authorization_token, temporary_ban_data
+):
+    ban_response = client.post(
+        "/ban_user",
+        json={"user_id": str(banned_user.id), **temporary_ban_data},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert ban_response.status_code == 400
+
+
+def test_unban_user(
+    client: testing.FlaskClient,
+    admin,
+    banned_user,
+    admin_authorization_token,
+):
+    unban_response = client.post(
+        "/unban_user",
+        json={"user_id": str(banned_user.id)},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert unban_response.status_code == 200
+    with db_session:
+        assert not banned_user.is_banned
+        assert banned_user.current_ban_record is None
+
+
+def test_unban_user_with_non_authenticated_user(
+    client: testing.FlaskClient,
+    admin,
+    banned_user,
+    admin_authorization_token,
+):
+    unban_response = client.post(
+        "/unban_user",
+        json={"user_id": str(banned_user.id)},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert unban_response.status_code == 200
+    with db_session:
+        assert not banned_user.is_banned
+        assert banned_user.current_ban_record is None
+
+
+def test_unban_user_with_regular_user_authentication_token(
+    client: testing.FlaskClient,
+    admin,
+    banned_user,
+    random_project_owner_authorization_token,
+):
+    unban_response = client.post(
+        "/unban_user",
+        json={"user_id": str(banned_user.id)},
+        headers={"Content-type": "application/json", "Authorization": random_project_owner_authorization_token},
+    )
+
+    assert unban_response.status_code == 403
+    with db_session:
+        assert banned_user.is_banned
+        assert banned_user.current_ban_record is not None
+
+
+def test_unban_self_fails(
+    client: testing.FlaskClient,
+    admin,
+    admin_authorization_token,
+):
+    unban_response = client.post(
+        "/unban_user",
+        json={"user_id": str(admin.id)},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert unban_response.status_code == 400
+
+
+def test_unban_non_banned_user_fails(
+    client: testing.FlaskClient,
+    admin,
+    project_owner,
+    admin_authorization_token,
+):
+    unban_response = client.post(
+        "/unban_user",
+        json={"user_id": str(project_owner.id)},
+        headers={"Content-type": "application/json", "Authorization": admin_authorization_token},
+    )
+
+    assert unban_response.status_code == 400
+    with db_session:
+        assert not project_owner.is_banned
+        assert project_owner.current_ban_record is None

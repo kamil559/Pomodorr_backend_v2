@@ -1,5 +1,6 @@
 import http
 import uuid
+from datetime import datetime
 from gettext import gettext as _
 
 from flask import Response, current_app, jsonify, make_response, request
@@ -16,6 +17,7 @@ from flask_security import ChangePasswordForm, LoginForm
 from flask_security.changeable import change_user_password
 from flask_security.utils import json_error_response, login_user, suppress_form_csrf
 from foundation.exceptions import DomainValidationError
+from foundation.utils import to_utc
 from marshmallow import Schema, ValidationError, fields
 from web_app.authentication.helpers import add_token_to_database, get_token, get_user_tokens, update_token
 from web_app.authentication.marshallers import TokenSchema, UserBanRecordSchema, UserUnbanSchema
@@ -244,7 +246,9 @@ def ban_user(user_facade: UserFacade) -> Response:
 @roles_required("admin")
 def unban_user(user_facade: UserFacade) -> Response:
     try:
-        unban_user_input_data = get_dto_or_abort(UserUnbanSchema, {})
+        unban_user_input_data = get_dto_or_abort(
+            UserUnbanSchema, context={"manually_unbanned_at": str(to_utc(datetime.now()))}
+        )
         unban_user_output_data = user_facade.unban_user(unban_user_input_data)
     except (ValidationError, DomainValidationError) as error:
         return make_response(jsonify(error.messages), http.HTTPStatus.BAD_REQUEST)

@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Type
 
 import pytest
@@ -71,6 +71,14 @@ def project_owner_revoked_token(app: Flask, project_owner_access_token) -> Type[
 
 
 @pytest.fixture()
+def admin_authorization_token(app: Flask, admin: User) -> str:
+    with db_session, app.test_request_context():
+        access_token = create_access_token(admin)
+        add_token_to_database(access_token)
+    return f"Bearer {access_token}"
+
+
+@pytest.fixture()
 def project_owner_authorization_token(app: Flask, project_owner: User) -> str:
     with db_session, app.test_request_context():
         access_token = create_access_token(project_owner)
@@ -105,3 +113,22 @@ def paused_orm_pomodoro(orm_task: TaskModel) -> PomodoroModel:
 def orm_completed_task(orm_project: ProjectModel) -> TaskModel:
     with db_session():
         return ORMTaskFactory(project=orm_project.id, status=TaskStatus.COMPLETED.value)
+
+
+@pytest.fixture()
+def temporary_ban_data() -> dict:
+    banned_until = datetime.now(tz=pytz.UTC) + timedelta(days=7)
+    return {
+        "banned_until": banned_until.isoformat(),
+        "is_permanent": False,
+        "ban_reason": "Lorem ipsum",
+    }
+
+
+@pytest.fixture()
+def permanent_ban_data() -> dict:
+    return {
+        "banned_until": None,
+        "is_permanent": True,
+        "ban_reason": "Lorem ipsum",
+    }

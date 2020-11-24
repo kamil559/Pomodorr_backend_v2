@@ -8,6 +8,7 @@ from flask_jwt_extended import get_jwt_identity
 from foundation.exceptions import DomainValidationError
 from foundation.models.user import UserBanRecord
 from foundation.value_objects import UserId
+from pony.orm import db_session
 from web_app.authentication.helpers import revoke_all_tokens
 from werkzeug.local import LocalProxy
 
@@ -55,8 +56,9 @@ class UserFacade:
         current_user_id = get_jwt_identity()
         return user_id == UUID(current_user_id)
 
+    @db_session
     def ban_user(self, input_dto: BanUserInputDto) -> BanUserOutputDto:
-        user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_none=True)
+        user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_not_found=True)
 
         if self.executes_self_action(user.id):
             raise DomainValidationError({"msg": _("You cannot ban yourself.")})
@@ -85,8 +87,9 @@ class UserFacade:
             is_banned=True,
         )
 
+    @db_session
     def unban_user(self, input_dto: UnbanUserInputDto) -> UnbanUserOutputDto:
-        user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_none=True)
+        user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_not_found=True)
 
         if self.executes_self_action(user.id):
             raise DomainValidationError({"msg": _("You cannot unban yourself.")})
