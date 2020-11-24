@@ -70,7 +70,7 @@ class SQLTaskRepository(TaskRepository):
         ]
 
     def _persist_new_orm_task(self, task_entity: Task) -> None:
-        if TaskModel.exists(project=task_entity.project_id, name=task_entity.name):
+        if TaskModel.exists(project=task_entity.project_id, name=task_entity.name, status=TaskStatus.ACTIVE.value):
             raise AlreadyExists(
                 {
                     "name": [

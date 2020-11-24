@@ -65,7 +65,7 @@ class CompleteRepeatableTaskStrategy(CompleteTaskStrategy):
     def _produce_task_for_next_due_date(old_task: Task) -> Task:
         new_task = deepcopy(old_task)
         new_task.id = uuid.uuid4()
-        new_task.due_date = old_task.next_due_date
+        new_task.due_date = new_task.next_due_date
         return new_task
 
 
