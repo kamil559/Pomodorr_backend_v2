@@ -63,6 +63,9 @@ class Color:
     def __post_init__(self) -> None:
         self.clean()
 
+    def __len__(self):
+        return len(self.hex)
+
 
 @dataclass
 class Priority:

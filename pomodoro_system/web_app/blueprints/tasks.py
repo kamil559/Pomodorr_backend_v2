@@ -112,7 +112,7 @@ def get_task_list(
 def create_task(project_protector: ProjectProtector, task_repository: TaskRepository) -> Response:
     try:
         new_task = TaskRestSchema(many=False).load(request.json)
-        project_protector.authorize(UUID(get_jwt_identity()), new_task.project_id)
+        project_protector.authorize(UUID(get_jwt_identity()), new_task.project_id, abort_request=False)
     except (DomainValidationError, ValidationError) as error:
         return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
 
@@ -234,7 +234,7 @@ def pin_task_to_project(
     input_dto: PinTaskToProjectInputDto = get_dto_or_abort(PinTaskToProjectSchema, {"id": task_id})
 
     task_protector.authorize(UUID(get_jwt_identity()), task_id)
-    project_protector.authorize(UUID(get_jwt_identity()), input_dto.new_project_id)
+    project_protector.authorize(UUID(get_jwt_identity()), input_dto.new_project_id, abort_request=False)
 
     pin_task_to_project_uc.execute(input_dto)
     return presenter.response

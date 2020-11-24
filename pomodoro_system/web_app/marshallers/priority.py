@@ -4,7 +4,7 @@ from web_app.marshallers.fields.color import ColorField
 
 
 class PrioritySchema(Schema):
-    color = ColorField(required=True, allow_none=False)
+    color = ColorField(required=True, allow_none=False, validate=validate.Length(min=1, max=7))
     priority_level = fields.Integer(
         required=False,
         allow_none=True,

@@ -5,7 +5,7 @@ from foundation.value_objects import Color
 from marshmallow import ValidationError, fields
 
 
-class ColorField(fields.Field):
+class ColorField(fields.String):
     def _serialize(self, value: Any, attr: str, obj: Any, **kwargs) -> str:
         return getattr(value, "hex", Color().hex)
 

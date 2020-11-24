@@ -33,8 +33,8 @@ class SQLPomodoroRepository(PomodoroRepository):
 
     @staticmethod
     def _persist_new_orm_pomodoro(pomodoro_entity: Pomodoro) -> None:
-        if PomodoroModel.exists(id=pomodoro_entity.id):
-            raise AlreadyExists(_("Pomodoro already exists."))
+        if PomodoroModel.exists(id=pomodoro_entity.id, start_date=pomodoro_entity.start_date):
+            raise AlreadyExists({"start_date": [_("Pomodoro already exists.")]})
         else:
             orm_pomodoro = PomodoroModel(
                 id=pomodoro_entity.id,

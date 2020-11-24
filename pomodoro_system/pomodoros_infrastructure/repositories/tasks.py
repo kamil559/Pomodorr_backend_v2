@@ -70,8 +70,14 @@ class SQLTaskRepository(TaskRepository):
         ]
 
     def _persist_new_orm_task(self, task_entity: Task) -> None:
-        if TaskModel.exists(id=task_entity.id):
-            raise AlreadyExists(_("Task already exists."))
+        if TaskModel.exists(project=task_entity.project_id, name=task_entity.name):
+            raise AlreadyExists(
+                {
+                    "name": [
+                        _("Task with name '{name}' already exists within the project.").format(name=task_entity.name)
+                    ]
+                }
+            )
         else:
             priority = task_entity.priority
 

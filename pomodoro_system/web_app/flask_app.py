@@ -10,7 +10,7 @@ from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_security import Security
-from foundation.exceptions import NotFound
+from foundation.exceptions import AlreadyExists, NotFound
 from foundation.models import User, db
 from foundation.value_objects import UserId
 from injector import Injector
@@ -192,6 +192,13 @@ def create_app() -> Flask:
         return (
             jsonify({"msg": str(error) or _("The requested resource was not found in the database.")}),
             http.HTTPStatus.NOT_FOUND,
+        )
+
+    @flask_app.errorhandler(AlreadyExists)
+    def object_already_exists_handler(error):
+        return (
+            jsonify(error.messages),
+            http.HTTPStatus.BAD_REQUEST,
         )
 
     return flask_app
