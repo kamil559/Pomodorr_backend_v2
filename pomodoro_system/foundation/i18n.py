@@ -1,16 +1,9 @@
 import builtins
-from collections import UserString
 
 
-class RuntimeTranslatedString(UserString):
-    def __str__(self):
-        _ = builtins.__dict__.get("_")
-        return str(_(self.data))
+def N_(message) -> str:  # noqa
+    _ = builtins.__dict__.get("_") or None
 
-    def __repr__(self):
-        _ = builtins.__dict__.get("_")
-        return repr(_(self.data))
-
-
-def N_(message) -> RuntimeTranslatedString:  # noqa
-    return RuntimeTranslatedString(message)
+    if _ is not None:
+        return _(message)
+    return message
