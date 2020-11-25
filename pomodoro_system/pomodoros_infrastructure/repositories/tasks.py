@@ -1,7 +1,7 @@
-from gettext import gettext as _
 from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
+from foundation.i18n import N_
 from foundation.utils import to_utc, with_tzinfo
 from foundation.value_objects import Color, DateFrameDefinition, Priority, PriorityLevel
 from pomodoros import TaskId, TaskRepository
@@ -74,7 +74,7 @@ class SQLTaskRepository(TaskRepository):
             raise AlreadyExists(
                 {
                     "name": [
-                        _("Task with name '{name}' already exists within the project.").format(name=task_entity.name)
+                        N_("Task with name '{name}' already exists within the project.").format(name=task_entity.name)
                     ]
                 }
             )
@@ -149,7 +149,7 @@ class SQLTaskRepository(TaskRepository):
         try:
             orm_task = TaskModel[task_id]
         except ObjectNotFound:
-            raise NotFound(_("Task does not exist."))
+            raise NotFound(N_("Task does not exist."))
         else:
             return self.to_domain_entity(orm_task)
 

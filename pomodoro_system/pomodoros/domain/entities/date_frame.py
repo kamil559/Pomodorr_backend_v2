@@ -1,7 +1,7 @@
 from datetime import datetime
-from gettext import gettext as _
 from typing import Optional
 
+from foundation.i18n import N_
 from pomodoros.domain.exceptions import DateFrameIsAlreadyFinished, StartDateGreaterThanEndDate
 from pomodoros.domain.value_objects import FrameType
 
@@ -40,11 +40,9 @@ class DateFrame:
                 self.end_date is not None,
             ]
         ):
-            raise DateFrameIsAlreadyFinished(_("pomodoros.domain.entities.date_frame.date_frame_is_already_finished"))
+            raise DateFrameIsAlreadyFinished(N_("Date frame is already finished."))
 
     @staticmethod
     def _check_start_date_greater_than_end_date(start_date: datetime, end_date: datetime) -> None:
         if start_date > end_date:
-            raise StartDateGreaterThanEndDate(
-                _("pomodoros.domain.entities.date_frame.start_date_greater_than_end_date")
-            )
+            raise StartDateGreaterThanEndDate(N_("Start date cannot be greater than end date."))

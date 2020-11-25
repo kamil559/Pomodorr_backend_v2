@@ -1,11 +1,11 @@
 from datetime import datetime
-from gettext import gettext as _
 from typing import List, Optional, Type
 
 import pytz
 from flask import current_app, request
 from flask_jwt_extended import decode_token
 from foundation.exceptions import NotFound
+from foundation.i18n import N_
 from pony.orm import ObjectNotFound, desc
 from web_app.authentication.models.token import Token
 
@@ -51,7 +51,7 @@ def get_token(**filter_kwargs) -> Optional[Type[Token]]:
     try:
         return Token.select().filter(**filter_kwargs).get()
     except ObjectNotFound:
-        raise NotFound(_("The token was not found."))
+        raise NotFound(N_("The token was not found."))
 
 
 def get_user_tokens(user_identity, **additional_filters) -> List[Token]:

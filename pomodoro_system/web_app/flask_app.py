@@ -1,16 +1,18 @@
 import http
 import os
-from gettext import gettext as _
 
 from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_apispec import FlaskApiSpec
+from flask_babelex import Babel, Domain
 from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
+from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_mail import Mail
 from flask_security import Security
 from foundation.exceptions import AlreadyExists, NotFound
+from foundation.i18n import N_
 from foundation.models import User, db
 from foundation.value_objects import UserId
 from injector import Injector
@@ -130,6 +132,9 @@ def create_app() -> Flask:
 
     inject_dependencies(flask_app, pomodoro_app_context.injector)  # Needs to be injected after the blueprints are set
 
+    babel_domain = Domain(dirname="locale", domain="messages")
+    babel = Babel(flask_app, default_locale="pl", default_domain=babel_domain)
+
     Pony(flask_app)
 
     user_data_store = PonyORMUserDatastore(db=db, user_model=db.User, role_model=db.Role)
@@ -141,6 +146,10 @@ def create_app() -> Flask:
     jwt = JWTManager(app=flask_app)
 
     add_flask_commands(flask_app)
+
+    @babel.localeselector
+    def get_locale():
+        return request.accept_languages.best_match(("en", "pl"))
 
     @jwt.user_claims_loader
     def user_claims_to_access_token(user: User) -> dict:
@@ -155,32 +164,41 @@ def create_app() -> Flask:
         return is_token_revoked(decrypted_token)
 
     @flask_app.errorhandler(http.HTTPStatus.UNAUTHORIZED)
-    def unauthorized_handler(error):
+    def unauthorized_404_handler(_error):
         return (
-            jsonify({"msg": str(error) or _("You may not access the requested resource unless you log in.")}),
+            jsonify({"msg": str(N_("You may not access the requested resource unless you log in."))}),
+            http.HTTPStatus.UNAUTHORIZED,
+        )
+
+    @flask_app.errorhandler(NoAuthorizationError)
+    def unauthorized_handler(_error):
+        return (
+            jsonify({"msg": str(N_("You may not access the requested resource unless you log in."))}),
             http.HTTPStatus.UNAUTHORIZED,
         )
 
     @flask_app.errorhandler(http.HTTPStatus.FORBIDDEN)
     def forbidden_handler(error):
         return (
-            jsonify({"msg": str(error) or _("You don't have the permission to access the requested resource.")}),
+            jsonify({"msg": str(error or N_("You don't have the permission to access the requested resource."))}),
             http.HTTPStatus.FORBIDDEN,
         )
 
     @flask_app.errorhandler(http.HTTPStatus.NOT_FOUND)
-    def not_found_handler(error):
-        return jsonify({"msg": str(error) or _("The requested URL was not found.")}), http.HTTPStatus.NOT_FOUND
+    def not_found_handler(_error):
+        return jsonify({"msg": str(N_("The requested URL was not found."))}), http.HTTPStatus.NOT_FOUND
 
     @flask_app.errorhandler(http.HTTPStatus.INTERNAL_SERVER_ERROR)
     def internal_server_error_handler(error):
         return (
             jsonify(
                 {
-                    "msg": str(error)
-                    or _(
-                        "Something went wrong. "
-                        "Should the issue remain for a longer period, please contact the administrator."
+                    "msg": str(
+                        error
+                        or N_(
+                            "Something went wrong. "
+                            "Should the issue remain for a longer period, please contact the administrator."
+                        )
                     )
                 }
             ),
@@ -190,7 +208,7 @@ def create_app() -> Flask:
     @flask_app.errorhandler(NotFound)
     def repo_not_found_handler(error):
         return (
-            jsonify({"msg": str(error) or _("The requested resource was not found in the database.")}),
+            jsonify({"msg": str(error or N_("The requested resource was not found in the database."))}),
             http.HTTPStatus.NOT_FOUND,
         )
 

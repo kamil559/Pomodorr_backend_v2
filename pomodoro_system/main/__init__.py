@@ -1,3 +1,4 @@
+import gettext
 import os
 from dataclasses import dataclass
 
@@ -49,6 +50,11 @@ def load_env_variables():
         load_dotenv(dotenv_path=get_config_file_path("MAIL_CONFIG"), override=True)
 
 
+def setup_i18n() -> None:
+    t = gettext.translation("messages", "locale", languages=["en", "pl"])
+    t.install()
+
+
 def initialize_application() -> Application:
     load_env_variables()
 
@@ -57,6 +63,8 @@ def initialize_application() -> Application:
         "debug": bool(int(os.getenv("DEBUG", False))),
         "staging": bool(int(os.getenv("STAGING", False))),
     }
+
+    setup_i18n()
 
     dependency_injector = inject_dependencies()
 

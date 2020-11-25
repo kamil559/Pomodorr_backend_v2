@@ -25,6 +25,7 @@ Flask-Security-Too = "3.4.4"
 flask-apispec = "0.11.0"
 marshmallow-dataclass = {extras = ["enum", "union"], version = "^8.1.0"}
 Flask-JWT-Extended = "3.24.1"
+Flask-BabelPlus = "2.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "4.6.10"

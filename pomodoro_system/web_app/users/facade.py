@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
-from gettext import gettext as _
 from typing import Optional, Type
 from uuid import UUID
 
 from flask import current_app
 from flask_jwt_extended import get_jwt_identity
 from foundation.exceptions import DomainValidationError
+from foundation.i18n import N_
 from foundation.models.user import User, UserBanRecord
 from foundation.value_objects import UserId
 from pony.orm import db_session
@@ -62,10 +62,10 @@ class UserFacade:
         user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_not_found=True)
 
         if self.executes_self_action(user.id):
-            raise DomainValidationError({"msg": _("You cannot ban yourself.")})
+            raise DomainValidationError({"msg": N_("You cannot ban yourself.")})
 
         if user.is_banned:
-            raise DomainValidationError({"msg": _("The user is already banned.")})
+            raise DomainValidationError({"msg": N_("The user is already banned.")})
 
         user.active = False
         ban_record = UserBanRecord(
@@ -94,10 +94,10 @@ class UserFacade:
         user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_not_found=True)
 
         if self.executes_self_action(user.id):
-            raise DomainValidationError({"msg": _("You cannot unban yourself.")})
+            raise DomainValidationError({"msg": N_("You cannot unban yourself.")})
 
         if not user.is_banned:
-            raise DomainValidationError({"msg": _("The user is not currently banned.")})
+            raise DomainValidationError({"msg": N_("The user is not currently banned.")})
 
         user.active = True
         ban_record = user.current_ban_record
@@ -117,7 +117,7 @@ class UserFacade:
     @staticmethod
     def send_unban_mail(user, manually_unbanned_at):
         _security._send_mail(
-            subject=_("Account unblocked"),
+            subject=N_("Account unblocked"),
             recipient=user.email,
             template="user_unbanned",
             email=user.email,
@@ -127,7 +127,7 @@ class UserFacade:
     @staticmethod
     def send_ban_email(user: Type[User], ban_record: Type[UserBanRecord]) -> None:
         _security._send_mail(
-            subject=_("Account blocked"),
+            subject=N_("Account blocked"),
             recipient=user.email,
             template="user_banned",
             email=user.email,

@@ -1,7 +1,7 @@
-from gettext import gettext as _
 from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
+from foundation.i18n import N_
 from foundation.utils import to_utc, with_tzinfo
 from pomodoros import PomodoroId, PomodoroRepository
 from pomodoros.domain.entities.pause import Pause
@@ -34,7 +34,7 @@ class SQLPomodoroRepository(PomodoroRepository):
     @staticmethod
     def _persist_new_orm_pomodoro(pomodoro_entity: Pomodoro) -> None:
         if PomodoroModel.exists(id=pomodoro_entity.id, start_date=pomodoro_entity.start_date):
-            raise AlreadyExists({"start_date": [_("Pomodoro already exists.")]})
+            raise AlreadyExists({"start_date": [N_("Pomodoro already exists.")]})
         else:
             orm_pomodoro = PomodoroModel(
                 id=pomodoro_entity.id,
@@ -87,7 +87,7 @@ class SQLPomodoroRepository(PomodoroRepository):
         try:
             orm_pomodoro = PomodoroModel[pomodoro_id]
         except ObjectNotFound:
-            raise NotFound(_("Pomodoro does not exist."))
+            raise NotFound(N_("Pomodoro does not exist."))
         else:
             return self.to_domain_entity(orm_pomodoro)
 

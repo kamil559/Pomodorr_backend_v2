@@ -3,10 +3,10 @@ import uuid
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from gettext import gettext as _
 from typing import TypeVar
 
 from foundation.exceptions import ValueValidationError
+from foundation.i18n import N_
 
 PomodoroLength = timedelta
 BreakLength = timedelta
@@ -55,10 +55,10 @@ class Color:
     def clean(self) -> None:
         if self.hex != DefaultColorHex:
             if not isinstance(self.hex, str):
-                raise ValueValidationError(_("Color type must be string."))
+                raise ValueValidationError(N_("Color type must be string."))
 
             if not re.compile("^#?((?:[0-F]{3}){1,2})$", re.IGNORECASE).match(self.hex):
-                raise ValueValidationError(_("Invalid rgb hex value."))
+                raise ValueValidationError(N_("Invalid rgb hex value."))
 
     def __post_init__(self) -> None:
         self.clean()

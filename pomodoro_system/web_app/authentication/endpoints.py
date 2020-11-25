@@ -1,7 +1,6 @@
 import http
 import uuid
 from datetime import datetime
-from gettext import gettext as _
 
 from flask import Response, current_app, jsonify, request
 from flask_apispec import doc, marshal_with, use_kwargs
@@ -17,6 +16,7 @@ from flask_security import ChangePasswordForm, LoginForm
 from flask_security.changeable import change_user_password
 from flask_security.utils import json_error_response, login_user, suppress_form_csrf
 from foundation.exceptions import DomainValidationError
+from foundation.i18n import N_
 from foundation.utils import to_utc
 from marshmallow import Schema, ValidationError, fields
 from web_app.authentication.helpers import add_token_to_database, get_token, get_user_tokens, update_token
@@ -126,7 +126,7 @@ def logout() -> Response:
     token = get_token(jti=jti)
     update_token(token, {"revoked": True})
 
-    return _security._render_json({"msg": _("You've been logged out.")}, http.HTTPStatus.OK, headers=None, user=None)
+    return _security._render_json({"msg": N_("You've been logged out.")}, http.HTTPStatus.OK, headers=None, user=None)
 
 
 @doc(
@@ -159,7 +159,7 @@ def change_password() -> Response:
 
         if user is not None:
             payload["user"] = user.get_security_payload()
-            payload["result"] = _("The password has been changed successfully.")
+            payload["result"] = N_("The password has been changed successfully.")
 
     return _security._render_json(payload, code, headers=None, user=user)
 

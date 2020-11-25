@@ -38,3 +38,13 @@ check_linting:
 .PHONY: install_git_hooks
 install_git_hooks:
 	pre-commit install
+
+
+.PHONY: extract_messages
+extract_messages:
+	pybabel extract -F ./babel.cfg -o ./pomodoro_system/locale/messages.pot .
+
+
+.PHONY: compile_translations
+compile_translations:
+	pybabel compile -d ./pomodoro_system/locale

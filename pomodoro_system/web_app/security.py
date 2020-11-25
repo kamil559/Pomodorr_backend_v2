@@ -1,9 +1,9 @@
 import uuid
-from gettext import gettext as _
 
 from flask_security import PonyUserDatastore
 from flask_security.utils import get_identity_attributes
 from foundation.exceptions import NotFound
+from foundation.i18n import N_
 from pony.orm import db_session
 
 
@@ -42,4 +42,4 @@ class PonyORMUserDatastore(PonyUserDatastore):
                 return user
             else:
                 if raise_if_not_found:
-                    raise NotFound({_("User does not exist.")})
+                    raise NotFound({N_("User does not exist.")})

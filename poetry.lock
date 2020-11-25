@@ -291,6 +291,18 @@ Jinja2 = ">=2.5"
 speaklater = ">=1.2"
 
 [[package]]
+name = "flask-babelplus"
+version = "2.2.0"
+description = "Adds i18n/l10n support to Flask applications"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Babel = ">=2.0"
+Flask = ">=1.0"
+
+[[package]]
 name = "flask-injector"
 version = "0.12.3"
 description = "Adds Injector, a Dependency Injection framework, support to Flask."
@@ -485,7 +497,7 @@ tests = ["pytest", "pytz", "simplejson"]
 
 [[package]]
 name = "marshmallow-dataclass"
-version = "8.2.0"
+version = "8.3.0"
 description = "Python library to convert dataclasses into marshmallow schemas."
 category = "main"
 optional = false
@@ -958,7 +970,7 @@ locale = ["Babel (>=1.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "7fb5862d40eb253899a8cafd900df1a0483f755279c8807fd74158dd5c83c647"
+content-hash = "bf95be10102205fd51c3eb4b59c46a693b3adc5395e11e09ca27389301c89dca"
 
 [metadata.files]
 apispec = [
@@ -1125,6 +1137,10 @@ flask-babelex = [
     {file = "Flask-BabelEx-0.9.4.tar.gz", hash = "sha256:39a59ccee9386a9d52d80b9101224402036aedc2c7873b11deef6e4e21cace27"},
     {file = "Flask_BabelEx-0.9.4-py3-none-any.whl", hash = "sha256:f744d0557cb04cafed733cfa96e7373b46263d4cf79a2c5988c65085f360d873"},
 ]
+flask-babelplus = [
+    {file = "Flask-BabelPlus-2.2.0.tar.gz", hash = "sha256:6791c4d6c644bb485b6b666f422a870f9ce9cb0c606ce9e1cb682174123fd970"},
+    {file = "Flask_BabelPlus-2.2.0-py2.py3-none-any.whl", hash = "sha256:6610dc53808cc0fd00213b553871a6a6c170a08015774a31ff8bf3ba893ff655"},
+]
 flask-injector = [
     {file = "Flask-Injector-0.12.3.tar.gz", hash = "sha256:82f5bf1245f6fbdbd19eeea4289fe35a3417a8ce05f710847a2f96b771a8085c"},
     {file = "Flask_Injector-0.12.3-py2.py3-none-any.whl", hash = "sha256:d0a5449b7d5f67f259a97e27dfb1111b48cfa418bce29d01c3beaa3493e248e4"},
@@ -1236,8 +1252,8 @@ marshmallow = [
     {file = "marshmallow-3.8.0.tar.gz", hash = "sha256:47911dd7c641a27160f0df5fd0fe94667160ffe97f70a42c3cc18388d86098cc"},
 ]
 marshmallow-dataclass = [
-    {file = "marshmallow_dataclass-8.2.0-py3-none-any.whl", hash = "sha256:5f854dead81e2eb3e2734d0d65568a953d7487be314be3eefebae5ad1239396e"},
-    {file = "marshmallow_dataclass-8.2.0.tar.gz", hash = "sha256:8d004657724a7266c4aef62e2c06f5a82bdf2d6d25707d994b35e7f3ea5d077e"},
+    {file = "marshmallow_dataclass-8.3.0-py3-none-any.whl", hash = "sha256:08b69ce7504b96a6f382dfc08976d03865aeb296687a5bf3855a1eb2c555d0a9"},
+    {file = "marshmallow_dataclass-8.3.0.tar.gz", hash = "sha256:d64446f3c307796001cea0f0154ab9ded817b1dc273d610bf6e47483d04414e6"},
 ]
 marshmallow-enum = [
     {file = "marshmallow-enum-1.5.1.tar.gz", hash = "sha256:38e697e11f45a8e64b4a1e664000897c659b60aa57bfa18d44e226a9920b6e58"},

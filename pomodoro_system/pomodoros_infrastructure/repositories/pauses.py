@@ -1,7 +1,7 @@
-from gettext import gettext as _
 from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
+from foundation.i18n import N_
 from foundation.utils import to_utc, with_tzinfo
 from pomodoros.application.repositories.pauses import PauseRepository
 from pomodoros.domain.entities.pause import Pause
@@ -22,7 +22,7 @@ class SQLPauseRepository(PauseRepository):
     @staticmethod
     def _persist_new_orm_pause(pause_entity: Pause) -> None:
         if PauseModel.exists(id=pause_entity.id, start_date=pause_entity.start_date):
-            raise AlreadyExists({"start_date": [_("Pause already exists.")]})
+            raise AlreadyExists({"start_date": [N_("Pause already exists.")]})
         else:
             Pause(
                 id=pause_entity.id,
@@ -48,7 +48,7 @@ class SQLPauseRepository(PauseRepository):
         try:
             orm_pause = PauseModel[pause_id]
         except ObjectNotFound:
-            raise NotFound(_("Pause does not exist."))
+            raise NotFound(N_("Pause does not exist."))
         else:
             return self.to_domain_entity(orm_pause)
 

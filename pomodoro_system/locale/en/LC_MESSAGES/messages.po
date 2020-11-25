@@ -1,0 +1,208 @@
+# English translations for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-11-25 18:48+0100\n"
+"PO-Revision-Date: 2020-11-25 21:57+0100\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: pomodoro_system/foundation/value_objects.py:58
+msgid "Color type must be string."
+msgstr ""
+
+#: pomodoro_system/foundation/value_objects.py:61
+msgid "Invalid rgb hex value."
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/date_frame.py:43
+msgid "pomodoros.domain.entities.date_frame.date_frame_is_already_finished"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/date_frame.py:49
+msgid "pomodoros.domain.entities.date_frame.start_date_greater_than_end_date"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:52
+msgid "pomodoros.domain.entities.pomodoro.no_action_allowed_on_finished_pomodoro"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:67
+msgid "pomodoros.domain.entities.pomodoro.pomodoro_error_margin_exceeded"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:111
+msgid "pomodoros.domain.entities.pomodoro.colliding_pomodoro_was_found"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/task.py:54
+msgid "pomodoros.domain.entities.task.no_action_allowed_on_completed_task"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/task.py:59
+msgid "pomodoros.domain.entities.task.task_already_active"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/task.py:63
+msgid "pomodoros.domain.entities.task.task_"
+msgstr ""
+
+#: pomodoro_system/pomodoros/domain/entities/task.py:70
+msgid "pomodoros.domain.entities.task.task_name_not_available_in_new_project"
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/pauses.py:25
+msgid "Pause already exists."
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/pauses.py:51
+msgid "Pause does not exist."
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:37
+msgid "Pomodoro already exists."
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:90
+msgid "Pomodoro does not exist."
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:33
+msgid "Project already exists."
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:69
+msgid "Project does not exist"
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/tasks.py:77
+msgid "Task with name '{name}' already exists within the project."
+msgstr ""
+
+#: pomodoro_system/pomodoros_infrastructure/repositories/tasks.py:152
+msgid "Task does not exist."
+msgstr ""
+
+#: pomodoro_system/web_app/flask_app.py:169
+msgid "You may not access the requested resource unless you log in."
+msgstr ""
+
+#: pomodoro_system/web_app/flask_app.py:176
+msgid "You don't have the permission to access the requested resource."
+msgstr ""
+
+#: pomodoro_system/web_app/flask_app.py:182
+msgid "The requested URL was not found."
+msgstr ""
+
+#: pomodoro_system/web_app/flask_app.py:190
+msgid ""
+"Something went wrong. Should the issue remain for a longer period, please"
+" contact the administrator."
+msgstr ""
+
+#: pomodoro_system/web_app/flask_app.py:202
+msgid "The requested resource was not found in the database."
+msgstr ""
+
+#: pomodoro_system/web_app/security.py:45
+msgid "User does not exist."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/endpoints.py:129
+msgid "You've been logged out."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/endpoints.py:162
+msgid "The password has been changed successfully."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/helpers.py:54
+msgid "The token was not found."
+msgstr ""
+
+#: pomodoro_system/web_app/authorization/pomodoros.py:23
+msgid "Selected pomodoro does not exist."
+msgstr ""
+
+#: pomodoro_system/web_app/authorization/projects.py:25
+msgid "Selected project does not exist."
+msgstr ""
+
+#: pomodoro_system/web_app/authorization/token.py:23
+msgid "Selected token does not exist."
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_banned.html:1
+#: pomodoro_system/web_app/templates/security/email/user_unbanned.html:1
+#, python-format
+msgid "Dear %(email)s!"
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_banned.html:3
+msgid "You have received this email because Your account has been blocked."
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_banned.html:6
+msgid ""
+"Your account has been banned permanently, for further information please "
+"contact the administrator."
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_banned.html:8
+#, python-format
+msgid ""
+"Your account has been banned temporarily and will be active again on "
+"%(banned_until) s(UTC)."
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_banned.html:12
+msgid "Account lock reason:"
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_unbanned.html:3
+msgid "You have received this email because Your account has been unblocked."
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/user_unbanned.html:5
+#, python-format
+msgid ""
+"Your account has been unblocked at %(manually_unbanned_at) s(UTC) and "
+"you're free to use it again!"
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:65
+msgid "You cannot ban yourself."
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:68
+msgid "The user is already banned."
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:97
+msgid "You cannot unban yourself."
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:100
+msgid "The user is not currently banned."
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:120
+msgid "Account unblocked"
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:130
+msgid "Account blocked"
+msgstr ""
+

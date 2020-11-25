@@ -1,8 +1,8 @@
 from datetime import datetime
-from gettext import gettext as _
 from typing import Optional, Type
 
 from foundation.exceptions import AlreadyExists, NotFound
+from foundation.i18n import N_
 from foundation.utils import to_utc, with_tzinfo
 from foundation.value_objects import Color, Priority, PriorityLevel
 from pomodoros import ProjectId, ProjectRepository
@@ -30,7 +30,7 @@ class SQLProjectRepository(ProjectRepository):
     @staticmethod
     def _persist_new_orm_project(project_entity: Project) -> None:
         if ProjectModel.exists(owner=project_entity.owner_id, name=project_entity.name):
-            raise AlreadyExists({"name": [_("Project already exists.")]})
+            raise AlreadyExists({"name": [N_("Project already exists.")]})
         else:
             priority = project_entity.priority
             return ProjectModel(
@@ -66,7 +66,7 @@ class SQLProjectRepository(ProjectRepository):
             if orm_project.is_removed:
                 raise ObjectNotFound
         except ObjectNotFound:
-            raise NotFound(_("Project does not exist"))
+            raise NotFound(N_("Project does not exist"))
         else:
             return self.to_domain_entity(orm_project)
 
