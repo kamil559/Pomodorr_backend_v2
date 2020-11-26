@@ -12,7 +12,7 @@ from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_mail import Mail
 from flask_security import Security
 from foundation.exceptions import AlreadyExists, NotFound
-from foundation.i18n import N_
+from foundation.i18n import N_, setup_i18n
 from foundation.models import User, db
 from foundation.value_objects import UserId
 from injector import Injector
@@ -120,6 +120,8 @@ def create_app() -> Flask:
         TESTING=pomodoro_app_context.settings["testing"],
         STAGING=pomodoro_app_context.settings["staging"],
         SECRET_KEY=os.getenv("SECRET_KEY"),
+        DEFAULT_LANGUAGE="en",
+        ALLOWED_LANGUAGES={"en", "pl"},
     )
 
     additional_settings = load_flask_app_settings(pomodoro_app_context.settings)
@@ -133,7 +135,7 @@ def create_app() -> Flask:
     inject_dependencies(flask_app, pomodoro_app_context.injector)  # Needs to be injected after the blueprints are set
 
     babel_domain = Domain(dirname="locale", domain="messages")
-    babel = Babel(flask_app, default_locale="pl", default_domain=babel_domain)
+    Babel(flask_app, default_locale="pl", default_domain=babel_domain)
 
     Pony(flask_app)
 
@@ -147,10 +149,6 @@ def create_app() -> Flask:
 
     add_flask_commands(flask_app)
 
-    @babel.localeselector
-    def get_locale():
-        return request.accept_languages.best_match(("en", "pl"))
-
     @jwt.user_claims_loader
     def user_claims_to_access_token(user: User) -> dict:
         return {"roles": [role.name for role in user.roles]}
@@ -162,6 +160,11 @@ def create_app() -> Flask:
     @jwt.token_in_blacklist_loader
     def check_if_token_revoked(decrypted_token) -> bool:
         return is_token_revoked(decrypted_token)
+
+    @flask_app.before_request
+    def before():
+        language = request.accept_languages.best_match(flask_app.config["ALLOWED_LANGUAGES"])
+        setup_i18n(language or flask_app.config["DEFAULT_LANGUAGE"])
 
     @flask_app.errorhandler(http.HTTPStatus.UNAUTHORIZED)
     def unauthorized_404_handler(_error):
