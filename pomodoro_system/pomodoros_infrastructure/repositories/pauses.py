@@ -22,7 +22,7 @@ class SQLPauseRepository(PauseRepository):
     @staticmethod
     def _persist_new_orm_pause(pause_entity: Pause) -> None:
         if PauseModel.exists(id=pause_entity.id, start_date=pause_entity.start_date):
-            raise AlreadyExists({"start_date": [N_("Pause already exists.")]})
+            raise AlreadyExists({"start_date": [N_("Pause with start date %(start_date)s already exists.")]})
         else:
             Pause(
                 id=pause_entity.id,

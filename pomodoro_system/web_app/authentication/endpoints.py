@@ -24,6 +24,7 @@ from web_app.authentication.marshallers import TokenSchema, UserBanRecordSchema,
 from web_app.authorization.decorators import roles_required
 from web_app.authorization.token import TokenProtector
 from web_app.docs_definitions.auth import auth_header_definition
+from web_app.docs_definitions.language import language_header_definition
 from web_app.users.facade import UserFacade
 from web_app.utils import RegistrableBlueprint, get_dto_or_abort
 from werkzeug.datastructures import MultiDict
@@ -113,7 +114,7 @@ def login() -> Response:
 
 @doc(
     description="Logout by revoking the unexpired token.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(None, http.HTTPStatus.OK, description="The token has been revoked ")
@@ -131,7 +132,7 @@ def logout() -> Response:
 
 @doc(
     description="Change password.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(ChangePasswordResponseSchema, http.HTTPStatus.OK)
@@ -166,7 +167,7 @@ def change_password() -> Response:
 
 @doc(
     description="Retrieve access based on the refresh token.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(LoginSchema(only=("access_token",)), http.HTTPStatus.OK)
@@ -183,7 +184,7 @@ def refresh() -> Response:
 
 @doc(
     description="Retrieve token list.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(TokenSchema, http.HTTPStatus.OK)
@@ -196,7 +197,7 @@ def token_list() -> Response:
 
 @doc(
     description="Revoke or legalize token by passing the boolean value for 'revoked' key.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(TokenSchema, http.HTTPStatus.OK)
@@ -217,7 +218,7 @@ def revoke_or_legalize_token(token_id: uuid.UUID, token_protector: TokenProtecto
 
 @doc(
     description="Ban user for a given period of time or permanently.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(UserBanRecordSchema, http.HTTPStatus.OK)
@@ -236,7 +237,7 @@ def ban_user(user_facade: UserFacade) -> Response:
 
 @doc(
     description="Unban user with user_id specified in url.",
-    params={**auth_header_definition},
+    params={**auth_header_definition, **language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(UserUnbanSchema, http.HTTPStatus.OK)

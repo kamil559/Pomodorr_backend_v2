@@ -183,7 +183,7 @@ def create_app() -> Flask:
     @flask_app.errorhandler(http.HTTPStatus.FORBIDDEN)
     def forbidden_handler(error):
         return (
-            jsonify({"msg": str(error or N_("You don't have the permission to access the requested resource."))}),
+            jsonify({"msg": str(error or N_("You don't have the permission to perform the action."))}),
             http.HTTPStatus.FORBIDDEN,
         )
 
@@ -211,7 +211,7 @@ def create_app() -> Flask:
     @flask_app.errorhandler(NotFound)
     def repo_not_found_handler(error):
         return (
-            jsonify({"msg": str(error or N_("The requested resource was not found in the database."))}),
+            jsonify({"msg": str(error or N_("The requested resource was not found."))}),
             http.HTTPStatus.NOT_FOUND,
         )
 

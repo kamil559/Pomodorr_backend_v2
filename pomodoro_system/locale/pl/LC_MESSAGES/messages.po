@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-25 15:58+0100\n"
+"POT-Creation-Date: 2020-11-26 17:23+0100\n"
 "PO-Revision-Date: 2020-11-25 16:03+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -28,118 +28,127 @@ msgid "Invalid rgb hex value."
 msgstr "Nieprawidłowa wartość rgb hex."
 
 #: pomodoro_system/pomodoros/domain/entities/date_frame.py:43
-msgid "pomodoros.domain.entities.date_frame.date_frame_is_already_finished"
-msgstr ""
+msgid "Date frame is already finished."
+msgstr "Ramka czasu jest już zakończona."
 
-#: pomodoro_system/pomodoros/domain/entities/date_frame.py:49
-msgid "pomodoros.domain.entities.date_frame.start_date_greater_than_end_date"
-msgstr ""
+#: pomodoro_system/pomodoros/domain/entities/date_frame.py:48
+msgid "Start date cannot be greater than end date."
+msgstr "Data początkowa nie może być większa, niż data końcowa."
 
 #: pomodoro_system/pomodoros/domain/entities/pomodoro.py:52
-msgid "pomodoros.domain.entities.pomodoro.no_action_allowed_on_finished_pomodoro"
-msgstr ""
+msgid "No action is allowed on finished pomodoro."
+msgstr "Nie można wykonać operacji na zakończonym pomodorze."
 
 #: pomodoro_system/pomodoros/domain/entities/pomodoro.py:67
-msgid "pomodoros.domain.entities.pomodoro.pomodoro_error_margin_exceeded"
-msgstr ""
+msgid "Pomodoro duration's error margin has been exceeded."
+msgstr "Margines błędu czasu trwania pomodora został przekroczony."
 
 #: pomodoro_system/pomodoros/domain/entities/pomodoro.py:111
-msgid "pomodoros.domain.entities.pomodoro.colliding_pomodoro_was_found"
-msgstr ""
+msgid "Colliding pomodoro was found."
+msgstr "Kolidujący pomodoro został znaleziony."
 
-#: pomodoro_system/pomodoros/domain/entities/task.py:54
-msgid "pomodoros.domain.entities.task.no_action_allowed_on_completed_task"
-msgstr ""
+#: pomodoro_system/pomodoros/domain/entities/task.py:53
+msgid "No action can be performed upon completed task."
+msgstr "Nie można wykonać operacji na zakończonym zadaniu."
 
-#: pomodoro_system/pomodoros/domain/entities/task.py:59
-msgid "pomodoros.domain.entities.task.task_already_active"
-msgstr ""
+#: pomodoro_system/pomodoros/domain/entities/task.py:57
+msgid "Task is already active."
+msgstr "Zadanie jest już aktywne."
 
-#: pomodoro_system/pomodoros/domain/entities/task.py:63
-msgid "pomodoros.domain.entities.task.task_"
-msgstr ""
+#: pomodoro_system/pomodoros/domain/entities/task.py:61
+msgid "Task is already completed."
+msgstr "Zadanie jest już zakończone."
 
-#: pomodoro_system/pomodoros/domain/entities/task.py:70
-msgid "pomodoros.domain.entities.task.task_name_not_available_in_new_project"
-msgstr ""
+#: pomodoro_system/pomodoros/domain/entities/task.py:68
+#, python-format
+msgid "The project already contains a task with name '%(name)s'."
+msgstr "Projekt już zawiera zadanie z nazwą '%(name)s'."
 
 #: pomodoro_system/pomodoros_infrastructure/repositories/pauses.py:25
-msgid "Pause already exists."
-msgstr ""
+#, python-format
+msgid "Pause with start date %(start_date)s already exists."
+msgstr "Pauza z datą początkową %(start_date)s już istnieje."
 
 #: pomodoro_system/pomodoros_infrastructure/repositories/pauses.py:51
 msgid "Pause does not exist."
-msgstr ""
+msgstr "Ta pauza nie istnieje"
 
 #: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:37
-msgid "Pomodoro already exists."
-msgstr ""
+#, python-format
+msgid "Pomodoro with start date %(start_date)s already exists."
+msgstr "Pomodoro z datą początkową %(start_date)s już istnieje."
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:90
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:91
 msgid "Pomodoro does not exist."
-msgstr ""
+msgstr "To pomodoro nie istnieje."
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:33
-msgid "Project already exists."
-msgstr ""
+#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:34
+#, python-format
+msgid "Project with name %(name)s already exists."
+msgstr "Projekt z nazwą %(name)s już istnieje."
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:69
+#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:70
 msgid "Project does not exist"
-msgstr ""
+msgstr "Projekt nie istnieje."
 
 #: pomodoro_system/pomodoros_infrastructure/repositories/tasks.py:77
 msgid "Task with name '{name}' already exists within the project."
-msgstr ""
+msgstr "Zadanie z nazwą '{name}' już istnieje dla tego projektu."
 
 #: pomodoro_system/pomodoros_infrastructure/repositories/tasks.py:152
 msgid "Task does not exist."
 msgstr "Zadanie nie istnieje."
 
-#: pomodoro_system/web_app/flask_app.py:167
+#: pomodoro_system/web_app/flask_app.py:172
+#: pomodoro_system/web_app/flask_app.py:179
 msgid "You may not access the requested resource unless you log in."
-msgstr "Możesz odwiedzić tę stronę tylko będąc zalogowanym."
+msgstr "Możesz odwiedzić tą stronę tylko będąc zalogowanym."
 
-#: pomodoro_system/web_app/flask_app.py:174
-msgid "You don't have the permission to access the requested resource."
-msgstr ""
+#: pomodoro_system/web_app/flask_app.py:186
+msgid "You don't have the permission to perform the action."
+msgstr "Nie masz uprawnień, aby wykonać tą czynność."
 
-#: pomodoro_system/web_app/flask_app.py:180
+#: pomodoro_system/web_app/flask_app.py:192
 msgid "The requested URL was not found."
-msgstr "Żądany adres nie został znaleziony. Jeśli adres został wprowadzony ręcznie, prosimy upewnić się, że jest on poprawny."
+msgstr ""
+"Żądany adres nie został znaleziony. Jeśli adres został wprowadzony "
+"ręcznie, prosimy upewnić się, że jest on poprawny."
 
-#: pomodoro_system/web_app/flask_app.py:188
+#: pomodoro_system/web_app/flask_app.py:201
 msgid ""
 "Something went wrong. Should the issue remain for a longer period, please"
 " contact the administrator."
 msgstr ""
+"Coś poszło nie tak. Jeśli problem będzie występować przez dłuższy czas, "
+"prosimy skontaktować się z administratorem."
 
-#: pomodoro_system/web_app/flask_app.py:200
-msgid "The requested resource was not found in the database."
-msgstr ""
+#: pomodoro_system/web_app/flask_app.py:214
+msgid "The requested resource was not found."
+msgstr "Żądany zasób nie został znaleziony."
 
 #: pomodoro_system/web_app/security.py:45
 msgid "User does not exist."
-msgstr ""
+msgstr "Użytkownik nie istnieje."
 
-#: pomodoro_system/web_app/authentication/endpoints.py:129
+#: pomodoro_system/web_app/authentication/endpoints.py:130
 msgid "You've been logged out."
-msgstr ""
+msgstr "Zostałeś wylogowany."
 
-#: pomodoro_system/web_app/authentication/endpoints.py:162
+#: pomodoro_system/web_app/authentication/endpoints.py:163
 msgid "The password has been changed successfully."
-msgstr ""
+msgstr "Hasło zostało zmienione pomyślnie."
 
 #: pomodoro_system/web_app/authentication/helpers.py:54
 msgid "The token was not found."
-msgstr ""
+msgstr "Token nie został znaleziony."
 
 #: pomodoro_system/web_app/authorization/pomodoros.py:23
 msgid "Selected pomodoro does not exist."
-msgstr ""
+msgstr "Wybrane pomodoro nie istnieje."
 
 #: pomodoro_system/web_app/authorization/projects.py:25
 msgid "Selected project does not exist."
-msgstr ""
+msgstr "Wybrany projekt nie istnieje."
 
 #: pomodoro_system/web_app/authorization/tasks.py:23
 msgid "Selected task does not exist."
@@ -147,23 +156,25 @@ msgstr "Wybrane zadanie nie istnieje."
 
 #: pomodoro_system/web_app/authorization/token.py:23
 msgid "Selected token does not exist."
-msgstr ""
+msgstr "Wybrany token nie istnieje."
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:1
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:1
 #, python-format
 msgid "Dear %(email)s!"
-msgstr ""
+msgstr "Drogi %(email)s"
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:3
 msgid "You have received this email because Your account has been blocked."
-msgstr ""
+msgstr "Otrzymałeś tą wiadomośc, ponieważ Twoje konto zostało zablokowane."
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:6
 msgid ""
-"Your account has been banned permanently, for further information please "
+"Your account has been banned permanently. For further information please "
 "contact the administrator."
 msgstr ""
+"Twoje konto zostało zablokowane permanentie. Po więcej informacji prosimy"
+" skontaktować się z administratorem. "
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:8
 #, python-format
@@ -171,14 +182,16 @@ msgid ""
 "Your account has been banned temporarily and will be active again on "
 "%(banned_until) s(UTC)."
 msgstr ""
+"Twoje konto zostało zablokowane tymczasowo i zostanie odblokowane "
+"%(banned_until) s(UTC)."
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:12
 msgid "Account lock reason:"
-msgstr ""
+msgstr "Przyczyna blokady konta:"
 
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:3
 msgid "You have received this email because Your account has been unblocked."
-msgstr ""
+msgstr "Otrzymałeś tą wiadomość, ponieważ Twoje konto zostało odblokowane."
 
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:5
 #, python-format
@@ -186,28 +199,29 @@ msgid ""
 "Your account has been unblocked at %(manually_unbanned_at) s(UTC) and "
 "you're free to use it again!"
 msgstr ""
+"Twoje konto zostało odblokowane %(manually_unbanned_at) s(UTC) i znów "
+"możesz z niego korzystać! "
 
 #: pomodoro_system/web_app/users/facade.py:65
 msgid "You cannot ban yourself."
-msgstr ""
+msgstr "Nie możesz zablokować sam siebie."
 
 #: pomodoro_system/web_app/users/facade.py:68
 msgid "The user is already banned."
-msgstr ""
+msgstr "Ten użytkownik jest już zablokowany."
 
 #: pomodoro_system/web_app/users/facade.py:97
 msgid "You cannot unban yourself."
-msgstr ""
+msgstr "Nie możesz odblokować sam siebie."
 
 #: pomodoro_system/web_app/users/facade.py:100
 msgid "The user is not currently banned."
-msgstr ""
+msgstr "Ten użytkownik nie jest obecnie zablokowany"
 
 #: pomodoro_system/web_app/users/facade.py:120
 msgid "Account unblocked"
-msgstr ""
+msgstr "Konto odblokowane"
 
 #: pomodoro_system/web_app/users/facade.py:130
 msgid "Account blocked"
-msgstr ""
-
+msgstr "Konto zablokowane"

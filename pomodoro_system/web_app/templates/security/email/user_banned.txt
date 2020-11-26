@@ -3,7 +3,7 @@
 {{ _('You have received this email because Your account has been blocked.') }}
 
 {% if is_permanent %}
-{{  _('Your account has been banned permanently, for further information please contact the administrator.') }}
+{{  _('Your account has been banned permanently. For further information please contact the administrator.') }}
 {% else %}
 {{ _('Your account has been banned temporarily and will be active again on %(banned_until) s(UTC).', banned_until=banned_until) }}
 {% endif %}

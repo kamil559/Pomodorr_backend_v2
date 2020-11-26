@@ -30,7 +30,9 @@ class SQLProjectRepository(ProjectRepository):
     @staticmethod
     def _persist_new_orm_project(project_entity: Project) -> None:
         if ProjectModel.exists(owner=project_entity.owner_id, name=project_entity.name):
-            raise AlreadyExists({"name": [N_("Project already exists.")]})
+            raise AlreadyExists(
+                {"name": [N_("Project with name %(name)s already exists.") % {"name": project_entity.name}]}
+            )
         else:
             priority = project_entity.priority
             return ProjectModel(

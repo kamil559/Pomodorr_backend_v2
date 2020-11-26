@@ -45,6 +45,11 @@ extract_messages:
 	pybabel extract -F ./babel.cfg -o ./pomodoro_system/locale/messages.pot .
 
 
+.PHONY: update_translations
+update_translations:
+	pybabel update -i ./pomodoro_system/locale/messages.pot -d ./pomodoro_system/locale
+
+
 .PHONY: compile_translations
 compile_translations:
 	pybabel compile -d ./pomodoro_system/locale
