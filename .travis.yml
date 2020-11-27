@@ -10,5 +10,7 @@ install:
 after_success:
   - codecov --token=${CODECOV_TOKEN}
 script:
+  - make extract_messages
+  - make compile_translations
   - make test_with_xml_coverage
   - make check_linting

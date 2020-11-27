@@ -18,6 +18,11 @@ jobs:
           paths:
             - /home/circleci/.cache/pypoetry/virtualenvs
       - run:
+          name: Extract and compile messages
+          command: |
+            make -C ../ extract_messages
+            make -C ../ compile_messages
+      - run:
           name: Run test suite and linting validation
           command: |
             poetry run pytest --cov-report=html:coverage_html --cov=./
