@@ -20,8 +20,8 @@ jobs:
       - run:
           name: Extract and compile messages
           command: |
-            make -C ../ extract_messages
-            make -C ../ compile_messages
+            poetry run pybabel extract -F ./babel.cfg -o ./pomodoro_system/locale/messages.pot
+            poetry run pybabel compile -d ./pomodoro_system/locals
       - run:
           name: Run test suite and linting validation
           command: |
