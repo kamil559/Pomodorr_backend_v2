@@ -22,7 +22,7 @@ class Paginator:
 
 class ResourceProtector(ABC):
     @abstractmethod
-    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_request: bool = True) -> None:
+    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_if_none: bool = True) -> None:
         pass
 
 

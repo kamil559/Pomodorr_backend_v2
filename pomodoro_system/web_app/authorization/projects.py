@@ -11,7 +11,7 @@ from pony.orm import select
 
 
 class ProjectProtector(ResourceProtector):
-    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_request: bool = True) -> None:
+    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_if_none: bool = True) -> None:
         project_id, owner_id = select(
             (project.id, project.owner.id)
             for project in ProjectModel
@@ -19,7 +19,7 @@ class ProjectProtector(ResourceProtector):
         ).get() or (None, None)
 
         if project_id is None:
-            if abort_request:
+            if abort_if_none:
                 abort(http.HTTPStatus.NOT_FOUND)
             else:
                 raise DomainValidationError({"project_id": N_("Selected project does not exist.")})

@@ -11,13 +11,13 @@ from pony.orm import select
 
 
 class PomodoroProtector(ResourceProtector):
-    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_request: bool = True) -> None:
+    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_if_none: bool = True) -> None:
         pomodoro_id, owner_id = select(
             (pomodoro.id, pomodoro.task.project.owner.id) for pomodoro in PomodoroModel if pomodoro.id == resource_id
         ).get() or (None, None)
 
         if pomodoro_id is None:
-            if abort_request:
+            if abort_if_none:
                 abort(http.HTTPStatus.NOT_FOUND)
             else:
                 raise DomainValidationError({"pomodoro_id": N_("Selected pomodoro does not exist.")})
