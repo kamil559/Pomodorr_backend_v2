@@ -73,6 +73,7 @@ class ChangePasswordResponseSchema(Schema):
 
 @doc(
     description="Retrieve access and refresh token.",
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(LoginResponseSchema, http.HTTPStatus.OK)

@@ -5,7 +5,7 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Flask, jsonify, request
 from flask_apispec import FlaskApiSpec
-from flask_babelex import Babel, Domain
+from flask_babelex import Babel, Domain, refresh
 from flask_injector import FlaskInjector
 from flask_jwt_extended import JWTManager
 from flask_jwt_extended.exceptions import NoAuthorizationError
@@ -122,6 +122,7 @@ def create_app() -> Flask:
         SECRET_KEY=os.getenv("SECRET_KEY"),
         DEFAULT_LANGUAGE="en",
         ALLOWED_LANGUAGES={"en", "pl"},
+        SECURITY_I18N_DOMAIN="pomodoro_security",
     )
 
     additional_settings = load_flask_app_settings(pomodoro_app_context.settings)
@@ -135,7 +136,8 @@ def create_app() -> Flask:
     inject_dependencies(flask_app, pomodoro_app_context.injector)  # Needs to be injected after the blueprints are set
 
     babel_domain = Domain(dirname="locale", domain="messages")
-    Babel(flask_app, default_locale="pl", default_domain=babel_domain)
+    babel = Babel(flask_app, default_locale="pl", default_domain=babel_domain)
+    refresh()
 
     Pony(flask_app)
 
@@ -149,6 +151,12 @@ def create_app() -> Flask:
 
     add_flask_commands(flask_app)
 
+    def get_language() -> str:
+        return (
+            request.accept_languages.best_match(flask_app.config["ALLOWED_LANGUAGES"])
+            or flask_app.config["DEFAULT_LANGUAGE"]
+        )
+
     @jwt.user_claims_loader
     def user_claims_to_access_token(user: User) -> dict:
         return {"roles": [role.name for role in user.roles]}
@@ -161,9 +169,14 @@ def create_app() -> Flask:
     def check_if_token_revoked(decrypted_token) -> bool:
         return is_token_revoked(decrypted_token)
 
+    @babel.localeselector
+    def get_locale():
+        language = get_language()
+        return language
+
     @flask_app.before_request
     def before():
-        language = request.accept_languages.best_match(flask_app.config["ALLOWED_LANGUAGES"])
+        language = get_language()
         setup_i18n(language or flask_app.config["DEFAULT_LANGUAGE"])
 
     @flask_app.errorhandler(http.HTTPStatus.UNAUTHORIZED)
