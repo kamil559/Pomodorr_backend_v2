@@ -1,5 +1,9 @@
+from flask import current_app
 from marshmallow import EXCLUDE, Schema, fields, post_load
-from web_app.users.facade import BanUserInputDto, UnbanUserInputDto
+from web_app.users.facade import BanUserInputDto, ChangeEmailInputDto, UnbanUserInputDto
+from werkzeug.local import LocalProxy
+
+_security = LocalProxy(lambda: current_app.extensions["security"])
 
 
 class TokenSchema(Schema):
@@ -47,3 +51,16 @@ class UserUnbanSchema(Schema):
     @post_load
     def make_dto(self, data: dict, **_kwargs) -> UnbanUserInputDto:
         return UnbanUserInputDto(**data)
+
+
+class EmailChangeSchema(Schema):
+    new_email = fields.Email(required=True, allow_none=False)
+    requested_at = fields.AwareDateTime(load_only=True, required=True, allow_none=False)
+    status = fields.String(dump_only=True)
+
+    @post_load
+    def make_dto(self, data: dict, **_kwargs) -> UnbanUserInputDto:
+        return ChangeEmailInputDto(**data)
+
+    class Meta:
+        unknown = EXCLUDE

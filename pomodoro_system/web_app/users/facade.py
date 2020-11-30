@@ -10,12 +10,29 @@ from foundation.i18n import N_
 from foundation.models.user import User, UserBanRecord
 from foundation.value_objects import UserId
 from pony.orm import db_session
-from web_app.authentication.helpers import revoke_all_tokens
+from web_app.authentication.helpers import (
+    check_can_change_email_address,
+    executes_self_action,
+    generate_email_change_link,
+    revoke_all_tokens,
+)
 from werkzeug.local import LocalProxy
 
 _security = LocalProxy(lambda: current_app.extensions["security"])
 
 _datastore = LocalProxy(lambda: _security.datastore)
+
+
+@dataclass
+class ChangeEmailInputDto:
+    new_email: str
+    requested_at: datetime
+
+
+@dataclass
+class ChangeEmailOutputDto:
+    new_email: str
+    status: str
 
 
 @dataclass()
@@ -52,16 +69,31 @@ class UnbanUserOutputDto:
 
 
 class UserFacade:
-    @staticmethod
-    def executes_self_action(user_id: UserId) -> bool:
-        current_user_id = get_jwt_identity()
-        return user_id == UUID(current_user_id)
+    @db_session
+    def request_email_address_change(self, input_dto: ChangeEmailInputDto) -> ChangeEmailOutputDto:
+        user = _datastore.get_user(UUID(get_jwt_identity()))
+
+        check_can_change_email_address(new_email=input_dto.new_email)
+        user.unconfirmed_new_email = input_dto.new_email
+        self.send_change_email_confirmation_email(user, input_dto.new_email, input_dto.requested_at)
+
+        return ChangeEmailOutputDto(
+            new_email=input_dto.new_email,
+            status=N_("Confirmation instructions have been sent to %(email)s.") % {"email": user.email},
+        )
+
+    @db_session
+    def change_email(self, user: User) -> None:
+        check_can_change_email_address(new_email=user.unconfirmed_new_email)
+        user.email = user.unconfirmed_new_email
+        user.unconfirmed_new_email = str()
+        revoke_all_tokens(user.id)
 
     @db_session
     def ban_user(self, input_dto: BanUserInputDto) -> BanUserOutputDto:
         user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_not_found=True)
 
-        if self.executes_self_action(user.id):
+        if executes_self_action(user.id):
             raise DomainValidationError({"msg": N_("You cannot ban yourself.")})
 
         if user.is_banned:
@@ -93,7 +125,7 @@ class UserFacade:
     def unban_user(self, input_dto: UnbanUserInputDto) -> UnbanUserOutputDto:
         user = _datastore.get_user(input_dto.user_id, consider_banned=True, raise_if_not_found=True)
 
-        if self.executes_self_action(user.id):
+        if executes_self_action(user.id):
             raise DomainValidationError({"msg": N_("You cannot unban yourself.")})
 
         if not user.is_banned:
@@ -114,14 +146,17 @@ class UserFacade:
             manually_unbanned_at=input_dto.manually_unbanned_at,
         )
 
-    @staticmethod
-    def send_unban_mail(user, manually_unbanned_at):
+    def send_change_email_confirmation_email(self, user: User, new_email: str, requested_at: datetime) -> None:
+        confirmation_link = generate_email_change_link(user)
+
         _security._send_mail(
-            subject=N_("Account unblocked"),
+            subject=N_("Email change request"),
             recipient=user.email,
-            template="user_unbanned",
+            template="email_change_request",
             email=user.email,
-            manually_unbanned_at=manually_unbanned_at,
+            new_email=new_email,
+            requested_at=requested_at,
+            confirmation_link=confirmation_link,
         )
 
     @staticmethod
@@ -134,4 +169,14 @@ class UserFacade:
             ban_reason=ban_record.ban_reason,
             is_permanent=ban_record.is_permanent,
             banned_until=ban_record.banned_until,
+        )
+
+    @staticmethod
+    def send_unban_mail(user, manually_unbanned_at) -> None:
+        _security._send_mail(
+            subject=N_("Account unblocked"),
+            recipient=user.email,
+            template="user_unbanned",
+            email=user.email,
+            manually_unbanned_at=manually_unbanned_at,
         )

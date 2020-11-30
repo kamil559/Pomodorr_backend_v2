@@ -1,0 +1,9 @@
+{{ _('Dear %(email)s,', email=email) }}
+
+{{ _('You received this email because an e-mail address change request has been submitted by Your account.') }}
+
+{{ _('The submitted new e-mail address for your account is %(new_email)s (request has been created on %(requested_at)s)', new_email=new_email, requested_at=requested_at) }}
+
+{{ _('If you are not the person requesting an email change, please ignore this message, otherwise please confirm Your new e-mail address with the link below: ') }}
+
+{{ confirmation_link }}

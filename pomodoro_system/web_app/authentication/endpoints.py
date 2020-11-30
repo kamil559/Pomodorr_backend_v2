@@ -2,11 +2,12 @@ import http
 import uuid
 from datetime import datetime
 
-from flask import Response, current_app, jsonify, request
+from flask import Response, abort, current_app, jsonify, request
 from flask_apispec import doc, marshal_with, use_kwargs
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
+    fresh_jwt_required,
     get_jwt_identity,
     get_raw_jwt,
     jwt_refresh_token_required,
@@ -19,8 +20,14 @@ from foundation.exceptions import DomainValidationError
 from foundation.i18n import N_
 from foundation.utils import to_utc
 from marshmallow import Schema, ValidationError, fields
-from web_app.authentication.helpers import add_token_to_database, get_token, get_user_tokens, update_token
-from web_app.authentication.marshallers import TokenSchema, UserBanRecordSchema, UserUnbanSchema
+from web_app.authentication.helpers import (
+    add_token_to_database,
+    change_email_token_status,
+    get_token,
+    get_user_tokens,
+    update_token,
+)
+from web_app.authentication.marshallers import EmailChangeSchema, TokenSchema, UserBanRecordSchema, UserUnbanSchema
 from web_app.authorization.decorators import roles_required
 from web_app.authorization.token import TokenProtector
 from web_app.docs_definitions.auth import auth_header_definition
@@ -95,7 +102,7 @@ def login() -> Response:
         code = http.HTTPStatus.OK
         payload = {}
 
-        access_token = create_access_token(user)
+        access_token = create_access_token(user, fresh=True)
         refresh_token = create_refresh_token(user)
 
         add_token_to_database(access_token)
@@ -255,3 +262,63 @@ def unban_user(user_facade: UserFacade) -> Response:
     except (ValidationError, DomainValidationError) as error:
         return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
     return jsonify(UserUnbanSchema().dump(unban_user_output_data)), http.HTTPStatus.OK
+
+
+@doc(
+    description="Request e-mail address change",
+    params={**auth_header_definition, **language_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(EmailChangeSchema(only=("new_email", "status")), http.HTTPStatus.OK)
+@use_kwargs(EmailChangeSchema(exclude=("requested_at",)))
+@auth_blueprint.route("/change_email", methods=["POST"])
+@fresh_jwt_required
+def request_email_change(user_facade: UserFacade):
+    try:
+        email_change_input_data = get_dto_or_abort(
+            EmailChangeSchema, context={"requested_at": str(to_utc(datetime.now()))}
+        )
+        email_change_output_data = user_facade.request_email_address_change(email_change_input_data)
+    except (ValidationError, DomainValidationError) as error:
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
+    return jsonify(EmailChangeSchema().dump(email_change_output_data)), http.HTTPStatus.OK
+
+
+@doc(
+    description="Confirm e-mail address change request",
+    params={**auth_header_definition, **language_header_definition},
+    tags=(auth_blueprint.name,),
+)
+@marshal_with(EmailChangeSchema(only=("status",)), http.HTTPStatus.OK)
+@auth_blueprint.route("/confirm_change_email/<confirmation_token>", methods=["GET"])
+@jwt_required
+def confirm_email_change(confirmation_token: str, user_facade: UserFacade) -> Response:
+    current_user = _security.datastore.get_user(get_jwt_identity(), raise_if_not_found=True)
+    expired, invalid, user = change_email_token_status(confirmation_token)
+
+    if not user or invalid:
+        return (
+            jsonify({"token": N_("Invalid token. Please try requesting email address change again.")}),
+            http.HTTPStatus.BAD_REQUEST,
+        )
+
+    if expired:
+        return (
+            jsonify(
+                {
+                    "token": N_(
+                        "You did not change your email address within %(within)s. "
+                        "Please try requesting email address change again."
+                    )
+                    % {"within": _security.confirm_email_within}
+                }
+            ),
+            http.HTTPStatus.BAD_REQUEST,
+        )
+
+    if user != current_user:
+        abort(http.HTTPStatus.FORBIDDEN)
+
+    user_facade.change_email(user)
+
+    return jsonify({"status": N_("Your e-mail address has been changed. Please reauthenticate.")}), http.HTTPStatus.OK

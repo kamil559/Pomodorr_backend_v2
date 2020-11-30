@@ -25,6 +25,7 @@ class User(db.Entity, UserMixin):
     id = PrimaryKey(uuid.UUID, auto=False)
     confirmed_at = Optional(datetime)
     email = Required(str, unique=True)
+    unconfirmed_new_email = Optional(str)
     password = Required(str)
     date_frame_definition = Optional("UserDateFrameDefinitionModel", lazy=False, cascade_delete=True)
     active = Required(bool, default=False)

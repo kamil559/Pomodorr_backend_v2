@@ -970,7 +970,7 @@ locale = ["Babel (>=1.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "bf95be10102205fd51c3eb4b59c46a693b3adc5395e11e09ca27389301c89dca"
+content-hash = "8f976deb8b576bbd8ee1909813e986ec64fe971e93238563293cb29fc0b72e80"
 
 [metadata.files]
 apispec = [

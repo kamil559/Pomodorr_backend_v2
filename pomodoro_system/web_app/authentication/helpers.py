@@ -1,13 +1,21 @@
 from datetime import datetime
-from typing import List, Optional, Type
+from typing import List, Optional, Tuple, Type
+from uuid import UUID
 
 import pytz
-from flask import current_app, request
-from flask_jwt_extended import decode_token
-from foundation.exceptions import NotFound
+from flask import current_app, request, url_for
+from flask_jwt_extended import decode_token, get_jwt_identity
+from flask_security.confirmable import generate_confirmation_token
+from flask_security.utils import get_token_status, verify_hash
+from foundation.exceptions import DomainValidationError, NotFound
 from foundation.i18n import N_
-from pony.orm import ObjectNotFound, desc
+from foundation.models import User
+from foundation.value_objects import UserId
+from pony.orm import ObjectNotFound, desc, select
 from web_app.authentication.models.token import Token
+from werkzeug.local import LocalProxy
+
+_security = LocalProxy(lambda: current_app.extensions["security"])
 
 
 def _epoch_utc_to_datetime(epoch_utc):
@@ -74,3 +82,34 @@ def update_token(token: Type[Token], token_data: dict) -> Optional[Type[Token]]:
 def prune_database():
     now = datetime.now(tz=pytz.UTC)
     Token.select(lambda token: token.revoked and token.expires <= now).delete()
+
+
+def executes_self_action(user_id: UserId) -> bool:
+    current_user_id = get_jwt_identity()
+    return user_id == UUID(current_user_id)
+
+
+def generate_email_change_link(user: User) -> str:
+    confirmation_token = generate_confirmation_token(user)
+    return url_for("auth.confirm_email_change", confirmation_token=confirmation_token, _external=True)
+
+
+def check_can_change_email_address(new_email: str) -> bool:
+    existing_user_id = select(user.id for user in User if user.email == new_email).get()
+
+    if existing_user_id is not None:
+        if executes_self_action(existing_user_id):
+            raise DomainValidationError({"email": N_("New email must be different than the current one.")})
+        else:
+            raise DomainValidationError(
+                {"email": N_("%(email)s is already associated with an account.") % {"email": new_email}}
+            )
+
+
+def change_email_token_status(token: str) -> Optional[Tuple]:
+    expired, invalid, user, token_data = get_token_status(token, "confirm", "CONFIRM_EMAIL", return_data=True)
+
+    if not invalid and user:
+        user_id, token_email_hash = token_data
+        invalid = not verify_hash(token_email_hash, user.email)
+    return expired, invalid, user

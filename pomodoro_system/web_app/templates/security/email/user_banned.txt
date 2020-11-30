@@ -1,6 +1,6 @@
-{{ _('Dear %(email)s!', email=email) }}
+{{ _('Dear %(email)s,', email=email) }}
 
-{{ _('You have received this email because Your account has been blocked.') }}
+{{ _('You received this email because Your account has been blocked.') }}
 
 {% if is_permanent %}
 {{  _('Your account has been banned permanently. For further information please contact the administrator.') }}
