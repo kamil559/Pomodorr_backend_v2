@@ -40,7 +40,7 @@ tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 
 
 @doc(
-    description="Get task with specified task_id.",
+    description="Get task with specified task_id in url.",
     params={**auth_header_definition, **language_header_definition},
     tags=(tasks_blueprint.name,),
 )
@@ -133,9 +133,10 @@ def create_task(project_protector: ProjectProtector, task_repository: TaskReposi
 @tasks_blueprint.route("/<uuid:task_id>", methods=["PATCH"])
 @jwt_required
 def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository: TaskRepository) -> Response:
+    task_protector.authorize(UUID(get_jwt_identity()), task_id)
+    task = task_repository.get(task_id)
+
     try:
-        task_protector.authorize(UUID(get_jwt_identity()), task_id)
-        task = task_repository.get(task_id)
         updated_task = TaskRestSchema(
             many=False, partial=True, exclude=("project_id",), context={"task_instance": task}
         ).load(request.json)

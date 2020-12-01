@@ -15,7 +15,7 @@ from web_app.users.repository import SQLUserRepository
 
 from .authorization.projects import ProjectProtector
 from .authorization.tasks import TaskProtector
-from .authorization.token import TokenProtector
+from .authorization.tokens import TokenProtector
 from .output_boundaries.pomodoros import (
     JSONBeginPomodoroPresenter,
     JSONFinishPomodoroPresenter,

@@ -29,7 +29,7 @@ from web_app.authentication.helpers import (
 )
 from web_app.authentication.marshallers import EmailChangeSchema, TokenSchema, UserBanRecordSchema, UserUnbanSchema
 from web_app.authorization.decorators import roles_required
-from web_app.authorization.token import TokenProtector
+from web_app.authorization.tokens import TokenProtector
 from web_app.docs_definitions.auth import auth_header_definition
 from web_app.docs_definitions.language import language_header_definition
 from web_app.users.facade import UserFacade
