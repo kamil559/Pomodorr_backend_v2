@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-26 17:23+0100\n"
+"POT-Creation-Date: 2020-12-01 12:22+0100\n"
 "PO-Revision-Date: 2020-11-25 16:03+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pl\n"
@@ -35,15 +35,15 @@ msgstr "Ramka czasu jest już zakończona."
 msgid "Start date cannot be greater than end date."
 msgstr "Data początkowa nie może być większa, niż data końcowa."
 
-#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:52
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:51
 msgid "No action is allowed on finished pomodoro."
 msgstr "Nie można wykonać operacji na zakończonym pomodorze."
 
-#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:67
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:65
 msgid "Pomodoro duration's error margin has been exceeded."
 msgstr "Margines błędu czasu trwania pomodora został przekroczony."
 
-#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:111
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:109
 msgid "Colliding pomodoro was found."
 msgstr "Kolidujący pomodoro został znaleziony."
 
@@ -73,12 +73,12 @@ msgstr "Pauza z datą początkową %(start_date)s już istnieje."
 msgid "Pause does not exist."
 msgstr "Ta pauza nie istnieje"
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:37
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:40
 #, python-format
 msgid "Pomodoro with start date %(start_date)s already exists."
 msgstr "Pomodoro z datą początkową %(start_date)s już istnieje."
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:91
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:97
 msgid "Pomodoro does not exist."
 msgstr "To pomodoro nie istnieje."
 
@@ -87,7 +87,7 @@ msgstr "To pomodoro nie istnieje."
 msgid "Project with name %(name)s already exists."
 msgstr "Projekt z nazwą %(name)s już istnieje."
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:70
+#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:71
 msgid "Project does not exist"
 msgstr "Projekt nie istnieje."
 
@@ -99,22 +99,22 @@ msgstr "Zadanie z nazwą '{name}' już istnieje dla tego projektu."
 msgid "Task does not exist."
 msgstr "Zadanie nie istnieje."
 
-#: pomodoro_system/web_app/flask_app.py:172
-#: pomodoro_system/web_app/flask_app.py:179
+#: pomodoro_system/web_app/flask_app.py:186
+#: pomodoro_system/web_app/flask_app.py:193
 msgid "You may not access the requested resource unless you log in."
 msgstr "Możesz odwiedzić tą stronę tylko będąc zalogowanym."
 
-#: pomodoro_system/web_app/flask_app.py:186
+#: pomodoro_system/web_app/flask_app.py:200
 msgid "You don't have the permission to perform the action."
 msgstr "Nie masz uprawnień, aby wykonać tą czynność."
 
-#: pomodoro_system/web_app/flask_app.py:192
+#: pomodoro_system/web_app/flask_app.py:206
 msgid "The requested URL was not found."
 msgstr ""
 "Żądany adres nie został znaleziony. Jeśli adres został wprowadzony "
 "ręcznie, prosimy upewnić się, że jest on poprawny."
 
-#: pomodoro_system/web_app/flask_app.py:201
+#: pomodoro_system/web_app/flask_app.py:215
 msgid ""
 "Something went wrong. Should the issue remain for a longer period, please"
 " contact the administrator."
@@ -122,7 +122,7 @@ msgstr ""
 "Coś poszło nie tak. Jeśli problem będzie występować przez dłuższy czas, "
 "prosimy skontaktować się z administratorem."
 
-#: pomodoro_system/web_app/flask_app.py:214
+#: pomodoro_system/web_app/flask_app.py:228
 msgid "The requested resource was not found."
 msgstr "Żądany zasób nie został znaleziony."
 
@@ -130,17 +130,45 @@ msgstr "Żądany zasób nie został znaleziony."
 msgid "User does not exist."
 msgstr "Użytkownik nie istnieje."
 
-#: pomodoro_system/web_app/authentication/endpoints.py:130
+#: pomodoro_system/web_app/authentication/endpoints.py:138
 msgid "You've been logged out."
 msgstr "Zostałeś wylogowany."
 
-#: pomodoro_system/web_app/authentication/endpoints.py:163
+#: pomodoro_system/web_app/authentication/endpoints.py:171
 msgid "The password has been changed successfully."
 msgstr "Hasło zostało zmienione pomyślnie."
 
-#: pomodoro_system/web_app/authentication/helpers.py:54
+#: pomodoro_system/web_app/authentication/endpoints.py:301
+msgid "Invalid token. Please try requesting email address change again."
+msgstr ""
+"Token jest nieprawidłowy. Prosimy wysłać żądanie zmiany adresu e-mail "
+"ponownie."
+
+#: pomodoro_system/web_app/authentication/endpoints.py:309
+#, python-format
+msgid ""
+"You did not change your email address within %(within)s. Please try "
+"requesting email address change again."
+msgstr ""
+"Nie zdążyłeś zmienić adres e-mail w ciągu %(within)s. Prosimy wysłać "
+"żądanie zmiany adresu e-mail ponownie."
+
+#: pomodoro_system/web_app/authentication/endpoints.py:327
+msgid "Your e-mail address has been changed. Please reauthenticate."
+msgstr "Twój adres e-mail został zmieniony. Prosimy o ponowne zalogowanie się."
+
+#: pomodoro_system/web_app/authentication/helpers.py:62
 msgid "The token was not found."
 msgstr "Token nie został znaleziony."
+
+#: pomodoro_system/web_app/authentication/helpers.py:102
+msgid "New email must be different than the current one."
+msgstr "Nowy adres e-mail musi być inny, niż obecny."
+
+#: pomodoro_system/web_app/authentication/helpers.py:105
+#, python-format
+msgid "%(email)s is already associated with an account."
+msgstr "%(email)s jest już powiązany z kontem."
 
 #: pomodoro_system/web_app/authorization/pomodoros.py:23
 msgid "Selected pomodoro does not exist."
@@ -158,15 +186,43 @@ msgstr "Wybrane zadanie nie istnieje."
 msgid "Selected token does not exist."
 msgstr "Wybrany token nie istnieje."
 
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:1
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:1
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:1
 #, python-format
-msgid "Dear %(email)s!"
-msgstr "Drogi %(email)s"
+msgid "Dear %(email)s,"
+msgstr "Drogi %(email)s,"
+
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:3
+msgid ""
+"You received this email because an e-mail address change request has been"
+" submitted by Your account."
+msgstr ""
+"Otrzymałeś tę wiadomość, ponieważ żądanie zmiany adresu e-mail zostało "
+"utworzone przez Twoje konto."
+
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:5
+#, python-format
+msgid ""
+"The submitted new e-mail address for your account is %(new_email)s "
+"(request has been created on %(requested_at)s)"
+msgstr ""
+"Wprowadzony nowy adres e-mail dla Twojego konta, to %(new_email)s "
+"(żądanie zostało utworzone %(requested_at)s)"
+
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:7
+msgid ""
+"If you are not the person requesting an email change, please ignore this "
+"message, otherwise please confirm Your new e-mail address with the link "
+"below: "
+msgstr ""
+"Jeśli to nie Ty wysłałeś to żądanie, prosimy zignorować tą wiadomość, w "
+"innym przypadku prosimy o potwierdzenie zmiany adresu e-mail poprzez "
+"poniższy link: "
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:3
-msgid "You have received this email because Your account has been blocked."
-msgstr "Otrzymałeś tą wiadomośc, ponieważ Twoje konto zostało zablokowane."
+msgid "You received this email because Your account has been blocked."
+msgstr "Otrzymałeś tę wiadomość, ponieważ Twoje konto zostało zablokowane"
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:6
 msgid ""
@@ -190,8 +246,8 @@ msgid "Account lock reason:"
 msgstr "Przyczyna blokady konta:"
 
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:3
-msgid "You have received this email because Your account has been unblocked."
-msgstr "Otrzymałeś tą wiadomość, ponieważ Twoje konto zostało odblokowane."
+msgid "You received this email because Your account has been unblocked."
+msgstr "Otrzymałeś tę wiadomość, ponieważ Twoje konto zostało odblokowane."
 
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:5
 #, python-format
@@ -202,26 +258,47 @@ msgstr ""
 "Twoje konto zostało odblokowane %(manually_unbanned_at) s(UTC) i znów "
 "możesz z niego korzystać! "
 
-#: pomodoro_system/web_app/users/facade.py:65
+#: pomodoro_system/web_app/users/facade.py:82
+#, python-format
+msgid "Confirmation instructions have been sent to %(email)s."
+msgstr ""
+"Instrukcje potwierdzenia zmiany adresu e-mail zostały wysłane na adres "
+"%(email)s."
+
+#: pomodoro_system/web_app/users/facade.py:97
 msgid "You cannot ban yourself."
 msgstr "Nie możesz zablokować sam siebie."
 
-#: pomodoro_system/web_app/users/facade.py:68
+#: pomodoro_system/web_app/users/facade.py:100
 msgid "The user is already banned."
 msgstr "Ten użytkownik jest już zablokowany."
 
-#: pomodoro_system/web_app/users/facade.py:97
+#: pomodoro_system/web_app/users/facade.py:129
 msgid "You cannot unban yourself."
 msgstr "Nie możesz odblokować sam siebie."
 
-#: pomodoro_system/web_app/users/facade.py:100
+#: pomodoro_system/web_app/users/facade.py:132
 msgid "The user is not currently banned."
 msgstr "Ten użytkownik nie jest obecnie zablokowany"
 
-#: pomodoro_system/web_app/users/facade.py:120
+#: pomodoro_system/web_app/users/facade.py:153
+msgid "Email change request"
+msgstr "Żądanie zmiany adresu e-mail"
+
+#: pomodoro_system/web_app/users/facade.py:165
+msgid "Account blocked"
+msgstr "Konto zablokowane"
+
+#: pomodoro_system/web_app/users/facade.py:177
 msgid "Account unblocked"
 msgstr "Konto odblokowane"
 
-#: pomodoro_system/web_app/users/facade.py:130
-msgid "Account blocked"
-msgstr "Konto zablokowane"
+#~ msgid "Dear %(email)s!"
+#~ msgstr "Drogi %(email)s"
+
+#~ msgid "You have received this email because Your account has been blocked."
+#~ msgstr "Otrzymałeś tą wiadomośc, ponieważ Twoje konto zostało zablokowane."
+
+#~ msgid "You have received this email because Your account has been unblocked."
+#~ msgstr "Otrzymałeś tą wiadomość, ponieważ Twoje konto zostało odblokowane."
+

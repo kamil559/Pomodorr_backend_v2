@@ -319,6 +319,9 @@ def confirm_email_change(confirmation_token: str, user_facade: UserFacade) -> Re
     if user != current_user:
         abort(http.HTTPStatus.FORBIDDEN)
 
-    user_facade.change_email(user)
+    try:
+        user_facade.change_email(user)
+    except DomainValidationError as error:
+        return jsonify(error.messages), http.HTTPStatus.BAD_REQUEST
 
     return jsonify({"status": N_("Your e-mail address has been changed. Please reauthenticate.")}), http.HTTPStatus.OK

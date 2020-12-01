@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-11-26 17:23+0100\n"
+"POT-Creation-Date: 2020-12-01 12:22+0100\n"
 "PO-Revision-Date: 2020-11-25 21:57+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -34,15 +34,15 @@ msgstr ""
 msgid "Start date cannot be greater than end date."
 msgstr ""
 
-#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:52
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:51
 msgid "No action is allowed on finished pomodoro."
 msgstr ""
 
-#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:67
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:65
 msgid "Pomodoro duration's error margin has been exceeded."
 msgstr ""
 
-#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:111
+#: pomodoro_system/pomodoros/domain/entities/pomodoro.py:109
 msgid "Colliding pomodoro was found."
 msgstr ""
 
@@ -72,12 +72,12 @@ msgstr ""
 msgid "Pause does not exist."
 msgstr ""
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:37
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:40
 #, python-format
 msgid "Pomodoro with start date %(start_date)s already exists."
 msgstr ""
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:91
+#: pomodoro_system/pomodoros_infrastructure/repositories/pomodoros.py:97
 msgid "Pomodoro does not exist."
 msgstr ""
 
@@ -86,7 +86,7 @@ msgstr ""
 msgid "Project with name %(name)s already exists."
 msgstr ""
 
-#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:70
+#: pomodoro_system/pomodoros_infrastructure/repositories/projects.py:71
 msgid "Project does not exist"
 msgstr ""
 
@@ -98,26 +98,26 @@ msgstr ""
 msgid "Task does not exist."
 msgstr ""
 
-#: pomodoro_system/web_app/flask_app.py:172
-#: pomodoro_system/web_app/flask_app.py:179
+#: pomodoro_system/web_app/flask_app.py:186
+#: pomodoro_system/web_app/flask_app.py:193
 msgid "You may not access the requested resource unless you log in."
 msgstr ""
 
-#: pomodoro_system/web_app/flask_app.py:186
+#: pomodoro_system/web_app/flask_app.py:200
 msgid "You don't have the permission to perform the action."
 msgstr ""
 
-#: pomodoro_system/web_app/flask_app.py:192
+#: pomodoro_system/web_app/flask_app.py:206
 msgid "The requested URL was not found."
 msgstr ""
 
-#: pomodoro_system/web_app/flask_app.py:201
+#: pomodoro_system/web_app/flask_app.py:215
 msgid ""
 "Something went wrong. Should the issue remain for a longer period, please"
 " contact the administrator."
 msgstr ""
 
-#: pomodoro_system/web_app/flask_app.py:214
+#: pomodoro_system/web_app/flask_app.py:228
 msgid "The requested resource was not found."
 msgstr ""
 
@@ -125,16 +125,40 @@ msgstr ""
 msgid "User does not exist."
 msgstr ""
 
-#: pomodoro_system/web_app/authentication/endpoints.py:130
+#: pomodoro_system/web_app/authentication/endpoints.py:138
 msgid "You've been logged out."
 msgstr ""
 
-#: pomodoro_system/web_app/authentication/endpoints.py:163
+#: pomodoro_system/web_app/authentication/endpoints.py:171
 msgid "The password has been changed successfully."
 msgstr ""
 
-#: pomodoro_system/web_app/authentication/helpers.py:54
+#: pomodoro_system/web_app/authentication/endpoints.py:301
+msgid "Invalid token. Please try requesting email address change again."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/endpoints.py:309
+#, python-format
+msgid ""
+"You did not change your email address within %(within)s. Please try "
+"requesting email address change again."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/endpoints.py:327
+msgid "Your e-mail address has been changed. Please reauthenticate."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/helpers.py:62
 msgid "The token was not found."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/helpers.py:102
+msgid "New email must be different than the current one."
+msgstr ""
+
+#: pomodoro_system/web_app/authentication/helpers.py:105
+#, python-format
+msgid "%(email)s is already associated with an account."
 msgstr ""
 
 #: pomodoro_system/web_app/authorization/pomodoros.py:23
@@ -153,14 +177,35 @@ msgstr ""
 msgid "Selected token does not exist."
 msgstr ""
 
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:1
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:1
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:1
 #, python-format
-msgid "Dear %(email)s!"
+msgid "Dear %(email)s,"
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:3
+msgid ""
+"You received this email because an e-mail address change request has been"
+" submitted by Your account."
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:5
+#, python-format
+msgid ""
+"The submitted new e-mail address for your account is %(new_email)s "
+"(request has been created on %(requested_at)s)"
+msgstr ""
+
+#: pomodoro_system/web_app/templates/security/email/email_change_request.html:7
+msgid ""
+"If you are not the person requesting an email change, please ignore this "
+"message, otherwise please confirm Your new e-mail address with the link "
+"below: "
 msgstr ""
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:3
-msgid "You have received this email because Your account has been blocked."
+msgid "You received this email because Your account has been blocked."
 msgstr ""
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:6
@@ -181,7 +226,7 @@ msgid "Account lock reason:"
 msgstr ""
 
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:3
-msgid "You have received this email because Your account has been unblocked."
+msgid "You received this email because Your account has been unblocked."
 msgstr ""
 
 #: pomodoro_system/web_app/templates/security/email/user_unbanned.html:5
@@ -191,26 +236,45 @@ msgid ""
 "you're free to use it again!"
 msgstr ""
 
-#: pomodoro_system/web_app/users/facade.py:65
-msgid "You cannot ban yourself."
-msgstr ""
-
-#: pomodoro_system/web_app/users/facade.py:68
-msgid "The user is already banned."
+#: pomodoro_system/web_app/users/facade.py:82
+#, python-format
+msgid "Confirmation instructions have been sent to %(email)s."
 msgstr ""
 
 #: pomodoro_system/web_app/users/facade.py:97
-msgid "You cannot unban yourself."
+msgid "You cannot ban yourself."
 msgstr ""
 
 #: pomodoro_system/web_app/users/facade.py:100
+msgid "The user is already banned."
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:129
+msgid "You cannot unban yourself."
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:132
 msgid "The user is not currently banned."
 msgstr ""
 
-#: pomodoro_system/web_app/users/facade.py:120
+#: pomodoro_system/web_app/users/facade.py:153
+msgid "Email change request"
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:165
+msgid "Account blocked"
+msgstr ""
+
+#: pomodoro_system/web_app/users/facade.py:177
 msgid "Account unblocked"
 msgstr ""
 
-#: pomodoro_system/web_app/users/facade.py:130
-msgid "Account blocked"
-msgstr ""
+#~ msgid "Dear %(email)s!"
+#~ msgstr ""
+
+#~ msgid "You have received this email because Your account has been blocked."
+#~ msgstr ""
+
+#~ msgid "You have received this email because Your account has been unblocked."
+#~ msgstr ""
+

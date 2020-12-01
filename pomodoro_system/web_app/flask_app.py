@@ -176,8 +176,9 @@ def create_app() -> Flask:
 
     @flask_app.before_request
     def before():
-        language = get_language()
-        setup_i18n(language or flask_app.config["DEFAULT_LANGUAGE"])
+        if not flask_app.config.get("TESTING"):
+            language = get_language()
+            setup_i18n(language or flask_app.config["DEFAULT_LANGUAGE"])
 
     @flask_app.errorhandler(http.HTTPStatus.UNAUTHORIZED)
     def unauthorized_404_handler(_error):

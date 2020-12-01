@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timedelta
 from typing import Type
 
+import factory
 import pytest
 import pytz
 from flask import Flask
@@ -14,7 +15,7 @@ from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
 from pony.orm import db_session
-from web_app.authentication.helpers import add_token_to_database, revoke_all_tokens
+from web_app.authentication.helpers import add_token_to_database, generate_email_change_link, revoke_all_tokens
 from web_app.authentication.models.token import Token
 from web_app.flask_app import create_app
 
@@ -46,7 +47,7 @@ def client(app) -> FlaskClient:
 @pytest.fixture()
 def banned_user_access_token(app: Flask, banned_user: User) -> Type[Token]:
     with db_session, app.test_request_context():
-        access_token = create_access_token(banned_user)
+        access_token = create_access_token(banned_user, fresh=True)
         add_token_to_database(access_token)
         revoke_all_tokens(banned_user.id)
     return access_token
@@ -64,7 +65,7 @@ def banned_user_refresh_token(app: Flask, banned_user: User) -> Type[Token]:
 @pytest.fixture()
 def project_owner_access_token(app: Flask, project_owner: User) -> Type[Token]:
     with db_session, app.test_request_context():
-        access_token = create_access_token(project_owner)
+        access_token = create_access_token(project_owner, fresh=True)
         add_token_to_database(access_token)
     return access_token
 
@@ -79,7 +80,7 @@ def project_owner_revoked_token(app: Flask, project_owner_access_token) -> Type[
 @pytest.fixture()
 def admin_authorization_token(app: Flask, admin: User) -> str:
     with db_session, app.test_request_context():
-        access_token = create_access_token(admin)
+        access_token = create_access_token(admin, fresh=True)
         add_token_to_database(access_token)
     return f"Bearer {access_token}"
 
@@ -87,7 +88,7 @@ def admin_authorization_token(app: Flask, admin: User) -> str:
 @pytest.fixture()
 def project_owner_authorization_token(app: Flask, project_owner: User) -> str:
     with db_session, app.test_request_context():
-        access_token = create_access_token(project_owner)
+        access_token = create_access_token(project_owner, fresh=True)
         add_token_to_database(access_token)
     return f"Bearer {access_token}"
 
@@ -95,7 +96,7 @@ def project_owner_authorization_token(app: Flask, project_owner: User) -> str:
 @pytest.fixture()
 def random_project_owner_authorization_token(app: Flask, random_project_owner: User) -> str:
     with db_session, app.test_request_context():
-        access_token = create_access_token(random_project_owner)
+        access_token = create_access_token(random_project_owner, fresh=True)
         add_token_to_database(access_token)
     return f"Bearer {access_token}"
 
@@ -136,3 +137,21 @@ def permanent_ban_data() -> dict:
         "banned_until": None,
         "ban_reason": "Lorem ipsum",
     }
+
+
+@pytest.fixture()
+def new_user_email():
+    return factory.Faker("email").generate({"locale": "en"})
+
+
+@pytest.fixture()
+def random_email():
+    return factory.Faker("email").generate({"locale": "en"})
+
+
+@pytest.fixture()
+def email_change_confirmation_link(app: Flask, new_user_email: str, project_owner: User) -> str:
+    with db_session, app.test_request_context():
+        user = User.get_for_update(id=project_owner.id)
+        user.unconfirmed_new_email = new_user_email
+        return generate_email_change_link(user)

@@ -543,3 +543,159 @@ def test_unbanned_user_receives_email(
         assert unban_response.status_code == 200
         assert len(outbox) == 1
         assert outbox[0].subject == "Account unblocked"
+
+
+def test_request_email_change(
+    client: testing.FlaskClient, mail: Mail, project_owner, new_user_email, project_owner_authorization_token
+):
+    with mail.record_messages() as outbox:
+        email_change_response = client.post(
+            "/change_email",
+            json={"new_email": new_user_email},
+            headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
+        )
+
+        assert email_change_response.status_code == 200
+        assert (
+            email_change_response.json["status"]
+            == f"Confirmation instructions have been sent to {project_owner.email}."
+        )
+        assert len(outbox) == 1
+        assert outbox[0].subject == "Email change request"
+
+    with db_session:
+        fetched_project_owner = User.get(id=project_owner.id)
+        assert fetched_project_owner.unconfirmed_new_email == new_user_email
+
+
+def test_request_email_change_with_current_email(
+    client: testing.FlaskClient, mail: Mail, project_owner, project_owner_authorization_token
+):
+    with mail.record_messages() as outbox:
+        email_change_response = client.post(
+            "/change_email",
+            json={"new_email": project_owner.email},
+            headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
+        )
+
+        assert email_change_response.status_code == 400
+        assert email_change_response.json["email"] == "New email must be different than the current one."
+        assert len(outbox) == 0
+
+
+def test_request_email_change_with_unavailable_email(
+    client: testing.FlaskClient, mail: Mail, project_owner, random_project_owner, project_owner_authorization_token
+):
+    with mail.record_messages() as outbox:
+        email_change_response = client.post(
+            "/change_email",
+            json={"new_email": random_project_owner.email},
+            headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
+        )
+
+        assert email_change_response.status_code == 400
+        assert (
+            email_change_response.json["email"]
+            == f"{random_project_owner.email} is already associated with an account."
+        )
+        assert len(outbox) == 0
+
+
+def test_request_email_change_with_non_authenticated_user(
+    client: testing.FlaskClient, mail: Mail, project_owner, new_user_email
+):
+    email_change_response = client.post(
+        "/change_email",
+        json={"new_email": new_user_email},
+        headers={"Content-type": "application/json"},
+    )
+
+    assert email_change_response.status_code == 401
+
+
+def test_confirm_email_change(
+    client: testing.FlaskClient,
+    project_owner,
+    email_change_confirmation_link,
+    new_user_email,
+    project_owner_authorization_token,
+):
+    email_change_confirm_response = client.get(
+        email_change_confirmation_link,
+        headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
+    )
+
+    assert email_change_confirm_response.status_code == 200
+    assert (
+        email_change_confirm_response.json["status"] == "Your e-mail address has been changed. Please reauthenticate."
+    )
+
+    with db_session:
+        fetched_project_owner = User.get(id=project_owner.id)
+        project_owner_active_tokens = Token.select().filter(user_identity=project_owner.id, revoked=False)[:]
+
+        assert fetched_project_owner.email == new_user_email
+        assert fetched_project_owner.unconfirmed_new_email == ""
+        assert len(project_owner_active_tokens) == 0
+
+
+def test_confirm_email_change_with_unavailable_email(
+    client: testing.FlaskClient,
+    project_owner,
+    email_change_confirmation_link,
+    random_project_owner,
+    project_owner_authorization_token,
+):
+    with db_session:
+        user = User.get_for_update(id=project_owner.id)
+        user.unconfirmed_new_email = random_project_owner.email
+
+    email_change_confirm_response = client.get(
+        email_change_confirmation_link,
+        headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
+    )
+
+    assert email_change_confirm_response.status_code == 400
+    assert (
+        email_change_confirm_response.json["email"]
+        == f"{random_project_owner.email} is already associated with an account."
+    )
+
+
+def test_confirm_email_change_with_non_authenticated_user(
+    client: testing.FlaskClient,
+    project_owner,
+    email_change_confirmation_link,
+    new_user_email,
+    project_owner_authorization_token,
+):
+    email_change_confirm_response = client.get(
+        email_change_confirmation_link,
+        headers={"Content-type": "application/json"},
+    )
+
+    assert email_change_confirm_response.status_code == 401
+
+
+def test_confirm_email_change_with_edited_user(
+    client: testing.FlaskClient,
+    project_owner,
+    random_email,
+    email_change_confirmation_link,
+    random_project_owner,
+    project_owner_authorization_token,
+):
+    with db_session():
+        user = User.get_for_update(id=project_owner.id)
+        user.email = random_email
+
+    email_change_confirm_response = client.get(
+        email_change_confirmation_link,
+        headers={"Content-type": "application/json", "Authorization": project_owner_authorization_token},
+    )
+
+    assert email_change_confirm_response.status_code == 400
+    assert (
+        email_change_confirm_response.json["token"]
+        == "Invalid token. Please try requesting email address change again."
+    )
