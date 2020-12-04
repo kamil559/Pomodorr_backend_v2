@@ -1,6 +1,6 @@
 from foundation.value_objects import Priority, PriorityLevel
 from marshmallow import EXCLUDE, Schema, fields, post_load, pre_dump, validate
-from web_app.marshallers.fields.color import ColorField
+from web_app.marshallers.fields.color_field import ColorField
 
 
 class PrioritySchema(Schema):
