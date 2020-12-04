@@ -25,7 +25,6 @@ from pomodoros import (
 from pomodoros_infrastructure import TaskModel
 from web_app.authorization.projects import ProjectProtector
 from web_app.authorization.tasks import TaskProtector
-from web_app.docs_definitions.auth import auth_header_definition
 from web_app.docs_definitions.language import language_header_definition
 from web_app.marshallers.tasks import (
     CompleteTaskSchema,
@@ -41,7 +40,7 @@ tasks_blueprint = RegistrableBlueprint("tasks", __name__, url_prefix="/tasks")
 
 @doc(
     description="Get task with specified task_id in url.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(TaskRestSchema(many=False), http.HTTPStatus.OK)
@@ -55,7 +54,6 @@ def get_task(task_id: TaskId, task_repository: TaskRepository, task_protector: T
 @doc(
     description="Get task list for a project_id specified in url.",
     params={
-        **auth_header_definition,
         "page_size": {"in": "query", "required": False},
         "page": {"in": "query", "required": False},
         "sort": {
@@ -101,9 +99,6 @@ def get_task_list(
 
 @doc(
     description="Create a new task within a project_id specified in url.",
-    params={
-        **auth_header_definition,
-    },
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(TaskRestSchema(many=False), http.HTTPStatus.CREATED)
@@ -123,9 +118,6 @@ def create_task(project_protector: ProjectProtector, task_repository: TaskReposi
 
 @doc(
     description="Update the task with task_id specified in url.",
-    params={
-        **auth_header_definition,
-    },
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(TaskRestSchema(many=False, partial=True), http.HTTPStatus.OK)
@@ -149,9 +141,6 @@ def update_task(task_id: TaskId, task_protector: TaskProtector, task_repository:
 
 @doc(
     description="Delete the task with task_id specified in url.",
-    params={
-        **auth_header_definition,
-    },
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(
@@ -168,7 +157,7 @@ def delete_task(task_id: TaskId, task_protector: TaskProtector, task_repository:
 
 @doc(
     description="Marks the task with specified task_id complete.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(
@@ -197,7 +186,7 @@ def complete_task(
 
 @doc(
     description="Marks the task with specified task_id active.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(ReactivateTaskSchema, http.HTTPStatus.OK)
@@ -219,7 +208,7 @@ def reactivate_task(
 
 @doc(
     description="Pins the task with specified task_id to the new project.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(tasks_blueprint.name,),
 )
 @marshal_with(PinTaskToProjectSchema, http.HTTPStatus.OK)

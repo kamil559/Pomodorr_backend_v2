@@ -30,7 +30,6 @@ from web_app.authentication.helpers import (
 from web_app.authentication.marshallers import EmailChangeSchema, TokenSchema, UserBanRecordSchema, UserUnbanSchema
 from web_app.authorization.decorators import roles_required
 from web_app.authorization.tokens import TokenProtector
-from web_app.docs_definitions.auth import auth_header_definition
 from web_app.docs_definitions.language import language_header_definition
 from web_app.users.facade import UserFacade
 from web_app.utils import RegistrableBlueprint, get_dto_or_abort
@@ -122,7 +121,7 @@ def login() -> Response:
 
 @doc(
     description="Logout by revoking the unexpired token.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(None, http.HTTPStatus.OK, description="The token has been revoked ")
@@ -140,7 +139,7 @@ def logout() -> Response:
 
 @doc(
     description="Change password.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(ChangePasswordResponseSchema, http.HTTPStatus.OK)
@@ -175,7 +174,7 @@ def change_password() -> Response:
 
 @doc(
     description="Retrieve access based on the refresh token.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(LoginSchema(only=("access_token",)), http.HTTPStatus.OK)
@@ -192,7 +191,7 @@ def refresh() -> Response:
 
 @doc(
     description="Retrieve token list.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(TokenSchema, http.HTTPStatus.OK)
@@ -205,7 +204,7 @@ def token_list() -> Response:
 
 @doc(
     description="Revoke or legalize token by passing the boolean value for 'revoked' key.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(TokenSchema, http.HTTPStatus.OK)
@@ -226,7 +225,7 @@ def revoke_or_legalize_token(token_id: uuid.UUID, token_protector: TokenProtecto
 
 @doc(
     description="Ban user for a given period of time or permanently.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(UserBanRecordSchema, http.HTTPStatus.OK)
@@ -245,7 +244,7 @@ def ban_user(user_facade: UserFacade) -> Response:
 
 @doc(
     description="Unban user with user_id specified in url.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(UserUnbanSchema, http.HTTPStatus.OK)
@@ -266,7 +265,7 @@ def unban_user(user_facade: UserFacade) -> Response:
 
 @doc(
     description="Request e-mail address change",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(EmailChangeSchema(only=("new_email", "status")), http.HTTPStatus.OK)
@@ -286,7 +285,7 @@ def request_email_change(user_facade: UserFacade):
 
 @doc(
     description="Confirm e-mail address change request",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(auth_blueprint.name,),
 )
 @marshal_with(EmailChangeSchema(only=("status",)), http.HTTPStatus.OK)

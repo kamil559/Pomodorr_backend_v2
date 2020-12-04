@@ -24,7 +24,6 @@ from pomodoros import (
 )
 from web_app.authorization.pomodoros import PomodoroProtector
 from web_app.authorization.tasks import TaskProtector
-from web_app.docs_definitions.auth import auth_header_definition
 from web_app.docs_definitions.language import language_header_definition
 from web_app.marshallers.pomodoros import (
     BeginPomodoroSchema,
@@ -39,7 +38,7 @@ pomodoros_blueprint = RegistrableBlueprint("pomodoros", __name__, url_prefix="/p
 
 @doc(
     description="Takes the task id (UUID string) and starts a pomodoro upon the task.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(BeginPomodoroSchema, http.HTTPStatus.CREATED)
@@ -63,7 +62,7 @@ def begin_pomodoro(
 
 @doc(
     description="Takes the current pomodoro's id (UUID string) and pauses it.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(PausePomodoroSchema, http.HTTPStatus.OK)
@@ -87,7 +86,7 @@ def pause_pomodoro(
 
 @doc(
     description="Takes the paused pomodoro's id (UUID string) and resumes it.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(ResumePomodoroSchema, http.HTTPStatus.OK)
@@ -111,7 +110,7 @@ def resume_pomodoro(
 
 @doc(
     description="Takes the current pomodoro's id (UUID string) and finishes it.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(pomodoros_blueprint.name,),
 )
 @marshal_with(FinishPomodoroSchema(exclude=("owner_id",)), http.HTTPStatus.OK)

@@ -1,13 +1,3 @@
-auth_header_definition = {
-    "Authorization": {
-        "in": "header",
-        "type": "string",
-        "required": True,
-        "description": "The access token needs to be preceded with 'Bearer' string.",
-        "default": "Bearer ",
-    }
-}
-
 auth_api_definitions = {
     "register": {
         "path": "/register",

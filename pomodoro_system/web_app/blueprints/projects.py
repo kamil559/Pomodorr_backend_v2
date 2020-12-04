@@ -10,7 +10,6 @@ from pomodoros import ProjectId, ProjectRepository
 from pomodoros.application.queries.projects import GetProjectsByOwnerId
 from pomodoros_infrastructure import ProjectModel
 from web_app.authorization.projects import ProjectProtector
-from web_app.docs_definitions.auth import auth_header_definition
 from web_app.docs_definitions.language import language_header_definition
 from web_app.marshallers.projects import ProjectRestSchema
 from web_app.utils import RegistrableBlueprint, load_int_query_parameter
@@ -20,7 +19,7 @@ projects_blueprint = RegistrableBlueprint("projects", __name__, url_prefix="/pro
 
 @doc(
     description="Get project with specified project_id.",
-    params={**auth_header_definition, **language_header_definition},
+    params={**language_header_definition},
     tags=(projects_blueprint.name,),
 )
 @marshal_with(
@@ -48,7 +47,6 @@ def get_project(
 @doc(
     description="Get project list.",
     params={
-        **auth_header_definition,
         "page_size": {"in": "query", "required": False},
         "page": {"in": "query", "required": False},
         "sort": {
@@ -90,9 +88,6 @@ def get_project_list(
 
 @doc(
     description="Create a new project.",
-    params={
-        **auth_header_definition,
-    },
     tags=(projects_blueprint.name,),
 )
 @marshal_with(
@@ -121,9 +116,6 @@ def create_project(project_repository: ProjectRepository):
 
 @doc(
     description="Update the project with project_id specified in url.",
-    params={
-        **auth_header_definition,
-    },
     tags=(projects_blueprint.name,),
 )
 @marshal_with(
@@ -157,10 +149,6 @@ def update_project(project_id: ProjectId, project_repository: ProjectRepository,
 
 @doc(
     description="Delete the project with project_id specified in url.",
-    params={
-        **auth_header_definition,
-        "permanently": {"in": "query", "required": False, "type": "integer", "enum": [0, 1]},
-    },
     tags=(projects_blueprint.name,),
 )
 @marshal_with(
