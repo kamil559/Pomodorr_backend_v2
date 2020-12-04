@@ -210,7 +210,7 @@ def token_list() -> Response:
 )
 @marshal_with(TokenSchema, http.HTTPStatus.OK)
 @use_kwargs(TokenSchema)
-@auth_blueprint.route("/tokens/revoke_token/<uuid:token_id>", methods=["PATCH"])
+@auth_blueprint.route("/tokens/<uuid:token_id>", methods=["PATCH"])
 @jwt_required
 def revoke_or_legalize_token(token_id: uuid.UUID, token_protector: TokenProtector) -> Response:
     token_protector.authorize(uuid.UUID(get_jwt_identity()), token_id)
