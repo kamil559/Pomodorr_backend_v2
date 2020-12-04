@@ -5,7 +5,7 @@ from foundation.exceptions import NotFound
 from foundation.i18n import N_
 from foundation.interfaces import AbstractUser
 from foundation.models import User
-from foundation.value_objects import DateFrameDefinition, UserId
+from foundation.value_objects import UserDateFrameDefinition, UserId
 from pony.orm import ObjectNotFound
 
 
@@ -14,11 +14,15 @@ class SQLUserRepository(UserRepository):
     def _to_entity(user_model: Type[User]) -> AbstractUser:
         return AbstractUser(
             id=user_model.id,
-            date_frame_definition=DateFrameDefinition(
+            email=user_model.email,
+            avatar=user_model.avatar,
+            date_frame_definition=UserDateFrameDefinition(
                 pomodoro_length=user_model.date_frame_definition.pomodoro_length,
                 break_length=user_model.date_frame_definition.break_length,
                 longer_break_length=user_model.date_frame_definition.longer_break_length,
                 gap_between_long_breaks=user_model.date_frame_definition.gap_between_long_breaks,
+                getting_to_work_sound=user_model.date_frame_definition.getting_to_work_sound,
+                break_time_sound=user_model.date_frame_definition.break_time_sound,
             ),
         )
 
@@ -36,15 +40,19 @@ class SQLUserRepository(UserRepository):
 
     def save(self, user: AbstractUser, create: bool = False) -> None:
         values_to_update = {
+            "avatar": user.avatar,
             "date_frame_definition": {
                 "pomodoro_length": user.date_frame_definition.pomodoro_length,
                 "break_length": user.date_frame_definition.break_length,
                 "longer_break_length": user.date_frame_definition.longer_break_length,
                 "gap_between_long_breaks": user.date_frame_definition.gap_between_long_breaks,
-            }
+                "getting_to_work_sound": user.date_frame_definition.getting_to_work_sound,
+                "break_time_sound": user.date_frame_definition.break_time_sound,
+            },
         }
         orm_user = self._get_for_update(user.id)
 
         if orm_user is not None:
+            orm_user.avatar = values_to_update["avatar"]
             date_frame_definition = orm_user.date_frame_definition
             date_frame_definition.set(**values_to_update["date_frame_definition"])

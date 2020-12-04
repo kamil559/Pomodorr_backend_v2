@@ -1,14 +1,17 @@
 import uuid
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Protocol, Type
 
-from foundation.value_objects import DateFrameDefinition, UserId
+from foundation.value_objects import UserDateFrameDefinition, UserId
 
 
 @dataclass
 class AbstractUser:
     id: UserId
-    date_frame_definition: DateFrameDefinition
+    email: str
+    avatar: str
+    date_frame_definition: UserDateFrameDefinition
 
 
 @dataclass
@@ -35,4 +38,22 @@ class AppSetupStrategy(ABC):
 
     @abstractmethod
     def setup(self) -> None:
+        pass
+
+
+class FileProtocol(Protocol):
+    def save(self, dst, buffer_size) -> None:
+        ...
+
+    def close(self) -> None:
+        ...
+
+
+class MediaStorage(ABC):
+    @abstractmethod
+    def get_file(self, directory: str, filename: str) -> Type[FileProtocol]:
+        pass
+
+    @abstractmethod
+    def save_file(self, file: FileProtocol, file_path: str) -> str:
         pass

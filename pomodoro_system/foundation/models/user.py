@@ -32,6 +32,7 @@ class User(db.Entity, UserMixin):
     roles = Set("Role")
     ban_records = Set("UserBanRecord", cascade_delete=True)
     projects = Set("ProjectModel", lazy=True, cascade_delete=True)
+    avatar = Optional(str)
 
     @property
     def is_banned(self) -> bool:
@@ -69,6 +70,8 @@ class UserDateFrameDefinitionModel(db.Entity):
     break_length = Required(timedelta, default=UserDateFrameDefinitionEntity.break_length)
     longer_break_length = Required(timedelta, default=UserDateFrameDefinitionEntity.longer_break_length)
     gap_between_long_breaks = Required(int, min=0, default=UserDateFrameDefinitionEntity.gap_between_long_breaks)
+    getting_to_work_sound = Required(str, default=UserDateFrameDefinitionEntity.getting_to_work_sound)
+    break_time_sound = Required(str, default=UserDateFrameDefinitionEntity.break_time_sound)
     user = Required("User")
 
 

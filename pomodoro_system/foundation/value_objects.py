@@ -30,6 +30,8 @@ class UserDateFrameDefinition(DateFrameDefinition):
     break_length = timedelta(minutes=5)
     longer_break_length = timedelta(minutes=15)
     gap_between_long_breaks = 3
+    getting_to_work_sound: str = "sound_1"
+    break_time_sound: str = "sound_1"
 
     @property
     def as_dict(self) -> dict:
@@ -38,6 +40,8 @@ class UserDateFrameDefinition(DateFrameDefinition):
             "break_length": self.break_length,
             "longer_break_length": self.longer_break_length,
             "gap_between_long_breaks": self.gap_between_long_breaks,
+            "getting_to_work_sound": self.getting_to_work_sound,
+            "break_time_sound": self.break_time_sound,
         }
 
 
