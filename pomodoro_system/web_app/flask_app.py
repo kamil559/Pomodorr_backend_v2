@@ -117,7 +117,7 @@ def create_app() -> Flask:
         SECURITY_I18N_DOMAIN="pomodoro_security",
         UPLOAD_PATH="pomodoro_system/web_app/media/",
         ALLOWED_EXTENSIONS=[".jpg", ".png"],
-        MAX_CONTENT_LENGTH=3 * 1024 * 1024,
+        MAX_CONTENT_LENGTH=2 * 1024 * 1024,
     )
 
     additional_settings = load_flask_app_settings(pomodoro_app_context.settings)
