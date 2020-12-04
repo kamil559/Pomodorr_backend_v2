@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from io import BytesIO
 from typing import Type
 
 import factory
@@ -11,6 +12,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jt
 from flask_mail import Mail
 from flask_security import UserDatastore
 from foundation.models import User
+from marshmallow import Schema
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
 from pomodoros_infrastructure.tests.factories import ORMPauseFactory, ORMPomodoroFactory, ORMTaskFactory
@@ -18,6 +20,9 @@ from pony.orm import db_session
 from web_app.authentication.helpers import add_token_to_database, generate_email_change_link, revoke_all_tokens
 from web_app.authentication.models.token import Token
 from web_app.flask_app import create_app
+from web_app.marshallers.fields.color_field import ColorField
+from web_app.marshallers.fields.file_field import FileField
+from werkzeug.datastructures import FileStorage
 
 
 @pytest.fixture(scope="package")
@@ -155,3 +160,39 @@ def email_change_confirmation_link(app: Flask, new_user_email: str, project_owne
         user = User.get_for_update(id=project_owner.id)
         user.unconfirmed_new_email = new_user_email
         return generate_email_change_link(user)
+
+
+@pytest.fixture()
+def color_field_sample_schema() -> Type[Schema]:
+    class ColorSchema(Schema):
+        color_field = ColorField()
+
+    return ColorSchema
+
+
+@pytest.fixture()
+def file_field_sample_schema() -> Type[Schema]:
+    class FileSchema(Schema):
+        file_field = FileField("users.retrieve_avatar", allowed_extensions=(".jpg", ".gif"))
+
+    return FileSchema
+
+
+@pytest.fixture()
+def jpg_file() -> FileStorage:
+    return FileStorage(stream=BytesIO(b"sampleJFIF"), filename="sample_file.jpg", content_type="image/jpeg")
+
+
+@pytest.fixture()
+def gif_file() -> FileStorage:
+    return FileStorage(stream=BytesIO(b"GIF87a_sample"), filename="sample_file.gif", content_type="image/gif")
+
+
+@pytest.fixture()
+def invalid_name_image() -> FileStorage:
+    return FileStorage(stream=BytesIO(b"sampleJFIF"), filename="sample_file.xyz", content_type="image/jpeg")
+
+
+@pytest.fixture()
+def invalid_content_image() -> FileStorage:
+    return FileStorage(stream=BytesIO(b"sample_invalid_content"), filename="sample_file.jpg", content_type="image/jpeg")

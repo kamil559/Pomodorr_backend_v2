@@ -41,14 +41,6 @@ class FileField(fields.Raw):
     def _get_file_extension(filename: str) -> str:
         return os.path.splitext(filename)[1]
 
-    def _has_valid_extension(self, filename: str) -> bool:
-        try:
-            file_extension = self._get_file_extension(filename)
-        except IndexError:
-            return False
-        else:
-            return file_extension in self.available_extensions
-
     @property
     def available_extensions(self) -> typing.Set[str]:
         return (
@@ -56,6 +48,14 @@ class FileField(fields.Raw):
             if self.allowed_extensions
             else set(_current_app.config.get("ALLOWED_EXTENSIONS", [])) or set()
         )
+
+    def _has_valid_extension(self, filename: str) -> bool:
+        try:
+            file_extension = self._get_file_extension(filename)
+        except IndexError:
+            return False
+        else:
+            return file_extension in self.available_extensions
 
     def _is_valid_content(self, stream: FileStorage) -> bool:
         header = stream.read()
@@ -74,4 +74,4 @@ class FileField(fields.Raw):
             if self.required:
                 raise ValidationError(N_(self.default_error_messages["required"]))
         elif filename and (not self._has_valid_extension(filename) or not self._is_valid_content(value.stream)):
-            raise ValidationError(N_("Uploaded file extension is invalid"))
+            raise ValidationError(N_("Uploaded file's extension is invalid"))
