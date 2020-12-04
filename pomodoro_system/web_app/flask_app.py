@@ -1,8 +1,6 @@
 import http
 import os
 
-from apispec import APISpec
-from apispec.ext.marshmallow import MarshmallowPlugin
 from flask import Flask, jsonify, request
 from flask_apispec import FlaskApiSpec
 from flask_babelex import Babel, Domain, refresh
@@ -25,8 +23,10 @@ from .authentication.helpers import is_token_revoked
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint
+from .blueprints.users import users_blueprint
 from .commands import user_cli
 from .configuration import PomodorosWeb
+from .docs_definitions.apispec import api_spec
 from .docs_definitions.auth import auth_api_definitions
 from .security import PonyORMUserDatastore
 from .settings_loader import (
@@ -62,18 +62,10 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(projects_blueprint)
     app.register_blueprint(tasks_blueprint)
     app.register_blueprint(pomodoros_blueprint)
+    app.register_blueprint(users_blueprint)
 
 
 def register_doc(app: Flask) -> None:
-    api_spec = APISpec(
-        title="Pomodoro App",
-        version="0.1.0",
-        openapi_version="2.0",
-        info={
-            "description": "The API documentation contains user-specific methods and authentication-related endpoints"
-        },
-        plugins=[MarshmallowPlugin()],
-    )
     app.config["APISPEC_SPEC"] = api_spec
 
     api_spec.path(**auth_api_definitions["register"]).path(**auth_api_definitions["confirm"]).path(
@@ -123,6 +115,9 @@ def create_app() -> Flask:
         DEFAULT_LANGUAGE="en",
         ALLOWED_LANGUAGES={"en", "pl"},
         SECURITY_I18N_DOMAIN="pomodoro_security",
+        UPLOAD_PATH="pomodoro_system/web_app/media/",
+        ALLOWED_EXTENSIONS=[".jpg", ".png"],
+        MAX_CONTENT_LENGTH=3 * 1024 * 1024,
     )
 
     additional_settings = load_flask_app_settings(pomodoro_app_context.settings)
@@ -234,6 +229,13 @@ def create_app() -> Flask:
         return (
             jsonify(error.messages),
             http.HTTPStatus.BAD_REQUEST,
+        )
+
+    @flask_app.errorhandler(http.HTTPStatus.REQUEST_ENTITY_TOO_LARGE)
+    def too_large(_error):
+        return (
+            jsonify({"msg": str(N_("The file is too large."))}),
+            http.HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
         )
 
     return flask_app
