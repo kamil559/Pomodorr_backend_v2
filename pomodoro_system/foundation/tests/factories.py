@@ -73,7 +73,7 @@ class ORMUserFactory(PonyFactory):
     email = factory.LazyAttribute(lambda user: f"test_user_{str(user.id).replace('-', '_')[:13]}@mail.com")
     password = "Zaq1@WSXcde3$RFV"
     date_frame_definition = None
-    avatar = ""
+    avatar = "sample_image.jpg"
     active = True
 
 

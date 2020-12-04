@@ -127,6 +127,18 @@ def task_data(orm_project: ProjectModel) -> dict:
 
 
 @pytest.fixture()
+def user_date_frame_definition_update_data():
+    return {
+        "break_length": 30,
+        "break_time_sound": "sound_2",
+        "gap_between_long_breaks": 30,
+        "getting_to_work_sound": "sound_3",
+        "longer_break_length": 30,
+        "pomodoro_length": 30,
+    }
+
+
+@pytest.fixture()
 def orm_task_for_second_project(orm_second_project: ProjectModel) -> TaskModel:
     with db_session:
         return ORMTaskFactory(project=orm_second_project.id)

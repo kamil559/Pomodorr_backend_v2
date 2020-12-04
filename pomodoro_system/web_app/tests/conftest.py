@@ -184,6 +184,11 @@ def jpg_file() -> FileStorage:
 
 
 @pytest.fixture()
+def png_file() -> FileStorage:
+    return FileStorage(stream=BytesIO(b"\211PNG\r\n\032\n"), filename="sample_file.png", content_type="image/png")
+
+
+@pytest.fixture()
 def gif_file() -> FileStorage:
     return FileStorage(stream=BytesIO(b"GIF87a_sample"), filename="sample_file.gif", content_type="image/gif")
 
