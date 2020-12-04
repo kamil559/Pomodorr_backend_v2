@@ -341,3 +341,6 @@ tags
 # coverage reports
 coverage_html/
 coverage_xml/
+
+static/
+media/

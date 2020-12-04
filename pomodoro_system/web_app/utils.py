@@ -3,7 +3,7 @@ from datetime import date, datetime
 from typing import Optional, Type
 
 import marshmallow
-from flask import Blueprint, abort, make_response, request
+from flask import Blueprint, abort, make_response, request, url_for
 from flask_apispec.views import MethodResourceMeta
 from foundation.value_objects import T
 from marshmallow import Schema
@@ -59,3 +59,7 @@ class RegistrableBlueprint(Blueprint):
         else:
             self.view_functions.append((view_func, endpoint, injector_bindings))
         super(RegistrableBlueprint, self).add_url_rule(rule, endpoint, view_func, **options)
+
+
+def get_file_url(endpoint: str, filename: str) -> str:
+    return url_for(endpoint, filename=filename, _external=True) if filename else str()
