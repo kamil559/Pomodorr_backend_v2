@@ -18,8 +18,8 @@ from main import initialize_application
 from pony.flask import Pony
 from pony.orm import db_session
 
-from .authentication.endpoints import auth_blueprint
 from .authentication.helpers import is_token_revoked
+from .blueprints.auth import auth_blueprint
 from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint

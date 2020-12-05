@@ -27,10 +27,10 @@ from web_app.authentication.helpers import (
     get_user_tokens,
     update_token,
 )
-from web_app.authentication.marshallers import EmailChangeSchema, TokenSchema, UserBanRecordSchema, UserUnbanSchema
 from web_app.authorization.decorators import roles_required
 from web_app.authorization.tokens import TokenProtector
 from web_app.docs_definitions.language import language_header_definition
+from web_app.marshallers.auth import EmailChangeSchema, TokenSchema, UserBanRecordSchema, UserUnbanSchema
 from web_app.users.facade import UserFacade
 from web_app.utils import RegistrableBlueprint, get_dto_or_abort
 from werkzeug.datastructures import MultiDict

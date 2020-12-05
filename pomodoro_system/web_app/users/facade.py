@@ -5,6 +5,7 @@ from uuid import UUID
 
 from flask import current_app
 from flask_jwt_extended import get_jwt_identity
+from flask_security import send_mail
 from foundation.exceptions import DomainValidationError
 from foundation.i18n import N_
 from foundation.models.user import User, UserBanRecord
@@ -146,10 +147,11 @@ class UserFacade:
             manually_unbanned_at=input_dto.manually_unbanned_at,
         )
 
-    def send_change_email_confirmation_email(self, user: User, new_email: str, requested_at: datetime) -> None:
+    @staticmethod
+    def send_change_email_confirmation_email(user: User, new_email: str, requested_at: datetime) -> None:
         confirmation_link = generate_email_change_link(user)
 
-        _security._send_mail(
+        send_mail(
             subject=N_("Email change request"),
             recipient=user.email,
             template="email_change_request",
@@ -161,7 +163,7 @@ class UserFacade:
 
     @staticmethod
     def send_ban_email(user: Type[User], ban_record: Type[UserBanRecord]) -> None:
-        _security._send_mail(
+        send_mail(
             subject=N_("Account blocked"),
             recipient=user.email,
             template="user_banned",
@@ -173,7 +175,7 @@ class UserFacade:
 
     @staticmethod
     def send_unban_mail(user, manually_unbanned_at) -> None:
-        _security._send_mail(
+        send_mail(
             subject=N_("Account unblocked"),
             recipient=user.email,
             template="user_unbanned",
