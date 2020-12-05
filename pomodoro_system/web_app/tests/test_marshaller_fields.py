@@ -38,4 +38,4 @@ class TestFileField:
         with pytest.raises(ValidationError) as error:
             file_field_sample_schema().load({"file_field": tested_file})
 
-            assert error.messages["file_field"] == "Uploaded file's extension is invalid"
+        assert "Uploaded file's extension is invalid" in error.value.messages["file_field"]

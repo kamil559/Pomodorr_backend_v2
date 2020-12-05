@@ -23,11 +23,11 @@ class TestColorValueObject:
         with pytest.raises(ValueValidationError) as error:
             Color(invalid_value)
 
-            assert error.message == "Color type must be string."
+        assert "Color type must be string." in error.value.messages
 
     @pytest.mark.parametrize("invalid_string", ["red", "d1d1d1", "#d1d1d1d1", "##d1d1d1"])
     def test_create_color_with_invalid_value_fails(self, invalid_string):
         with pytest.raises(ValueValidationError) as error:
             Color("")
 
-            assert error.message == "Invalid rgb hex value."
+        assert "Invalid rgb hex value." in error.value.messages

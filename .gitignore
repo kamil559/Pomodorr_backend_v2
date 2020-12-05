@@ -337,6 +337,7 @@ tags
 .env
 .envs/*
 .set_envs.sh
+.set_testing_envs.sh
 
 # coverage reports
 coverage_html/
