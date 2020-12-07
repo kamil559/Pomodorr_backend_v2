@@ -79,9 +79,9 @@ def update_token(token: Type[Token], token_data: dict) -> Optional[Type[Token]]:
     return token
 
 
-def prune_database():
+def prune_expired_tokens():
     now = datetime.now(tz=pytz.UTC)
-    Token.select(lambda token: token.revoked and token.expires <= now).delete()
+    Token.select(lambda token: token.expires <= now).delete()
 
 
 def executes_self_action(user_id: UserId) -> bool:

@@ -24,6 +24,7 @@ from .blueprints.pomodoros import pomodoros_blueprint
 from .blueprints.projects import projects_blueprint
 from .blueprints.tasks import tasks_blueprint
 from .blueprints.users import users_blueprint
+from .celery.celery_app import create_celery
 from .commands import user_cli
 from .configuration import PomodorosWeb
 from .docs_definitions.apispec import api_spec
@@ -143,6 +144,8 @@ def create_app() -> Flask:
     Mail().init_app(app=flask_app)
 
     jwt = JWTManager(app=flask_app)
+
+    create_celery(flask_app)
 
     add_flask_commands(flask_app)
 

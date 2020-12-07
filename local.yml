@@ -4,7 +4,7 @@ volumes:
   local_postgres_data: { }
 
 services:
-  app:
+  app: &app
     depends_on:
       - postgres
       - mailhog
@@ -40,3 +40,29 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+
+  redis:
+    image: redis:5.0
+
+  celeryworker:
+    <<: *app
+    image: pomodoro_celeryworker_local
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *app
+    image: pomodoro_celerybeat_local
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *app
+    image: pomodoro_flower_local
+    command: /start-flower
+    ports:
+      - "5555:5555"

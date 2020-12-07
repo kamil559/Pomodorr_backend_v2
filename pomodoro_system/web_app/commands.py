@@ -30,10 +30,12 @@ class CreateAdminSchema(Schema):
 
         self.save_admin(email, password)
 
+    @db_session
     def save_admin(self, email: str, password: str) -> None:
         user = self.datastore.create_user(
             email=email, password=hash_password(password), confirmed_at=to_utc(datetime.now()), active=True
         )
+
         admin_role = self.datastore.find_role("admin")
         self.datastore.add_role_to_user(user, admin_role)
 
@@ -41,7 +43,6 @@ class CreateAdminSchema(Schema):
 @user_cli.command("create_admin")
 @click.argument("email")
 @click.argument("password")
-@db_session
 def create_admin(email: str, password: str) -> None:
     datastore = current_app.extensions["security"].datastore
     try:

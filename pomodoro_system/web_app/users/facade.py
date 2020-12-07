@@ -100,7 +100,6 @@ class UserFacade:
         if user.is_banned:
             raise DomainValidationError({"msg": N_("The user is already banned.")})
 
-        user.active = False
         ban_record = UserBanRecord(
             user=user,
             banned_until=input_dto.banned_until,
@@ -132,7 +131,6 @@ class UserFacade:
         if not user.is_banned:
             raise DomainValidationError({"msg": N_("The user is not currently banned.")})
 
-        user.active = True
         ban_record = user.current_ban_record
         ban_record.manually_unbanned = True
         ban_record.manually_unbanned_at = input_dto.manually_unbanned_at

@@ -12,6 +12,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jt
 from flask_mail import Mail
 from flask_security import UserDatastore
 from foundation.models import User
+from freezegun import freeze_time
 from marshmallow import Schema
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
@@ -104,6 +105,24 @@ def random_project_owner_authorization_token(app: Flask, random_project_owner: U
         access_token = create_access_token(random_project_owner, fresh=True)
         add_token_to_database(access_token)
     return f"Bearer {access_token}"
+
+
+@pytest.fixture()
+def now() -> datetime:
+    return datetime.now(tz=pytz.UTC)
+
+
+@pytest.fixture()
+def yesterday(now: datetime) -> datetime:
+    return now - timedelta(days=1)
+
+
+@pytest.fixture()
+def expired_project_owner_access_token(app: Flask, project_owner: User, yesterday):
+    with db_session, app.test_request_context(), freeze_time(yesterday):
+        access_token = create_access_token(project_owner, fresh=True)
+        add_token_to_database(access_token)
+    return access_token
 
 
 @pytest.fixture()
