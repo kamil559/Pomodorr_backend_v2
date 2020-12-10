@@ -1,16 +1,39 @@
 dist: bionic
+
 language: python
-cache: pip
+
 python:
   - "3.8"
-install:
+
+addons:
+  apt:
+    packages:
+      - gettext
+      - libenchant-dev
+      - aspell-pl
+
+cache:
+  - apt
+  - pip
+  - directories:
+      - $HOME/.cache/pre-commit
+
+before_install:
   - pip install poetry==1.1.0
   - pip install codecov==2.1.10
-  - make install_dev
+
+install:
+  - poetry install
+
+before_script:
+  - poetry check
+
+script:
+  - poetry run make extract_messages
+  - poetry run make compile_translations
+  - poetry run make test_with_xml_coverage
+  - poetry run make check_linting
+  - poetry run make check_translations
+
 after_success:
   - codecov --token=${CODECOV_TOKEN}
-script:
-  - make extract_messages
-  - make compile_translations
-  - make test_with_xml_coverage
-  - make check_linting

@@ -53,3 +53,8 @@ update_translations:
 .PHONY: compile_translations
 compile_translations:
 	pybabel compile -d ./pomodoro_system/locale
+
+
+.PHONY: check_translations
+check_translations:
+	msgcheck -pwW pomodoro_system/locale/*/LC_MESSAGES/messages.po

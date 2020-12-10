@@ -11,6 +11,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            sudo apt-get install gettext --assume-yes
+            sudo apt-get install libenchant-dev --assume-yes
             poetry add codecov==2.1.10
             poetry install
       - save_cache:
@@ -20,15 +22,15 @@ jobs:
       - run:
           name: Extract and compile messages
           command: |
-            poetry run pybabel extract -F ./babel.cfg -o ./pomodoro_system/locale/messages.pot .
-            poetry run pybabel compile -d ./pomodoro_system/locale
+            poetry run make extract_messages
+            poetry run make compile_translations
       - run:
           name: Run test suite and linting validation
           command: |
-            poetry run pytest --cov-report=html:coverage_html --cov=./
-            poetry run black ./ --check
-            poetry run isort ./ --check-only
-            poetry run flake8 ./
+            poetry run make test_with_xml_coverage
+            poetry run make check_linting
+            poetry run make check_translations
+
       - run:
           command: poetry run codecov --token=$CODECOV_TOKEN
 

@@ -681,6 +681,17 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "msgcheck"
+version = "3.1"
+description = "Gettext file checker."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pyenchant = "*"
+
+[[package]]
 name = "mypy"
 version = "0.782"
 description = "Optional static typing for Python"
@@ -812,6 +823,14 @@ description = "C parser in Python"
 category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
+name = "pyenchant"
+version = "3.2.0"
+description = "Python bindings for the Enchant spellchecking system"
+category = "dev"
+optional = false
+python-versions = ">=3.5"
 
 [[package]]
 name = "pyflakes"
@@ -1133,7 +1152,7 @@ locale = ["Babel (>=1.3)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ed4203d116c100d8684fe3e853638742e0ed2da96b2d0f9f548bd8cd203be9dd"
+content-hash = "ebe6a6ce5f74fb46a1f740a61a6f6abe120b76297b9e607a4d8876f471784125"
 
 [metadata.files]
 amqp = [
@@ -1460,6 +1479,10 @@ more-itertools = [
     {file = "more-itertools-8.5.0.tar.gz", hash = "sha256:6f83822ae94818eae2612063a5101a7311e68ae8002005b5e05f03fd74a86a20"},
     {file = "more_itertools-8.5.0-py3-none-any.whl", hash = "sha256:9b30f12df9393f0d28af9210ff8efe48d10c94f73e5daf886f10c4b0b0b4f03c"},
 ]
+msgcheck = [
+    {file = "msgcheck-3.1-py3-none-any.whl", hash = "sha256:5ba745bb7d5e6714b30a1714c09cd7ee3d1cbbc6b422cc41de1596ee9d97c7cd"},
+    {file = "msgcheck-3.1.tar.gz", hash = "sha256:ef77ada3d9a32dd454cd90bebf216e3e3376bd30354be9f1b15ea50148f071ff"},
+]
 mypy = [
     {file = "mypy-0.782-cp35-cp35m-macosx_10_6_x86_64.whl", hash = "sha256:2c6cde8aa3426c1682d35190b59b71f661237d74b053822ea3d748e2c9578a7c"},
     {file = "mypy-0.782-cp35-cp35m-manylinux1_x86_64.whl", hash = "sha256:9c7a9a7ceb2871ba4bac1cf7217a7dd9ccd44c27c2950edbc6dc08530f32ad4e"},
@@ -1552,6 +1575,12 @@ pycodestyle = [
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
     {file = "pycparser-2.20.tar.gz", hash = "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0"},
+]
+pyenchant = [
+    {file = "pyenchant-3.2.0-py3-none-any.whl", hash = "sha256:5f5fbf99283136ad0e56660343ec4f16713981e340984ce9487de756fce022c6"},
+    {file = "pyenchant-3.2.0-py3-none-win32.whl", hash = "sha256:f649f36fa90cb950d10b1a70bca50be7799ec759aa478353f08dcef579c097ee"},
+    {file = "pyenchant-3.2.0-py3-none-win_amd64.whl", hash = "sha256:f22cc6e342d4e6a027296c59ae8ad4d5b2f281da1ecbe0e839a9e5f5d243b33d"},
+    {file = "pyenchant-3.2.0.tar.gz", hash = "sha256:6b97e9a9f132fa7c9029a6635d821ccad67d4980e68186d02c765b4256b6f152"},
 ]
 pyflakes = [
     {file = "pyflakes-2.2.0-py2.py3-none-any.whl", hash = "sha256:0d94e0e05a19e57a99444b6ddcf9a6eb2e5c68d3ca1e98e90707af8152c90a92"},
