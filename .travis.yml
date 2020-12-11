@@ -32,8 +32,8 @@ jobs:
       script: poetry check
     - stage: preparing-translations
       script: |
-        - poetry run make extract_messages
-        - poetry run make compile_translations
+        poetry run make extract_messages
+        poetry run make compile_translations
     - stage: testing
       script: poetry run make test_with_xml_coverage
     - stage: linting-check
