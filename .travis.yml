@@ -17,23 +17,28 @@ cache:
   - pip
   - directories:
       - $HOME/.cache/pre-commit
+      - $HOME/.cache/pypoetry
 
 before_install:
   - pip install poetry==1.1.0
-  - pip install codecov==2.1.10
 
 install:
-  - poetry install
+  - poetry install --no-interaction
 
-before_script:
-  - poetry check
-
-script:
-  - poetry run make extract_messages
-  - poetry run make compile_translations
-  - poetry run make test_with_xml_coverage
-  - poetry run make check_linting
-  - poetry run make check_translations
-
-after_success:
-  - codecov --token=${CODECOV_TOKEN}
+jobs:
+  include:
+    - stage: dependencies-check
+      script: poetry check
+    - stage: preparing-translations
+      script: |
+        - poetry run make extract_messages
+        - poetry run make compile_translations
+    - stage: testing
+      script: poetry run make test_with_xml_coverage
+    - stage: linting-check
+      script: poetry run make check_linting
+    - stage: translations-check
+      script: poetry run make check_translations
+    - stage: uploading-coverage
+      install: pip install codecov==2.1.10
+      script: codecov --token=${CODECOV_TOKEN}
