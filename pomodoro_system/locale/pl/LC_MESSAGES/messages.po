@@ -229,7 +229,7 @@ msgid ""
 "Your account has been banned permanently. For further information please "
 "contact the administrator."
 msgstr ""
-"Twoje konto zostało zablokowane permanentie. Po więcej informacji prosimy"
+"Twoje konto zostało zablokowane permanentnie. Po więcej informacji prosimy"
 " skontaktować się z administratorem. "
 
 #: pomodoro_system/web_app/templates/security/email/user_banned.html:8
