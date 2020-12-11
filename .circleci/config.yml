@@ -11,8 +11,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get install gettext --assume-yes
-            sudo apt-get install libenchant-dev --assume-yes
+            sudo apt-get install gettext libenchant-dev aspell-pl aspell-en --assume-yes
             poetry add codecov==2.1.10
             poetry install --no-interaction
       - save_cache:

@@ -11,6 +11,7 @@ addons:
       - gettext
       - libenchant-dev
       - aspell-pl
+      - aspell-en
 
 cache:
   - apt

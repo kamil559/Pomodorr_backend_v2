@@ -57,4 +57,4 @@ compile_translations:
 
 .PHONY: check_translations
 check_translations:
-	msgcheck -pwW pomodoro_system/locale/*/LC_MESSAGES/messages.po
+	msgcheck -pwW --pwl pomodoro_system/locale/pwl.txt -s str pomodoro_system/locale/*/LC_MESSAGES/messages.po
