@@ -37,7 +37,7 @@ RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
 
 WORKDIR usr/src/app
-COPY pomodoro_system/ ./
+COPY ./pomodoro_system ./pomodoro_system
 
 ENV APPLICATION_CONFIG=".envs/local/.application"
 ENV DB_CONFIG=".envs/local/.database"

@@ -4,6 +4,12 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+export DB_HOST="localhost"
+export DB_PORT="${POSTGRES_PORT}"
+export DB_USER="${POSTGRES_USER}"
+export DB_PASSWORD="${POSTGRES_PASSWORD}"
+export DB_NAME="${POSTGRES_DB}"
+
 postgres_ready() {
 python << END
 import sys
@@ -12,11 +18,11 @@ import psycopg2
 
 try:
     psycopg2.connect(
+        host="${POSTGRES_HOST}",
+        port="${POSTGRES_PORT}",
         dbname="${POSTGRES_DB}",
         user="${POSTGRES_USER}",
         password="${POSTGRES_PASSWORD}",
-        host="${POSTGRES_HOST}",
-        port="${POSTGRES_PORT}",
     )
 except psycopg2.OperationalError:
     sys.exit(-1)

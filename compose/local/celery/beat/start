@@ -2,7 +2,7 @@
 
 set -o errexit
 set -o nounset
-
+cd pomodoro_system
 
 rm -f './celerybeat.pid'
 celery -A web_app.celery beat -l INFO

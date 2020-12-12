@@ -2,7 +2,7 @@
 
 set -o errexit
 set -o nounset
-
+cd pomodoro_system
 
 celery flower \
     --app=web_app.celery \
