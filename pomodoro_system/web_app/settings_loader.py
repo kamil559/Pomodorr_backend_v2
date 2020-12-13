@@ -1,6 +1,36 @@
 import os
+from datetime import timedelta
 
 from foundation.interfaces import AppSetupStrategy
+
+
+class FlaskBaseSettingsLoader(AppSetupStrategy):
+    def load_settings(self) -> None:
+        self.settings_mapping = {
+            "base_settings": {
+                "SECURITY_REGISTERABLE": True,
+                "SECURITY_SEND_REGISTER_EMAIL": True,
+                "SECURITY_CONFIRMABLE": True,
+                "SECURITY_CHANGEABLE": True,
+                "SECURITY_RECOVERABLE": True,
+                "WTF_CSRF_ENABLED": False,
+                "SECURITY_LOGIN_WITHOUT_CONFIRMATION": False,
+                "SECURITY_CSRF_PROTECT_MECHANISMS": [],
+                "SECURITY_CSRF_IGNORE_UNAUTH_ENDPOINTS": True,
+                "WTF_CSRF_CHECK_DEFAULT": False,
+                "JWT_SECRET_KEY": os.getenv("JWT_SECRET_KEY"),
+                "JWT_TOKEN_LOCATION": ["headers"],
+                "JWT_ACCESS_TOKEN_EXPIRES": timedelta(minutes=30),
+                "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=30),
+                "JWT_HEADER_NAME": "Authorization",
+                "JWT_HEADER_TYPE": "Bearer",
+                "JWT_BLACKLIST_ENABLED": True,
+                "JWT_BLACKLIST_TOKEN_CHECKS": ["access", "refresh"],
+            }
+        }
+
+    def setup(self) -> None:
+        self.load_settings()
 
 
 class FlaskTestingSettingsLoader(AppSetupStrategy):

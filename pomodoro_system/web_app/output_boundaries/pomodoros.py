@@ -1,4 +1,6 @@
-from flask import jsonify, make_response
+import http
+
+from flask import jsonify
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     BeginPomodoroOutputDto,
@@ -9,7 +11,7 @@ from pomodoros import (
     ResumePomodoroOutputBoundary,
     ResumePomodoroOutputDto,
 )
-from web_app.serializers.pomodoros import (
+from web_app.marshallers.pomodoros import (
     BeginPomodoroSchema,
     FinishPomodoroSchema,
     PausePomodoroSchema,
@@ -20,22 +22,22 @@ from web_app.serializers.pomodoros import (
 class JSONBeginPomodoroPresenter(BeginPomodoroOutputBoundary):
     def present(self, output_dto: BeginPomodoroOutputDto) -> None:
         serialized_output_data = BeginPomodoroSchema().dump(output_dto)
-        self.response = make_response(jsonify(serialized_output_data), 201)
+        self.response = jsonify(serialized_output_data), http.HTTPStatus.CREATED
 
 
 class JSONPausePomodoroPresenter(PausePomodoroOutputBoundary):
     def present(self, output_dto: PausePomodoroOutputDto) -> None:
         serialized_output_data = PausePomodoroSchema().dump(output_dto)
-        self.response = make_response(jsonify(serialized_output_data), 200)
+        self.response = jsonify(serialized_output_data), http.HTTPStatus.OK
 
 
 class JSONResumePomodoroPresenter(ResumePomodoroOutputBoundary):
     def present(self, output_dto: ResumePomodoroOutputDto) -> None:
         serialized_output_data = ResumePomodoroSchema().dump(output_dto)
-        self.response = make_response(jsonify(serialized_output_data), 200)
+        self.response = jsonify(serialized_output_data), http.HTTPStatus.OK
 
 
 class JSONFinishPomodoroPresenter(FinishPomodoroOutputBoundary):
     def present(self, output_dto: FinishPomodoroOutputDto) -> None:
         serialized_output_data = FinishPomodoroSchema().dump(output_dto)
-        self.response = make_response(jsonify(serialized_output_data), 200)
+        self.response = jsonify(serialized_output_data), http.HTTPStatus.OK

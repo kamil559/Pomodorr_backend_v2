@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timedelta
 
 from foundation.models import db
+from pomodoros.domain.value_objects import TaskStatus
 from pony.orm import LongStr, Optional, PrimaryKey, Required, Set
 
 
@@ -9,7 +10,7 @@ class TaskModel(db.Entity):
     _table_ = "tasks"
 
     id = PrimaryKey(uuid.UUID, auto=False)
-    project_id = Required(uuid.UUID)
+    project = Required("ProjectModel")
     name = Required(str, max_len=128)
     status = Required(int)
     priority_color = Required(str, max_len=7)
@@ -26,7 +27,12 @@ class TaskModel(db.Entity):
     renewal_interval = Optional(timedelta)
     note = Optional(LongStr, lazy=False)
     created_at = Required(datetime)
-    sub_tasks = Set(lambda: SubTaskModel)
+    sub_tasks = Set("SubTaskModel", cascade_delete=True)
+    pomodoros = Set("PomodoroModel", cascade_delete=True, lazy=True)
+
+    @property
+    def is_active(self) -> bool:
+        return self.status == TaskStatus.ACTIVE.value
 
 
 class SubTaskModel(db.Entity):
@@ -35,5 +41,5 @@ class SubTaskModel(db.Entity):
     id = PrimaryKey(uuid.UUID, auto=False)
     name = Required(str, max_len=128)
     task = Required(TaskModel)
-    created_at = Required(datetime)
+    ordering = Required(int)
     is_completed = Required(bool)

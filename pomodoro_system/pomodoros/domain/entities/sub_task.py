@@ -1,13 +1,12 @@
 from dataclasses import dataclass
-from datetime import datetime
+from typing import Optional
 
-from pomodoros.domain.value_objects import SubTaskId, TaskId
+from pomodoros.domain.value_objects import Ordering, SubTaskId
 
 
 @dataclass
 class SubTask:
-    id: SubTaskId
+    id: Optional[SubTaskId]
     name: str
-    task_id: TaskId
-    created_at: datetime
+    ordering: Ordering
     is_completed: bool

@@ -1,6 +1,7 @@
 import flask_injector
 import injector
 from foundation.application.repositories.user import UserRepository
+from foundation.interfaces import MediaStorage
 from pomodoros import (
     BeginPomodoroOutputBoundary,
     CompleteTaskOutputBoundary,
@@ -15,6 +16,9 @@ from web_app.users.repository import SQLUserRepository
 
 from .authorization.projects import ProjectProtector
 from .authorization.tasks import TaskProtector
+from .authorization.tokens import TokenProtector
+from .authorization.users import UserProtector
+from .media_storages import LocalMediaStorage
 from .output_boundaries.pomodoros import (
     JSONBeginPomodoroPresenter,
     JSONFinishPomodoroPresenter,
@@ -26,6 +30,7 @@ from .output_boundaries.tasks import (
     JSONPinTaskToProjectPresenter,
     JSONReactivateTaskPresenter,
 )
+from .users.facade import UserFacade
 
 
 class PomodorosWeb(injector.Module):
@@ -79,3 +84,19 @@ class PomodorosWeb(injector.Module):
     @injector.provider
     def project_protector(self) -> ProjectProtector:
         return ProjectProtector()
+
+    @injector.provider
+    def token_protector(self) -> TokenProtector:
+        return TokenProtector()
+
+    @injector.provider
+    def user_protector(self) -> UserProtector:
+        return UserProtector()
+
+    @injector.provider
+    def user_facade(self) -> UserFacade:
+        return UserFacade()
+
+    @injector.provider
+    def media_storage(self) -> MediaStorage:
+        return LocalMediaStorage()

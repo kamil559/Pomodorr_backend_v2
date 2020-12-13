@@ -5,7 +5,8 @@ from random import randint
 import pytest
 import pytz
 from foundation.exceptions import NotFound
-from foundation.value_objects import DateFrameDefinition, Priority, PriorityLevel
+from foundation.utils import with_tzinfo
+from foundation.value_objects import Color, DateFrameDefinition, Priority, PriorityLevel
 from pomodoros.domain.entities import Task
 from pomodoros.domain.value_objects import TaskStatus
 from pomodoros_infrastructure import SubTaskModel
@@ -19,7 +20,7 @@ class TestSQLTaskRepository:
     def test_repository_returns_mapped_entity(self, orm_task):
         repo = SQLTaskRepository()
 
-        priority = Priority(orm_task.priority_color, PriorityLevel(orm_task.priority_level))
+        priority = Priority(Color(orm_task.priority_color), PriorityLevel(orm_task.priority_level))
         date_frame_definition = DateFrameDefinition(
             orm_task.pomodoro_length,
             orm_task.break_length,
@@ -28,28 +29,28 @@ class TestSQLTaskRepository:
         )
 
         expected_entity = Task(
-            orm_task.id,
-            orm_task.project_id,
-            orm_task.name,
-            TaskStatus(orm_task.status),
-            priority,
-            orm_task.ordering,
-            orm_task.due_date,
-            orm_task.pomodoros_to_do,
-            orm_task.pomodoros_burn_down,
-            date_frame_definition,
-            orm_task.reminder_date,
-            orm_task.renewal_interval,
-            orm_task.note,
-            orm_task.created_at,
+            id=orm_task.id,
+            project_id=orm_task.project.id,
+            name=orm_task.name,
+            status=TaskStatus(orm_task.status),
+            priority=priority,
+            ordering=orm_task.ordering,
+            due_date=orm_task.due_date,
+            pomodoros_to_do=orm_task.pomodoros_to_do,
+            pomodoros_burn_down=orm_task.pomodoros_burn_down,
+            date_frame_definition=date_frame_definition,
+            reminder_date=orm_task.reminder_date,
+            renewal_interval=orm_task.renewal_interval,
+            note=orm_task.note,
+            created_at=orm_task.created_at,
             sub_tasks=list(
                 map(
                     lambda sub_task: SubTaskModel(
-                        sub_task.id,
-                        sub_task.name,
-                        sub_task.id,
-                        sub_task.created_at.astimezone(tz=pytz.UTC),
-                        sub_task.is_completed,
+                        id=sub_task.id,
+                        name=sub_task.name,
+                        task=sub_task.task_id,
+                        created_at=with_tzinfo(sub_task.created_at),
+                        is_completed=sub_task.is_completed,
                     ),
                     orm_task.sub_tasks,
                 )
@@ -75,11 +76,10 @@ class TestSQLTaskRepository:
             "project_id": orm_second_project.id,
             "name": "xyz",
             "status": TaskStatus.COMPLETED,
-            "priority": Priority("#952424", PriorityLevel(randint(0, 3))),
+            "priority": Priority(Color("#952424"), PriorityLevel(randint(0, 3))),
             "ordering": 1,
             "due_date": (datetime.now() + timedelta(days=1)).astimezone(tz=pytz.UTC),
             "pomodoros_to_do": 45,
-            "pomodoros_burn_down": 2,
             "date_frame_definition": DateFrameDefinition(
                 timedelta(minutes=20),
                 timedelta(7),

@@ -1,6 +1,9 @@
+from typing import Dict, List, Union
+
+
 class RepositoryError(Exception):
-    def __init__(self, message: str = None) -> None:
-        self.message = message
+    def __init__(self, message: Union[str, List, Dict] = None):
+        self.messages = [message] if isinstance(message, (str, bytes)) else message
 
 
 class NotFound(RepositoryError):
@@ -8,4 +11,13 @@ class NotFound(RepositoryError):
 
 
 class AlreadyExists(RepositoryError):
+    pass
+
+
+class ValueValidationError(Exception):
+    def __init__(self, message: Union[str, List, Dict] = None):
+        self.messages = [message] if isinstance(message, (str, bytes)) else message
+
+
+class DomainValidationError(ValueValidationError):
     pass

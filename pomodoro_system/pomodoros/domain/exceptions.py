@@ -1,63 +1,53 @@
-class ValidationError(Exception):
-    def __init__(self, message: str):
-        self.message = message
+from foundation.exceptions import DomainValidationError
 
 
-class InvalidProjectOwner(ValidationError):
+class InvalidProjectOwner(DomainValidationError):
     pass
 
 
-class TaskNameNotAvailableInNewProject(ValidationError):
+class TaskNameNotAvailableInNewProject(DomainValidationError):
     pass
 
 
-class TaskForDueDateAlreadyExists(ValidationError):
+class TaskForDueDateAlreadyExists(DomainValidationError):
     pass
 
 
-class TaskAlreadyActive(ValidationError):
+class TaskAlreadyActive(DomainValidationError):
     pass
 
 
-class TaskAlreadyCompleted(ValidationError):
+class TaskAlreadyCompleted(DomainValidationError):
     pass
 
 
-class SubTaskNotAvailableInTask(ValidationError):
+class SubTaskNotAvailableInTask(DomainValidationError):
     pass
 
 
-class ProjectNameNotAvailableForUser(ValidationError):
+class ProjectNameNotAvailableForUser(DomainValidationError):
     pass
 
 
-class CollidingPomodoroWasFound(ValidationError):
+class CollidingPomodoroWasFound(DomainValidationError):
     pass
 
 
-class FutureDateProvided(ValidationError):
+class StartDateGreaterThanEndDate(DomainValidationError):
     pass
 
 
-class NaiveDateProvided(ValidationError):
+class DateFrameIsAlreadyFinished(DomainValidationError):
     pass
 
 
-class StartDateGreaterThanEndDate(ValidationError):
+class NoActionAllowedOnFinishedPomodoro(DomainValidationError):
     pass
 
 
-class DateFrameIsAlreadyFinished(ValidationError):
+class PomodoroErrorMarginExceeded(DomainValidationError):
     pass
 
 
-class NoActionAllowedOnFinishedPomodoro(ValidationError):
-    pass
-
-
-class PomodoroErrorMarginExceeded(ValidationError):
-    pass
-
-
-class NoActionAllowedOnCompletedTask(ValidationError):
+class NoActionAllowedOnCompletedTask(DomainValidationError):
     pass

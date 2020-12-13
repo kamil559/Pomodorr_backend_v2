@@ -1,16 +1,26 @@
+import http
 import uuid
 
+from flask import abort
+from foundation.exceptions import DomainValidationError
+from foundation.i18n import N_
 from foundation.interfaces import ResourceProtector
 from foundation.value_objects import UserId
-from pomodoros_infrastructure import ProjectModel, TaskModel
+from pomodoros_infrastructure import TaskModel
 from pony.orm import select
-from werkzeug.exceptions import abort
 
 
 class TaskProtector(ResourceProtector):
-    def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
-        project_id = select(task.project_id for task in TaskModel if task.id == resource_id).get()
-        owner_id = select(project.owner_id for project in ProjectModel if project.id == project_id).get()
+    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_if_none: bool = True) -> None:
+        task_id, owner_id = select(
+            (task.id, task.project.owner.id) for task in TaskModel if task.id == resource_id
+        ).get() or (None, None)
+
+        if task_id is None:
+            if abort_if_none:
+                abort(http.HTTPStatus.NOT_FOUND)
+            else:
+                raise DomainValidationError({"task_id": N_("Selected task does not exist.")})
 
         if requester_id != owner_id:
-            abort(403)
+            abort(http.HTTPStatus.FORBIDDEN)

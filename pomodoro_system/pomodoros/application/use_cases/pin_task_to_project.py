@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from foundation.value_objects import T
-from pomodoros.application.queries.tasks import GetTasksByProjectId
+from pomodoros.application.queries.tasks import GetRecentTasksByProjectId
 from pomodoros.application.repositories.tasks import TaskRepository
 from pomodoros.domain.value_objects import ProjectId, TaskId
 
@@ -33,15 +33,15 @@ class PinTaskToProject:
         self,
         output_boundary: PinTaskToProjectOutputBoundary,
         tasks_repository: TaskRepository,
-        get_tasks_by_project_id_query: GetTasksByProjectId,
+        get_recent_tasks_by_pomodoro_id_query: GetRecentTasksByProjectId,
     ) -> None:
         self.output_boundary = output_boundary
         self.tasks_repository = tasks_repository
-        self.get_tasks_by_project_id_query = get_tasks_by_project_id_query
+        self.get_recent_tasks_by_pomodoro_id_query = get_recent_tasks_by_pomodoro_id_query
 
     def execute(self, input_dto: PinTaskToProjectInputDto) -> None:
         task = self.tasks_repository.get(input_dto.id)
-        new_project_tasks = self.get_tasks_by_project_id_query.query(input_dto.new_project_id)
+        new_project_tasks = self.get_recent_tasks_by_pomodoro_id_query.query(input_dto.new_project_id)
 
         task.pin_to_new_project(input_dto.new_project_id, new_project_tasks)
         self.tasks_repository.save(task)

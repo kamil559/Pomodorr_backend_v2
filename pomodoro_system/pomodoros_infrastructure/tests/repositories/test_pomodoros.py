@@ -45,11 +45,11 @@ class TestPomodoroRepository:
 
         with db_session(strict=True):
             domain_pomodoro = Pomodoro(
-                orm_pomodoro.id,
-                orm_pomodoro.id,
-                orm_pomodoro.start_date,
-                orm_pomodoro.end_date,
-                None,
+                id=orm_pomodoro.id,
+                task_id=orm_pomodoro.task.id,
+                start_date=orm_pomodoro.start_date,
+                end_date=orm_pomodoro.end_date,
+                contained_pauses=None,
             )
             new_start_date = datetime.now(tz=pytz.UTC)
             domain_pomodoro.start_date = new_start_date

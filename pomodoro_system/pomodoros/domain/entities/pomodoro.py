@@ -2,9 +2,9 @@ import operator
 import uuid
 from datetime import datetime, timedelta
 from functools import reduce
-from gettext import gettext as _
 from typing import List, Optional, Union
 
+from foundation.i18n import N_
 from foundation.value_objects import DateFrameDefinition, UserDateFrameDefinition
 from pomodoros.domain.entities import DateFrame, Task
 from pomodoros.domain.entities.pause import Pause
@@ -48,9 +48,7 @@ class Pomodoro(DateFrame):
 
     def _check_can_perform_actions(self) -> None:
         if self.is_finished:
-            raise NoActionAllowedOnFinishedPomodoro(
-                _("pomodoros.domain.entities.pomodoro.no_action_allowed_on_finished_pomodoro")
-            )
+            raise NoActionAllowedOnFinishedPomodoro(N_("No action is allowed on finished pomodoro."))
 
     def _check_pomodoro_length(self, maximal_duration: timedelta, checked_end_date: datetime) -> None:
         pomodoro_duration = checked_end_date - self.start_date
@@ -64,7 +62,7 @@ class Pomodoro(DateFrame):
         duration_difference = total_duration - maximal_duration
 
         if duration_difference > AcceptablePomodoroErrorMargin:
-            raise PomodoroErrorMarginExceeded(_("pomodoros.domain.entities.pomodoro.pomodoro_error_margin_exceeded"))
+            raise PomodoroErrorMarginExceeded(N_("Pomodoro duration's error margin has been exceeded."))
 
     @staticmethod
     def _check_for_colliding_pomodoros(
@@ -108,7 +106,7 @@ class Pomodoro(DateFrame):
             colliding_date_frames = validate_against_finished_pomodoro()
 
         if len(colliding_date_frames):
-            raise CollidingPomodoroWasFound(_("pomodoros.domain.entities.pomodoro.colliding_pomodoro_was_found"))
+            raise CollidingPomodoroWasFound(N_("Colliding pomodoro was found."))
 
     def begin(
         self,

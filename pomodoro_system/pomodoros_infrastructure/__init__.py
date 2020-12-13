@@ -1,15 +1,18 @@
 import injector
 from pomodoros import (
     GetRecentPomodoros,
-    GetTasksByProjectId,
+    GetTaskListByOwnerId,
     PauseRepository,
     PomodoroRepository,
     ProjectRepository,
     TaskRepository,
 )
+from pomodoros.application.queries.projects import GetProjectsByOwnerId
+from pomodoros.application.queries.tasks import GetRecentTasksByProjectId
 
 from .models import PauseModel, PomodoroModel, ProjectModel, SubTaskModel, TaskModel
-from .queries import SQLGetRecentPomodoros, SQLGetTasksByProjectId
+from .queries import SQLGetRecentPomodoros, SQLGetRecentTasksByProjectId, SQLGetTaskListByOwnerId
+from .queries.projects import SQLGetProjectsByOwnerId
 from .repositories import SQLPauseRepository, SQLPomodoroRepository, SQLProjectRepository, SQLTaskRepository
 
 __all__ = [
@@ -46,5 +49,13 @@ class PomodorosInfrastructure(injector.Module):
         return SQLGetRecentPomodoros()
 
     @injector.provider
-    def get_tasks_by_project_id_query(self) -> GetTasksByProjectId:
-        return SQLGetTasksByProjectId()
+    def get_tasks_by_project_id_query(self) -> GetTaskListByOwnerId:
+        return SQLGetTaskListByOwnerId()
+
+    @injector.provider
+    def get_recent_tasks_by_project_id_query(self) -> GetRecentTasksByProjectId:
+        return SQLGetRecentTasksByProjectId()
+
+    @injector.provider
+    def get_projects_by_owner_id_query(self) -> GetProjectsByOwnerId:
+        return SQLGetProjectsByOwnerId()

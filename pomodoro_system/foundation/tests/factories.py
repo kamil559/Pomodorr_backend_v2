@@ -4,9 +4,7 @@ from datetime import datetime
 import factory
 from factory.fuzzy import FuzzyAttribute
 from foundation.interfaces import AbstractUser
-from foundation.models import User
-from foundation.models import UserDateFrameDefinition as UserDateFrameDefinitionModel
-from foundation.models import db
+from foundation.models import User, UserDateFrameDefinitionModel, db
 from foundation.value_objects import UserDateFrameDefinition
 
 
@@ -46,7 +44,9 @@ class UserFactory(factory.Factory):
         model = AbstractUser
 
     id = factory.LazyFunction(uuid.uuid4)
+    email = factory.LazyAttribute(lambda user: f"test_user_{str(user.id).replace('-', '_')[:13]}@mail.com")
     date_frame_definition = factory.SubFactory(UserDateFrameDefinitionFactory)
+    avatar = ""
 
 
 class ORMUserDateFrameDefinitionFactory(PonyFactory):
@@ -70,7 +70,13 @@ class ORMUserFactory(PonyFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     confirmed_at = factory.LazyFunction(datetime.now)
-    email = factory.Faker("email")
+    email = factory.LazyAttribute(lambda user: f"test_user_{str(user.id).replace('-', '_')[:13]}@mail.com")
     password = "Zaq1@WSXcde3$RFV"
     date_frame_definition = None
+    avatar = "sample_image.jpg"
     active = True
+
+
+class ORMUserDataFactory(ORMUserFactory):
+    class Meta:
+        model = dict

@@ -1,0 +1,86 @@
+from typing import List, Mapping, Optional, Union
+
+from flask import g, request
+from foundation.interfaces import Paginator
+from pony.orm import Optional as ORMOptional
+from pony.orm import Required, desc
+from pony.orm.core import Query  # noqa
+from web_app.utils import load_int_query_parameter
+
+
+class FilteredQueryMixin:
+    @staticmethod
+    def get_filtered_query(query: Query, filter_fields: Mapping[str, str]) -> Query:
+        if not query:
+            return query
+
+        if filter_fields:
+            return query.filter(**filter_fields)
+        return query
+
+
+class PaginatedQueryMixin:
+    @staticmethod
+    def get_paginator() -> Optional[Paginator]:
+        if not request:
+            return
+
+        page = load_int_query_parameter(request.args.get("page"))
+        page_size = load_int_query_parameter(request.args.get("page_size"))
+        prepared_paginator = Paginator(page=page, page_size=page_size or Paginator.page_size)
+
+        if prepared_paginator.is_usable():
+            return prepared_paginator
+        return None
+
+    def get_paginated_query(self, query: Query) -> Query:
+        if not query:
+            return query
+
+        paginator = self.get_paginator()
+        if paginator:
+            return query.page(paginator.page, paginator.page_size)
+        return query
+
+
+class SortedQueryMixin:
+    @staticmethod
+    def get_sort_params() -> List[Union[ORMOptional, Required]]:
+        if g:
+            available_sort_params_mapping = getattr(g, "sort_fields", {})
+        else:
+            available_sort_params_mapping = {}
+
+        if not request:
+            return []
+
+        params_list = request.args.get("sort", [])
+        if params_list and isinstance(params_list, str):
+            params_list = params_list.split(",")
+
+        if not params_list and g:
+            params_list = getattr(g, "default_sort_fields", [])
+
+        valid_sort_params = list(
+            filter(lambda param: param.lstrip("-").lower() in available_sort_params_mapping, params_list)
+        )
+        mapped_sort_fields = list(
+            map(
+                lambda param: desc(available_sort_params_mapping[param.lstrip("-")])
+                if param.startswith("-")
+                else available_sort_params_mapping[param],
+                valid_sort_params,
+            )
+        )
+
+        return mapped_sort_fields
+
+    def get_sorted_query(self, query: Query) -> Query:
+        if not query:
+            return query
+
+        sort_params = self.get_sort_params()
+
+        if sort_params:
+            return query.sort_by(*sort_params)
+        return query

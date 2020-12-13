@@ -12,3 +12,7 @@ class TaskRepository(ABC):
     @abstractmethod
     def save(self, task: Task, create: bool = False) -> None:
         pass
+
+    @abstractmethod
+    def delete(self, task_id: TaskId) -> None:
+        pass

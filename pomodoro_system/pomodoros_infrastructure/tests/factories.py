@@ -21,9 +21,10 @@ class ORMProjectFactory(PonyFactory):
     priority_color = factory.Faker("color")
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
     ordering = factory.Sequence(lambda number: number)
-    owner_id = factory.LazyAttribute(lambda project: ORMUserFactory().id)
+    owner = factory.LazyAttribute(lambda project: ORMUserFactory().id)
     created_at = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     deleted_at = None
+    tasks = []
 
 
 class ORMSubTaskFactory(PonyFactory):
@@ -44,13 +45,13 @@ class ORMTaskFactory(PonyFactory):
         db = db
 
     id = factory.LazyFunction(uuid.uuid4)
-    project_id = FuzzyAttribute(lambda: ORMProjectFactory().id)
+    project = FuzzyAttribute(lambda: ORMProjectFactory())
     name = factory.Faker("name")
     status = TaskStatus.ACTIVE.value
     priority_color = factory.Faker("color")
     priority_level = FuzzyAttribute(lambda: random.randint(0, 3))
     ordering = factory.Sequence(lambda number: number)
-    due_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC) + timedelta(days=random.randint(1, 7)))
+    due_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC))
     pomodoros_to_do = FuzzyAttribute(lambda: random.randint(0, 15))
     pomodoros_burn_down = factory.LazyAttribute(lambda task: random.randint(0, task.pomodoros_to_do))
     pomodoro_length = FuzzyAttribute(lambda: timedelta(minutes=random.randint(25, 40)))
@@ -71,7 +72,7 @@ class ORMPomodoroFactory(PonyFactory):
 
     id = factory.LazyFunction(uuid.uuid4)
     frame_type = FrameType.TYPE_POMODORO.value
-    task_id = FuzzyAttribute(lambda: ORMTaskFactory().id)
+    task = FuzzyAttribute(lambda: ORMTaskFactory())
     start_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC).replace(hour=12, minute=0))
     end_date = FuzzyAttribute(lambda: datetime.now(tz=pytz.UTC).replace(hour=12, minute=30))
     contained_pauses = factory.List([])

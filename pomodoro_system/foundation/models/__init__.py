@@ -1,3 +1,3 @@
-__all__ = ["db", "User", "UserDateFrameDefinition"]
+__all__ = ["db", "User", "UserDateFrameDefinitionModel"]
 
-from foundation.models.user import User, UserDateFrameDefinition, db
+from foundation.models.user import User, UserDateFrameDefinitionModel, db

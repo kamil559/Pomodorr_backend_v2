@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from datetime import datetime
-from gettext import gettext as _
 from typing import List, Optional
 
+from foundation.i18n import N_
 from foundation.value_objects import DateFrameDefinition, Priority
 from pomodoros.domain.entities import SubTask
 from pomodoros.domain.exceptions import (
@@ -50,24 +50,22 @@ class Task:
 
     def check_can_perform_actions(self) -> None:
         if self.is_completed:
-            raise NoActionAllowedOnCompletedTask(
-                _("pomodoros.domain.entities.task.no_action_allowed_on_completed_task")
-            )
+            raise NoActionAllowedOnCompletedTask(N_("No action can be performed upon completed task."))
 
     def _check_already_active(self) -> None:
         if self.is_active:
-            raise TaskAlreadyActive(_("pomodoros.domain.entities.task.task_already_active"))
+            raise TaskAlreadyActive(N_("Task is already active."))
 
     def _check_already_completed(self) -> None:
         if self.is_completed:
-            raise TaskAlreadyCompleted(_("pomodoros.domain.entities.task.task_"))
+            raise TaskAlreadyCompleted(N_("Task is already completed."))
 
     def _check_task_name_available_in_project(self, project_tasks: Optional[List["Task"]]) -> None:
         task_in_new_project = list(filter(lambda task: task.is_active and task.name == self.name, project_tasks))
 
         if len(task_in_new_project):
             raise TaskNameNotAvailableInNewProject(
-                _("pomodoros.domain.entities.task.task_name_not_available_in_new_project")
+                N_("The project already contains a task with name '%(name)s'.") % {"name": self.name}
             )
 
     def complete(self) -> None:

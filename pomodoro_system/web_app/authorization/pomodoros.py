@@ -1,17 +1,26 @@
+import http
 import uuid
 
 from flask import abort
+from foundation.exceptions import DomainValidationError
+from foundation.i18n import N_
 from foundation.interfaces import ResourceProtector
 from foundation.value_objects import UserId
-from pomodoros_infrastructure import PomodoroModel, ProjectModel, TaskModel
+from pomodoros_infrastructure import PomodoroModel
 from pony.orm import select
 
 
 class PomodoroProtector(ResourceProtector):
-    def authorize(self, requester_id: UserId, resource_id: uuid.UUID) -> None:
-        task_id_query = select(pomodoro.task_id for pomodoro in PomodoroModel if pomodoro.id == resource_id)
-        project_id_query = select(task.project_id for task in TaskModel if task.id == task_id_query.get())
-        owner_id = select(project.owner_id for project in ProjectModel if project.id == project_id_query.get()).get()
+    def authorize(self, requester_id: UserId, resource_id: uuid.UUID, abort_if_none: bool = True) -> None:
+        pomodoro_id, owner_id = select(
+            (pomodoro.id, pomodoro.task.project.owner.id) for pomodoro in PomodoroModel if pomodoro.id == resource_id
+        ).get() or (None, None)
+
+        if pomodoro_id is None:
+            if abort_if_none:
+                abort(http.HTTPStatus.NOT_FOUND)
+            else:
+                raise DomainValidationError({"pomodoro_id": N_("Selected pomodoro does not exist.")})
 
         if requester_id != owner_id:
-            abort(403)
+            abort(http.HTTPStatus.FORBIDDEN)

@@ -22,3 +22,6 @@ class InMemoryTaskRepository(TaskRepository):
     @property
     def rows(self) -> Optional[Dict[TaskId, Task]]:
         return self._rows
+
+    def delete(self, task_id: Task) -> None:
+        self._rows.pop(task_id)

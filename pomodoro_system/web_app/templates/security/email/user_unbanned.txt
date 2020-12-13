@@ -1,0 +1,5 @@
+{{ _('Dear %(email)s,', email=email) }}
+
+{{ _('You received this email because Your account has been unblocked.') }}
+
+{{ _('Your account has been unblocked at %(manually_unbanned_at) s(UTC) and you\'re free to use it again!', manually_unbanned_at=manually_unbanned_at) }}

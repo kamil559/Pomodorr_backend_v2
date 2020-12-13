@@ -4,7 +4,7 @@ volumes:
   local_postgres_data: { }
 
 services:
-  app:
+  app: &app
     depends_on:
       - postgres
       - mailhog
@@ -13,7 +13,7 @@ services:
       dockerfile: ./compose/local/application/Dockerfile
     image: pomodoro_system_local
     volumes:
-      - "./pomodoro_system:/usr/src/app"
+      - "./pomodoro_system:/usr/src/app/pomodoro_system"
     ports:
       - "8000:8000"
     env_file:
@@ -40,3 +40,29 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+
+  redis:
+    image: redis:5.0
+
+  celeryworker:
+    <<: *app
+    image: pomodoro_celeryworker_local
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *app
+    image: pomodoro_celerybeat_local
+    depends_on:
+      - redis
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *app
+    image: pomodoro_flower_local
+    command: /start-flower
+    ports:
+      - "5555:5555"

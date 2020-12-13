@@ -1,4 +1,10 @@
-.*
-!.coveragerc
-!.env
-!.pylintrc
+coverage_html
+.coverage
+.circleci/*
+.travis.yml
+.git
+.gitignore
+.gitattributes
+.pre-commit-config.yaml
+.idea
+local.yml

@@ -13,7 +13,7 @@ class PomodoroModel(db.Entity):
     frame_type = Required(int, default=FrameType.TYPE_POMODORO.value)
     start_date = Required(datetime)
     end_date = Optional(datetime)
-    task_id = Required(uuid.UUID)
+    task = Required("TaskModel")
     contained_pauses = Set(lambda: PauseModel)
 
 

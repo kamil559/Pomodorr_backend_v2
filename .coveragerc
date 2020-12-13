@@ -1,10 +1,10 @@
-[run]
-include = ./*
+[report]
+show_missing = True
 omit =
-    *tests*
     *contrib*
     *config*
     *docs*
+    */settings_loader.py
     */__init__.py
     */conftest.py
-    .venv/*
+    */.venv/*
