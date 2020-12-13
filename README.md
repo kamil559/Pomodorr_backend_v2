@@ -1,10 +1,10 @@
 # Pomodorr_backend_v2
 
-[![Build Status](https://img.shields.io/travis/kamil559/pomodorr_v2/master.svg?label=TravisCI&style=flat&logo=travis)](https://travis-ci.org/github/kamil559/pomodorr_v2) 
-[![Build Status](https://circleci.com/gh/kamil559/pomodorr_v2/tree/master.svg?style=svg)](https://app.circleci.com/pipelines/github/kamil559/pomodorr_v2) 
-[![codecov](https://codecov.io/gh/kamil559/pomodorr_v2/branch/master/graph/badge.svg)](https://codecov.io/gh/kamil559/pomodorr_v2) 
+[![Build Status](https://img.shields.io/travis/kamil559/Pomodorr_backend_v2/master.svg?label=TravisCI&style=flat&logo=travis)](https://travis-ci.org/github/kamil559/Pomodorr_backend_v2) 
+[![Build Status](https://circleci.com/gh/kamil559/Pomodorr_backend_v2/tree/master.svg?style=svg)](https://app.circleci.com/pipelines/github/kamil559/Pomodorr_backend_v2) 
+[![codecov](https://codecov.io/gh/kamil559/Pomodorr_backend_v2/branch/master/graph/badge.svg)](https://codecov.io/gh/kamil559/Pomodorr_backend_v2) 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black) 
-[![License: MIT](https://img.shields.io/github/license/kamil559/pomodorr_v2.svg?color=blueviolet)](https://github.com/kamil559/pomodorr_v2/blob/master/LICENSE) 
+[![License: MIT](https://img.shields.io/github/license/kamil559/Pomodorr_backend_v2.svg?color=blueviolet)](https://github.com/kamil559/Pomodorr_backend_v2/blob/master/LICENSE) 
 
 Pomodorr is a Pomodoro timer and task management application that will help you stay
 focused and motivated throughout your day-to-day work routine.
@@ -62,26 +62,26 @@ This is only a demonstrative version prepared for local usage.
 
 ### Project structure
 The project consists of several packages that resemble the Onion architecture's layers:
-* [pomodoros](https://github.com/kamil559/pomodorr_v2/tree/master/pomodoro_system/pomodoros) 
+* [pomodoros](https://github.com/kamil559/Pomodorr_backend_v2/tree/master/pomodoro_system/pomodoros) 
   package which is the innermost layer of the Onion architecture's diagram. 
   It contains the domain objects which are supposed to encapsulate the enterprise business rules.
   There is also an application part which contains the orchestration of business rules in the form of use cases.
   This is also a place for the interfaces the use cases rely on and which will be implemented and injected in the second package (infrastructure). 
-* [pomodoros_infrastructure](https://github.com/kamil559/pomodorr_v2/tree/master/pomodoro_system/pomodoros_infrastructure)
+* [pomodoros_infrastructure](https://github.com/kamil559/Pomodorr_backend_v2/tree/master/pomodoro_system/pomodoros_infrastructure)
   package is the one where the interfaces from the previous package have been implemented.
   For example these are concrete repositories, query objects (CQRS) that rely on a specific
   persistence strategy (in this case [SQLite3] for testing, [PostgreSQL] for usage and 
   [PonyORM] as a wrapper in order to make the communication with db engines easier and avoid writing bare SQL queries.)
-* [web_app](https://github.com/kamil559/pomodorr_v2/tree/master/pomodoro_system/web_app)
+* [web_app](https://github.com/kamil559/Pomodorr_backend_v2/tree/master/pomodoro_system/web_app)
   is the place where the input and output boundaries have been implemented, and a specific web framework has been chosen
   (in this case [Flask] is the weapon of choice). The package glues the use cases from the previous package and exposes 
   API endpoints which transform the incoming data into the DTOs used within the higher layers. This is also a place where
   all the web-specific stuff sits (e.g. authentication, authorization)
-* [foundation](https://github.com/kamil559/pomodorr_v2/tree/master/pomodoro_system/foundation)
+* [foundation](https://github.com/kamil559/Pomodorr_backend_v2/tree/master/pomodoro_system/foundation)
   is the place where all the most commonly used code among the whole project has been placed. 
   It contains the utils, value_objects, interfaces and exceptions used in the inner layer of the system
   and handled in the outermost web_app layer.
-* [main](https://github.com/kamil559/pomodorr_v2/tree/master/pomodoro_system/main)
+* [main](https://github.com/kamil559/Pomodorr_backend_v2/tree/master/pomodoro_system/main)
   is the package where the Inversion of Control Container is created and later used by Flask's integration 
   [Flask-Injector] which lets us avoid using the IoC Container explicitly.
 
@@ -312,7 +312,7 @@ Pomodorr_backend_v2 exposes a SwaggerUI endpoint which is accessible at:
 http://127.0.0.1:8000/swagger-ui
 ```
 
-![Swagger UI example image](https://github.com/kamil559/pomodorr_v2/blob/assets/swagger_ui.png?raw=True)
+![Swagger UI example image](https://github.com/kamil559/Pomodorr_backend_v2/blob/assets/swagger_ui.png?raw=True)
 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
