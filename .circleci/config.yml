@@ -38,4 +38,7 @@ workflows:
 
   build-and-test-workflow:
     jobs:
-      - build-and-test
+      - build-and-test:
+          filters:
+            branches:
+              ignore: assets
