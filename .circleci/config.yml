@@ -1,0 +1,44 @@
+version: 2
+
+jobs:
+  build-and-test:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get install gettext libenchant-dev aspell-pl aspell-en --assume-yes
+            poetry add codecov==2.1.10
+            poetry install --no-interaction
+      - save_cache:
+          key: deps-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+      - run:
+          name: Extract and compile messages
+          command: |
+            poetry run make extract_messages
+            poetry run make compile_translations
+      - run:
+          name: Run test suite and linting validation
+          command: |
+            poetry run make test_with_xml_coverage
+            poetry run make check_linting
+            poetry run make check_translations
+
+      - run:
+          command: poetry run codecov --token=$CODECOV_TOKEN
+
+workflows:
+  version: 2
+
+  build-and-test-workflow:
+    jobs:
+      - build-and-test:
+          filters:
+            branches:
+              ignore: assets
